@@ -1,0 +1,364 @@
+
+header
+{
+	background-repeat: no-repeat;
+	background: #064F94;
+	display: block;
+	height:  102px;
+	width: 100%;
+	padding-top: 15px;	
+	position: relative;
+	margin-top: -10px;
+
+}
+header img
+{
+	margin-left: 15%;
+}
+body
+{
+	background: #126180;
+	background-repeat: no-repeat;
+	display:block;
+}
+footer
+{
+	background-color: #e3e3e3;
+	height: 121px;
+	border-top-style: solid;
+	border-top-width: 1px;
+	border-top-color:#d5d5d5;
+	display: block;
+	position: relative;
+	width: 100%;
+	text-align: center;
+}
+#wrapper
+{
+  	width: 100%; 
+  	min-width: 512px;
+  	max-width: 2048px;
+	font-family: Arial, "Helvetica Neue", Helvetica, "Nimbus Sans L", sans-serif;
+}
+.banner
+{
+	color: white;
+	margin-top: -70px;
+	margin-left: 45.5%;
+}
+#bannerNew
+{
+	background-image: url(masthead.png);
+	background-repeat: repeat-x;
+	height:102px;
+	margin-top:-8px;
+}
+#bannerLogo
+{
+	width:174px;
+	height:75px;
+	margin-left: 50px;
+	line-height:auto;
+	float:left;
+	margin-top:12px;
+}
+#main
+{
+	background-image: url(bridge.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+	height: 800px;
+	display:block;
+	padding-bottom: 5px;
+	position: relative;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #d5d5d5;
+	margin-top: 0px;
+	border-top-style: solid;
+	border-top-width: 1px;
+	border-top-color:#d5d5d5;
+	width:100%;
+}
+.login
+{	
+	width: 70%;
+	height: 200px;
+	background-color:#064F94;
+	display:block;
+	position: relative;
+}
+form
+{
+	color: white;
+	font-size: 18px;
+}
+#bangorLogoBig
+{
+	height: 300px;
+	width:40%;
+	background-color:#fff;
+	margin-bottom: 10px;
+}
+.logo
+{
+	width: 60%;
+	height: 600px;
+	background-color:#fff;
+	display:block;
+	position: relative;
+	top:10%;
+	margin-left:20%;
+}
+.logo h1
+{
+	text-align: cetner;
+	color: dimgray;
+	line-height: 250px;
+}
+
+#subWrapper
+{
+	display: block;
+	position:relative;
+	
+}
+#subWrapper h1
+{
+	text-align: center;
+	color: black;
+	
+}
+#left
+{
+	float: left;
+	background-color: #fff;
+	width: 20%;
+	display: block;
+	position: relative;
+	height: 700px;
+	margin-top: 50px;
+	margin-left:3%;
+	border-bottom-style: solid;
+	border-bottom-color: #d5d5d5;
+	border-bottom-width: 1px;
+	border-top-width: 4px;
+    border-top-style: solid;
+    border-top-color: #3b3938;
+}
+#right
+{
+	float: right;
+	background-color: #fff;
+	width: 72%;
+	display: block;
+	position: relative;
+	height: 700px;
+	margin-top: 50px;
+	margin-right: 3%;
+	border-bottom-style: solid;
+	border-bottom-color: #d5d5d5;
+	border-bottom-width: 1px;
+	border-top-width: 4px;
+    border-top-style: solid;
+    border-top-color: #3b3938;
+} 
+#stats
+{
+	width: 45%;
+	height: 50%;
+	background-color:#126180;
+	display:inline;
+	position: relative;
+	top:2%;
+	float:right;
+	right:3%;
+}
+#stats h1
+{
+	text-align: center;
+	font-size: 18px;
+	color:white;
+}
+#leaderboard
+{
+	width: 45%;
+	height: 50%;
+	background-color:#126180;
+	display:inline;
+	position: relative;
+	top:2%;
+	float:left;
+	left:3%;
+}
+#leaderboard h1
+{
+	text-align: center;
+	font-size: 18px;
+	color:white;
+}
+
+#charityList
+{
+	width: 80%;
+	height: 45%;
+	background-color:#126180;
+	display:block;
+	position: relative;
+	margin-top:375px;
+	left: 10%;
+	float: none;
+}
+#charityList h1
+{
+	text-align: center;
+	color:white;
+	font-size: 18px;
+}
+#charityList form
+{
+	text-align: center;
+	color: black;
+}
+#charityList button
+{
+	width: 125px;
+	height: 35px;
+}
+#logout
+{
+	display: block;
+	position: relative;
+	height:100px;
+	width:80%;
+	background-color: #126180;
+	left:10%;
+}
+#logout button
+{
+	color:black;
+	background-color: beige;
+	cursor: pointer;
+	border-radius: 8px;
+	border: 2px solid black; 
+	padding: 10px 24px;
+}
+#logout h1
+{
+	font-size: 18px;
+	text-align: center;
+	color: #fff;
+}
+#charityLeader
+{
+	width: 80%;
+	height: 40%;
+	background-color:white;
+	display:block;
+	position: relative;
+	top:5%;
+	left: 10%;
+}
+#registerLeft
+{
+	float: left;
+	background-color: beige;
+	width: 49%;
+	display: block;
+	position: relative;
+	height: 350px;
+	margin-top: 50px;
+}
+#statsRight
+{
+	float: right;
+	background-color: beige;
+	width: 49%;
+	display: block;
+	position: relative;
+	height: 550px;
+	margin-top: 50px;
+	margin-bottom: 50px;
+} 
+#register
+{
+	width: 80%;
+	height: 75%;
+	background-color:#126180;
+	display:block;
+	position: relative;
+	top:8%;
+	left: 10%;
+}
+#register form
+{
+	display: block;
+	position: relative;
+}
+#charStats
+{
+	width: 80%;
+	height: 85%;
+	background-color:white;
+	display:block;
+	position: relative;
+	top:5%;
+	left: 10%;
+}
+#footer
+{
+	height: 121px;
+	background-color: #e3e3e3;
+	margin-top: -20px;
+	border-top-style: solid;
+	border-top-color: #d5d5d5;
+	border-top-width: 1px;
+	text-align: center;
+	width: 103%;
+	margin-left: -10px;
+	margin-right: 10px;
+}
+#userMain
+{
+	background-image: url(bridge.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+	height: 800px;
+	display:block;
+	padding-bottom: 5px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	border-bottom-color: #d5d5d5;	
+	margin-top: 0px;
+	border-top-style: solid;
+	border-top-width: 2px;
+	border-top-color:#d5d5d5;
+	margin-right: -30px;
+}
+input[type=text], select {
+    width: 80%;
+    padding: 10px 15px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    width: 50%;
+    background-color: #DFDFDF;
+    color: black;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #9F9F9F;
+}
+
+input[type=submit]:hover {
+    background-color: #C1C1C1;
+}
