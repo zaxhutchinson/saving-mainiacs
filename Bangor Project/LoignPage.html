@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Bangor Savings Admin</title>
+<title>Bangor Savings</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="bangorProject.css">
 </head>
@@ -10,7 +10,12 @@
 		<img src="logo.png" alt="Bangor Savings Logo" >
 	</div>
 	<div id="bannerRight">
-		
+		<div id="bannerRegister" align="center">
+			<h3>Register a Charity</h3>
+			<form action="registration.html" align="center">
+				<button type="sumbit" value="login page" >Sign Up</button>
+			</form>
+		</div>
 	</div>
 </div>
 	
@@ -18,29 +23,44 @@
 	<body>
 		<main>
 			<div id="main">
-				<div id="left">
-					<div id="logout">
-						<div style="display: block; width:100%; height:5px;">
-						</div>
-						<h1>Username</h1>
-						<form action="index.html" align="center">
-							<button type="sumbit" value="login page">Logout</button>
-						</form>
+				<div class = "logo" align="center">
+					<div id ="bangorLogoBig">
+						
 					</div>
-				</div>
-				
-				<div id="right">
-					<p>
-						Name+logout
-						Search everything bar
-						//User list/search
-						Charity list
-							- Button ban/delete
-						Quest list
-						Set charity coin dump
-						edit
-						aproval list
-					</p>
+						<div class = "login" align="center">
+					<!-- login -->
+							<form>
+								<label for="fname">Username</label>
+								<br>
+    							<input type="text" id="fname" name="firstname" placeholder="Your name..">
+								<br>
+    							<label for="lname">Password</label>
+								<br>
+    							<input type="text" id="lname" name="lastname" placeholder="Your last name..">
+
+    							<!--<label for="Account">Account Type</label>
+    							<select id="country" name="country">
+      								<option value="admin">Admin</option>
+      								<option value="user">User</option>
+      								<option value="charity">Charity</option>
+    							</select> -->
+  
+    							<input type="submit" value="Submit">
+							</form>	
+							
+							<form action="user.html">
+								 <input type="submit" value="user page" />
+							</form>
+							
+							<form action="admin.html">
+								 <input type="submit" value="admin page" />
+							</form>
+							
+							<form action="charity.html">
+								 <input type="submit" value="charity page" />
+							</form>
+							
+						</div>
 				</div>
 			</div>
 		</main>

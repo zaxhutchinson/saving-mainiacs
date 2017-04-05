@@ -126,13 +126,48 @@ footer a
 	border-top-color:#d5d5d5;
 	width:100%;
 }
-.login
-{	
-	width: 60%;
-	height: 200px;
-	background-color:#064F94;
-	display:block;
+#sideLogin
+{
+	background-color: #126180;
+	color: white;
+	width: 80%;
+	height: 250px;
+	left: 10%;
+	display: block;
 	position: relative;
+	top:2%;
+}
+#sideLoginHeader
+{
+	background-color: #126180;
+	color: white;
+	width: 80%;
+	height: 50px;
+	margin-top: 10px;
+	left: 10%;
+	display: block;
+	position: relative;
+	top:2%;
+	border-bottom-style: solid;
+	border-bottom-color: darkgrey;
+	border-bottom-width: 2px;
+}
+#appDownload
+{
+	background-color: #126180;
+	color: white;
+	width: 80%;
+	height: 175px;
+	margin-top: 10px;
+	left: 10%;
+	display: block;
+	position: relative;
+	top:2%;
+}
+#appDownload button
+{
+	width: 100px;
+	height: 40px;
 }
 form
 {
@@ -146,23 +181,6 @@ form
 	background-color:#fff;
 	margin-bottom: 10px;
 }
-.logo
-{
-	width: 60%;
-	height: 600px;
-	background-color:#fff;
-	display:block;
-	position: relative;
-	top:10%;
-	margin-left:20%;
-}
-.logo h1
-{
-	text-align: cetner;
-	color: dimgray;
-	line-height: 250px;
-}
-
 #subWrapper
 {
 	display: block;
@@ -282,12 +300,6 @@ tr:nth-child(odd) {
 #charityList h1
 {
 	text-align: center;
-	color:white;
-	font-size: 18px;
-}
-#charityList form
-{
-	text-align: center;
 	color: black;
 }
 #charityList button
@@ -303,6 +315,7 @@ tr:nth-child(odd) {
 	width:80%;
 	background-color: #126180;
 	left:10%;
+	top:3%;
 }
 #logout button
 {
@@ -344,27 +357,6 @@ tr:nth-child(odd) {
 	top:5%;
 	left: 10%;
 }
-#registerLeft
-{
-	float: left;
-	background-color: beige;
-	width: 49%;
-	display: block;
-	position: relative;
-	height: 350px;
-	margin-top: 50px;
-}
-#statsRight
-{
-	float: right;
-	background-color: beige;
-	width: 49%;
-	display: block;
-	position: relative;
-	height: 550px;
-	margin-top: 50px;
-	margin-bottom: 50px;
-} 
 #register
 {
 	width: 80%;
@@ -406,6 +398,37 @@ tr:nth-child(odd) {
 	border-top-width: 2px;
 	border-top-color:#d5d5d5;
 	margin-right: -30px;
+}
+
+#homeCharityLeader
+{
+	float: left;
+	position: relative;
+	width: 43%;
+	height: 90%;
+	background-color:#126180;
+	left: 5%;
+	top: 5%;
+}
+#homeUserLeader
+{
+	float: right;
+	display: block;
+	position: relative;
+	width: 43%;
+	height: 90%;
+	background-color:#126180;
+	right: 5%;
+	top: 5%;
+}
+#homeHeader
+{
+	height: 80px;
+	width:100%;
+	display:block;
+	margin-top: -10px;
+	text-align: center;
+	color: white;
 }
 input[type=text], select {
     width: 80%;
