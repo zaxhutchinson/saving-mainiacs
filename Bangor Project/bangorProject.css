@@ -243,6 +243,30 @@ form
 	font-size: 18px;
 	color:white;
 }
+table 
+{
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+	border-style: round;
+	border-radius: 2px;
+	border-color: #fff;
+    width: 100%;
+}
+
+td, th 
+{
+    border: 2px solid black;
+    text-align: center;
+    padding: 4px;
+}
+
+tr:nth-child(even) {
+    background-color: #fff;
+}
+tr:nth-child(odd) {
+    background-color: #126180;
+	color: white;
+}
 
 #charityList
 {
@@ -293,6 +317,21 @@ form
 {
 	font-size: 18px;
 	text-align: center;
+	color: #fff;
+}
+#checkin
+{
+	display: block;
+	position: relative;
+	background-color: #126180;
+	height: 300px;
+	width: 80%;
+	left: 10%;
+	top: 15%;
+}
+#checkinHeader
+{
+	font-size: 18px;
 	color: #fff;
 }
 #charityLeader
