@@ -34,6 +34,7 @@ footer
 	text-align: center;
 	font-family: Arial, "Helvetica Neue", Helvetica, "Nimbus Sans L", sans-serif;
 	font-size: 100%;
+	min-width: 1024px;
 }
 footer a
 {
@@ -50,7 +51,7 @@ footer a
 #wrapper
 {
   	width: 100%; 
-  	min-width: 512px;
+  	min-width: 1024px;
   	max-width: 2048px;
 	font-family: Arial, "Helvetica Neue", Helvetica, "Nimbus Sans L", sans-serif;
 }
@@ -157,12 +158,14 @@ footer a
 	background-color: #126180;
 	color: white;
 	width: 80%;
-	height: 175px;
+	height: auto;
 	margin-top: 10px;
 	left: 10%;
 	display: block;
 	position: relative;
 	top:2%;
+	font-size: auto;
+	padding-bottom: 20px;
 }
 #appDownload button
 {
@@ -173,6 +176,7 @@ form
 {
 	color: white;
 	font-size: 18px;
+	text-align: center;
 }
 #bangorLogoBig
 {
@@ -408,7 +412,7 @@ tr:nth-child(odd) {
 	height: 90%;
 	background-color:#126180;
 	left: 5%;
-	top: 5%;
+	top: 3%;
 }
 #homeUserLeader
 {
@@ -419,7 +423,7 @@ tr:nth-child(odd) {
 	height: 90%;
 	background-color:#126180;
 	right: 5%;
-	top: 5%;
+	top: 3%;
 }
 #homeHeader
 {
