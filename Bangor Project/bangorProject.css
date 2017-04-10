@@ -1,4 +1,14 @@
+*
+{
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        font-size: 100%;
+        vertical-align: baseline;
+        background: transparent;
 
+}
 header
 {
 	background-repeat: no-repeat;
@@ -8,7 +18,6 @@ header
 	width: 100%;
 	padding-top: 15px;	
 	position: relative;
-	margin-top: -10px;
 
 }
 header img
@@ -58,7 +67,6 @@ footer a
 .banner
 {
 	color: white;
-	margin-top: -70px;
 	margin-left: 45.5%;
 }
 #bannerNew
@@ -66,7 +74,6 @@ footer a
 	background-image: url(masthead.png);
 	background-repeat: repeat-x;
 	height:102px;
-	margin-top:-8px;
 }
 #bannerLogo
 {
@@ -132,7 +139,7 @@ footer a
 	background-color: #126180;
 	color: white;
 	width: 80%;
-	height: 250px;
+	height: 300px;
 	left: 10%;
 	display: block;
 	position: relative;
@@ -158,19 +165,32 @@ footer a
 	background-color: #126180;
 	color: white;
 	width: 80%;
-	height: auto;
+	height: 145px;
 	margin-top: 10px;
 	left: 10%;
 	display: block;
 	position: relative;
 	top:2%;
-	font-size: auto;
+	font-size: 2em;
 	padding-bottom: 20px;
 }
 #appDownload button
 {
-	width: 100px;
-	height: 40px;
+	width: 50%;
+    background-color: #DFDFDF;
+    color: black;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #9F9F9F;
+}
+#appDownload button:hover
+{
+	background-color: #C1C1C1;
 }
 form
 {
@@ -222,6 +242,23 @@ form
 	display: block;
 	position: relative;
 	height: 700px;
+	margin-top: 60px;
+	margin-right: 3%;
+	border-bottom-style: solid;
+	border-bottom-color: #d5d5d5;
+	border-bottom-width: 1px;
+	border-top-width: 4px;
+    border-top-style: solid;
+    border-top-color: #3b3938;
+} 
+#rightHome
+{
+	float: right;
+	background-color: #fff;
+	width: 72%;
+	display: block;
+	position: relative;
+	height: 700px;
 	margin-top: 50px;
 	margin-right: 3%;
 	border-bottom-style: solid;
@@ -238,7 +275,7 @@ form
 	background-color:#126180;
 	display:inline;
 	position: relative;
-	top:2%;
+	top:3%;
 	float:right;
 	right:3%;
 }
@@ -247,6 +284,8 @@ form
 	text-align: center;
 	font-size: 18px;
 	color:white;
+	margin-top: 10px;
+
 }
 #leaderboard
 {
@@ -255,15 +294,16 @@ form
 	background-color:#126180;
 	display:inline;
 	position: relative;
-	top:2%;
+	top:3%;
 	float:left;
-	left:3%;
+	left: 3%;
 }
 #leaderboard h1
 {
 	text-align: center;
 	font-size: 18px;
 	color:white;
+	margin-top: 10px;
 }
 table 
 {
@@ -293,24 +333,21 @@ tr:nth-child(odd) {
 #charityList
 {
 	width: 80%;
-	height: 45%;
+	height: 40%;
 	background-color:#126180;
 	display:block;
 	position: relative;
 	margin-top:375px;
 	left: 10%;
 	float: none;
+	top: 3%;
 }
 #charityList h1
 {
 	text-align: center;
-	color: black;
+	color: #fff;
 }
-#charityList button
-{
-	width: 125px;
-	height: 35px;
-}
+
 #logout
 {
 	display: block;
@@ -397,11 +434,9 @@ tr:nth-child(odd) {
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	border-bottom-color: #d5d5d5;	
-	margin-top: 0px;
 	border-top-style: solid;
 	border-top-width: 2px;
 	border-top-color:#d5d5d5;
-	margin-right: -30px;
 }
 
 #homeCharityLeader
@@ -430,9 +465,9 @@ tr:nth-child(odd) {
 	height: 80px;
 	width:100%;
 	display:block;
-	margin-top: -10px;
 	text-align: center;
 	color: white;
+	margin-top: 10px;
 }
 input[type=text], select {
     width: 80%;
@@ -442,6 +477,7 @@ input[type=text], select {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+    background-color: white;
 }
 
 input[type=submit] {
