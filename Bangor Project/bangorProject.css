@@ -100,7 +100,23 @@ footer a
 	border-color: #e3e3e3;
 	
 }
-#bannerRight h3
+#bannerRightCharity
+{
+	color:white;
+	float: right;
+	display: block;
+	position: relative;
+	background-color: #126180;
+	height: 60px;
+	width: 120px;
+	margin-top: 20px;
+	margin-right: 10px;
+	border-style: round;
+	border-radius: 3px;
+	border-color: #e3e3e3;
+	
+}
+#bannerRightCharity h3
 {
 	text-align: center;
 	margin-top: 20px;
