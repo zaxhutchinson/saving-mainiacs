@@ -90,14 +90,7 @@ footer a
 	float: right;
 	display: block;
 	position: relative;
-	background-color: #126180;
-	height: 60px;
-	width: 120px;
-	margin-top: 20px;
-	margin-right: 10px;
-	border-style: round;
-	border-radius: 3px;
-	border-color: #e3e3e3;
+
 	
 }
 #bannerRightCharity
@@ -177,7 +170,10 @@ footer a
 	left: 10%;
 	display: block;
 	position: relative;
-	top:2%;
+	top:1%;
+	border-bottom-style: solid;
+	border-bottom-width: 5px;
+	border-bottom-color: #d5d5d5;
 }
 #sideLoginHeader
 {
@@ -189,22 +185,20 @@ footer a
 	left: 10%;
 	display: block;
 	position: relative;
-	top:2%;
-	border-bottom-style: solid;
-	border-bottom-color: darkgrey;
-	border-bottom-width: 2px;
+	font-size: 2em;
+	top:1%;
 }
 #appDownload
 {
 	background-color: #126180;
 	color: white;
 	width: 80%;
-	height: 145px;
-	margin-top: 10px;
+	height: 165px;
+	//margin-top: 10px;
 	left: 10%;
 	display: block;
 	position: relative;
-	top:2%;
+	top:1%;
 	font-size: 2em;
 	padding-bottom: 20px;
 }
@@ -404,6 +398,35 @@ tr:nth-child(odd) {
 	padding: 10px 24px;
 }
 #logout h1
+{
+	font-size: 18px;
+	text-align: center;
+	color: #fff;
+}
+#registerButton
+{
+	display: block;
+	position: relative;
+	height:100px;
+	width:80%;
+	background-color: #126180;
+	left:10%;
+	top:3%;
+	border-bottom-style: solid;
+	border-bottom-color: #d5d5d5;
+	border-bottom-width: 8px;
+}
+#registerButton button
+{
+	color:black;
+	background-color: beige;
+	cursor: pointer;
+	border-radius: 8px;
+	border: 2px solid black; 
+	padding: 10px 24px;
+	margin-top: 8px;
+}
+#registerButton h1
 {
 	font-size: 18px;
 	text-align: center;
