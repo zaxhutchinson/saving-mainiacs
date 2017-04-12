@@ -48,7 +48,7 @@ footer
 footer a
 {
 	text-decoration: none;
-	color:#1e58b3;;
+	color:#1e58b3;
 }
 #footer li
 {
@@ -87,6 +87,24 @@ footer a
 #bannerRight
 {
 	color:white;
+	float: right;
+	display: block;
+	position: relative;
+	background-color: #126180;
+	height: 60px;
+	width: 120px;
+	margin-top: 20px;
+	margin-right: 10px;
+	border-style: round;
+	border-radius: 3px;
+	border-color: #e3e3e3;
+	
+}
+#bannerRight h3
+{
+	text-align: center;
+	margin-top: 20px;
+	font-size: 1.3em;
 }
 #bannerRightPhp
 {
@@ -176,7 +194,7 @@ footer a
 }
 #appDownload button
 {
-	width: 50%;
+	width: auto;
     background-color: #DFDFDF;
     color: black;
     padding: 12px 20px;
@@ -187,6 +205,8 @@ footer a
 	border-style: solid;
 	border-width: 1px;
 	border-color: #9F9F9F;
+	height: 40px;
+	font-size: auto;
 }
 #appDownload button:hover
 {
