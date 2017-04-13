@@ -1,6 +1,7 @@
 package com.mainiacs.saving.savingmainiacsapp;
 
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,11 +11,14 @@ import android.widget.EditText;
 public class MainActivity extends AppCompatActivity {
 
     Button btnGoToMap;
+    DataManager dm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        AppInit();
 
         btnGoToMap = (Button)findViewById(R.id.button2);
         btnGoToMap.setOnClickListener(new View.OnClickListener() {
@@ -25,8 +29,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void AppInit() {
+        dm = new DataManager();
+        dm.testData = "No Shite.";
+    }
+
     public void StartMapActivity(View view) {
         Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("DataManager",dm);
         startActivity(intent);
     }
 }
