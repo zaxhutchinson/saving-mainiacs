@@ -4,15 +4,16 @@
 <title>Bangor Savings</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="bangorProject.css">
+<link rel="stylesheet" href="questCreate.css">
 </head>
-<header>
-	<div>
-		<img src="logo.png" alt="Bangor Savings Logo" style="width:150px;height:75px;">
-		<div class = "banner">
-			<h1>Charity</h1>
-		</div>
+<div id="bannerNew">
+	<div id="bannerLogo" align="center">
+		<img src="logo.png" alt="Bangor Savings Logo" >
 	</div>
-</header>
+	<div id="bannerRightCharity">
+		<h3>Coins: 400</h3>
+	</div>
+</div>
 	
 <div id="wrapper">
 	<body>
@@ -20,15 +21,68 @@
 			<div id="main">
 				<div id="left">
 					<div id="logout">
-						<h1>Username</h1>
+						<div style="display: block; width:100%; height:5px;">
+						</div>
+						<h1>Charity</h1>
 						<form action="index.html" align="center">
 							<button type="sumbit" value="login page">Logout</button>
 						</form>
 					</div>
+					<!--<div id = "checkin" align="center">
+						<div id = "checkinHeader">
+							<h1>Log Hours</h1>
+						</div>
+						<form >
+							Username:<br><input type="text" name="username" placeholder="Username">
+							<br>
+							Hours:<br><input type="text" name="hours" placeholder="Hours">
+							<br>
+							<input type="Submit" value="Enter" >
+						</form>
+					</div>	-->
 				</div>
 				
 				<div id="right">
-					
+					<!--<p>
+							Name + Logout /n
+							Coin pool month/n
+							Create Quest
+								- Start/End Date
+								- Payout
+								- Coins to be earned per completion
+								- Description
+							edit
+					</p>-->
+					<div id="questCreate" align="center">
+						<form >
+							<label for="questName">Quest Name:</label>
+							<input type="text" name="questName" placeholder="Quest Name...">
+							<br>
+							<label for="quant"> Quantity: </label>
+							<input type="number" name="quant" placeholder="" style="width: 50px;">
+							<br>
+							<label for="startDate">Start Date:</label>
+							<input type ="date" name = "startDate" placeholder="">
+							<br>
+							<label for="endDate">End Date:</label>
+							<input type ="date" name = "endDate" placeholder="">
+							<br>
+							<label for="payout">Payout:&nbsp;&nbsp;&nbsp;&nbsp; </label>
+							<input type ="number" name = "payout" placeholder="Coins...">
+							<br><br>
+							<textarea rows="4" cols="50" style="text-align: left;">
+Enter Description...
+							</textarea>
+							<br>
+							<input type="Submit" value="Create" >
+						</form>	
+						<script type="text/javascript">
+							
+						</script>
+					</div>
+					<div id="charityList">
+						<h1>Charity Leaderboard</h1>
+					</div>
 				</div>
 			</div>
 		</main>

@@ -5,46 +5,62 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="bangorProject.css">
 </head>
-<header>
-	<div>
-		<img src="logo.png" alt="Bangor Savings Logo" style="width:150px;height:75px;">
-		<div class = "banner">
-			<h1>Registration</h1>
+<div id="bannerNew">
+	<div id="bannerLogo" align="center">
+		<img src="logo.png" alt="Bangor Savings Logo" >
+	</div>
+	<div id="bannerRight">
+		<div id="bannerRegister" align="center">
+			<h3>Register a Charity</h3>
+			<form action="registration.html" align="center">
+				<button type="sumbit" value="login page" >Sign Up</button>
+			</form>
 		</div>
 	</div>
-</header>
+</div>
 	
 <div id="wrapper">
 	<body>
 		<main>
 			<div id="main">
-				<div id="left">
-					<div id="logout">
-						<div style="display: block; width:100%; height:5px;">
+				<div class = "logo" align="center">
+					<div id ="bangorLogoBig">
+						
+					</div>
+						<div class = "login" align="center">
+					<!-- login -->
+							<form>
+								<label for="fname">Username</label>
+								<br>
+    							<input type="text" id="fname" name="firstname" placeholder="Your name..">
+								<br>
+    							<label for="lname">Password</label>
+								<br>
+    							<input type="text" id="lname" name="lastname" placeholder="Your last name..">
+
+    							<!--<label for="Account">Account Type</label>
+    							<select id="country" name="country">
+      								<option value="admin">Admin</option>
+      								<option value="user">User</option>
+      								<option value="charity">Charity</option>
+    							</select> -->
+  
+    							<input type="submit" value="Submit">
+							</form>	
+							
+							<form action="user.html">
+								 <input type="submit" value="user page" />
+							</form>
+							
+							<form action="admin.html">
+								 <input type="submit" value="admin page" />
+							</form>
+							
+							<form action="charity.html">
+								 <input type="submit" value="charity page" />
+							</form>
+							
 						</div>
-						<h1>Return to Home</h1>
-						<form action="index.html" align="center">
-							<button type="sumbit" value="login page">Enter</button>
-						</form>
-					</div>
-				</div>
-				
-				<div id="right">
-					<div id="register"align="center">
-						<form >
-							Charity Name:<br><input type="text" name="name" placeholder="Charity Name">
-							<br>
-							Username:<br> <input type ="text" name = "password" placeholder="Username">
-							<br>
-							Password:<br> <input type ="text" name = "password" placeholder="Password">
-							<br>
-							<textarea rows="4" cols="50" style="text-align: left;">
-Enter Description...
-							</textarea>
-							<br>
-							<input type="Submit" value="Sign Up" >
-						</form>	
-					</div>
 				</div>
 			</div>
 		</main>
