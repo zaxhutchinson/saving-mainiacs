@@ -2,7 +2,7 @@
     require_once("server_fns.php");
     session_start();
     if (array_key_exists("user", $_SESSION)) {
-        echo "Welcome " . get_user();
+        echo "Welcome " . get_user() . " : " . get_session_val("userid");
     } else {
         header('Location: index.php');
         exit;

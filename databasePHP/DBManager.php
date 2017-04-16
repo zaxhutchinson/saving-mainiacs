@@ -47,24 +47,88 @@ class DBManager extends mysqli{
         parent::set_charset('utf-8'); 
     }
 
+    public function get_id_by_username($aUserName){
+        return $this->get_db_val("UserID","Accounts", "UserName", $aUserName);
+    }
+    
+    public function get_id_by_charity($aCharityName){
+        return $this->get_db_val("CharityID","Charity", "CharityLogin", $aCharityName);
+    }
+    
+    /**
+     * Quick search of a particular value in the database
+     * @param type $aSelectField Field we are returning
+     * @param type $aTable Table we are searching
+     * @param type $aSearchField Field we are looking through
+     * @param type $aSearchVal Value we are searching for
+     * @return type The value of Selected Field.
+     */
+    public function get_db_val($aSelectField, $aTable, $aSearchField, $aSearchVal) {
+        $lSearchVal = $this->real_escape_string($aSearchVal);
+        $result = $this->query("SELECT " . $aSelectField 
+                . " FROM " . $aTable 
+                . " WHERE " . $aSearchField . " = '" . $lSearchVal . "'");
+        
+        if ($result->num_rows > 0){
+            $row = $result->fetch_row();
+            return $row[0];
+        } else {
+            return null;
+        }
+    }    
+
+    public function value_exists($aTable, $aSearchField, $aSearchVal) {
+        $lSearchVal = $this->real_escape_string($aSearchVal);
+        $lQuery = "SELECT 1"
+                . " FROM " . $aTable 
+                . " WHERE " . $aSearchField . " = '" . $lSearchVal . "'";
+        $lResult = $this->query($lQuery);
+        return ($lResult->data_seek(0) ==  1);
+    } 
+    
     public function create_user ($aName, $aPassword){
         $lFields = ["UserName", "PasswordHash", "CreateDate"];
         $lValues = [$aName, crypt_password($aName, $aPassword,$this->salt), date("Y-m-d")];
         return $this->insert_into($this->credentials_table, $lFields, $lValues );
     }
-
-    public function user_exists($aName){
-        $lName = $this->real_escape_string($aName);
-        $lResult = $this->query("SELECT 1 FROM " . $this->credentials_table . " WHERE UserName = '" . $lName . "'");
-        return ($lResult->data_seek(0) ==  1);
-    }
     
-
+    public function user_exists($aName){
+        return $this->value_exists("Accounts", "UserName", $aName);
+    }
     
     public function insert_into($aTableName, $aFields, $aValues){
         $lRet = "INSERT INTO " . $aTableName . " (" . $this->array_to_string_noquote($aFields) . ") VALUES (" . $this->array_to_string($aValues) . ");"; 
         $this->query($lRet);
         return $lRet;
+    }
+    
+    public function update_table($aTableName, $aFields, $aValues, $aWhereFields, $aWhereValues){
+        $lRet = "UPDATE " . $aTableName . " SET " . $this->zip_set_arrays($aFields, $aValues) . " WHERE " . $this->zip_and_array($aWhereFields,$aWhereValues) . ";";
+        $this->query($lRet);
+        return $lRet;    
+    }
+    
+    
+    public function zip_and_array($aFields, $aValues){
+        $lColCount = count($aFields);
+        $lRet = "";
+        
+        for( $i = 0; $i<$lColCount; $i++ ){
+            $lRet .= $this->real_escape_string($aFields[$i]) . "='" . $this->real_escape_string($aValues[$i]) . "' AND ";
+        }        
+
+        return rtrim($lRet,' AND '); 
+    }
+    
+    public function zip_set_arrays($aFields, $aValues){
+        $lColCount = count($aFields);
+        $lRet = "";
+        
+        for( $i = 0; $i<$lColCount; $i++ ){
+            $lRet .= $this->real_escape_string($aFields[$i]) . "='" . $this->real_escape_string($aValues[$i]) . "',";
+        }        
+
+        return rtrim($lRet,',');        
     }
     
     public function array_escape_string($aDataArray){

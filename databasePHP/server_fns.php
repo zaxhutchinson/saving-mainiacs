@@ -41,8 +41,16 @@
         return filter_input(INPUT_SERVER, "REQUEST_METHOD", FILTER_SANITIZE_STRING) == "POST";
     }
     
+    function get_session_val($aField){
+        return $_SESSION[$aField];
+    }
+    
     function get_user(){  
-        return $_SESSION["user"];
+        return get_session_val('user');
+    }
+    
+    function set_session_val($aField, $aVal){
+        $_SESSION[$aField] = $aVal;
     }
     
     function set_user($aUserName){

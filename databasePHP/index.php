@@ -10,7 +10,8 @@
         $logonSuccess = (DBManager::getInstance()->verify_user_credentials(user_post(), password_post()));
         if ($logonSuccess == true && isset($_POST['login'])) {
             session_start();
-            set_user(get_user());
+            set_user(get_post("user"));
+            set_session_val("userid", DBManager::getInstance()->get_id_by_username(get_session_val("user")));
             header('Location: Menu.php');
             exit;
         }

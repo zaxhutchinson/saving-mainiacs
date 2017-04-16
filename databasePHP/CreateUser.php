@@ -53,6 +53,7 @@ and open the template in the editor.
                     $lUserNameIsUnique = true;
                 }
                 
+
                 /** Check whether the boolean values show that the input data was validated successfully.
                 * If the data was validated successfully, add it as a new entry in the "wishers" database.
                 * After adding the new entry, close the connection and redirect the application to editWishList.php.
@@ -60,13 +61,15 @@ and open the template in the editor.
                 if (!$lUserIsEmpty && $lUserNameIsUnique && !$lPasswordIsEmpty && !$lPasswordComfIsEmpty && $lPasswordIsValid) {
 
                     $lPost = post_array(["user", "name", "email"]);
-                    array_push($lPost, crypt_password(get_post("user"), get_post("password"), DBManager::getInstance()->get_salt() ));
                     array_push($lPost, date("Y-m-d"));
+                    array_push($lPost, crypt_password(get_post("user"), get_post("password"), DBManager::getInstance()->get_salt() ));
                     
                     $lFields = ["UserName", "LoginName" , "EmailAddress", "CreateDate", "PasswordHash"];
                     DBManager::getInstance()->insert_into("Accounts",$lFields,$lPost);
                     session_start();
                     $_SESSION['user'] = get_post("user");
+                    $_SESSION['userid'] = DBManager::getInstance()->get_id_by_username(get_session_val("user"));
+                    DBManager::getInstance()->insert_into("Volunteers",["UserID", "LastUpdateTime"],$_SESSION['userid'], date("Y-m-d"));
                     header('Location: index.php' );
                     exit;
                 }
@@ -84,6 +87,26 @@ and open the template in the editor.
                     ["user", "name", "email", "password", "passwordconf"], 
                     "Register" );
             
+            if ($lUserIsEmpty) {
+                echo ("<br/>");
+                echo ("Enter a valid user name.");
+            }                
+            if (!$lUserNameIsUnique) {
+                echo ("<br/>");
+                echo ("This account already exists.");
+            }
+            if ($lPasswordIsEmpty) {
+                echo ("<br/>");
+                echo ("Password must not be blank.");
+            }
+            if ($lPasswordComfIsEmpty) {
+                echo ("<br/>");
+                echo ("Confirm password must not be blank.");  
+            }                
+            if (!$lPasswordComfIsEmpty && !$lPasswordIsValid) {
+                echo ("<br/>");
+                echo  ("The passwords do not match."); 
+            } 
         ?>
         
 <!--    <center>
