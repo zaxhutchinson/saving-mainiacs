@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group name="NetworkingProject">
+            <file>file:/home/brian/glados-git/MammoViewer/PFData.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/style.css</file>
+            <file>file:/home/brian/glados-git/MammoViewer/MammoTableMaker.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/PartitionFunction.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/MammoDB.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/ChartData.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/CreateUser.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/index.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/Menu.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/ViewImageResults.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/editWish.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/WishDB.php</file>
+        </group>
+        <group name="bbsim">
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/Region.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/DBBrowse.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/PFData.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/MammogramUser.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/GenForm.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/ChartData.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/ViewImageResults.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/Result.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/ResultQValue.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/Menu.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/ResultStatistic.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/tablefunctions.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/ResultNoScaling.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/index.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/style.css</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/CreateCharity.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/MaxGaussian.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/MammoTableMaker.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/server_fns.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/PartitionFunction.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/CreateUser.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/DBManager.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/mucoftware/MammogramKey.php</file>
+        </group>
+    </open-files>
+</project-private>
