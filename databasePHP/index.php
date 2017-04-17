@@ -3,6 +3,7 @@
 <?php
     require_once 'server_fns.php';
     require_once("DBManager.php");
+    //gen_data();
     $logonSuccess = false;
     $logonCharitySuccess = false;
     // verify user's credentials
@@ -12,7 +13,7 @@
             session_start();
             set_user(get_post("user"));
             set_session_val("userid", DBManager::getInstance()->get_id_by_username(get_session_val("user")));
-            header('Location: Menu.php');
+            header('Location: UserProfile.php');
             exit;
         }
         

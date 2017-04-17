@@ -12,7 +12,7 @@ and open the template in the editor.
     </head>
     <body>
         
-        
+
         
         
         <?php
@@ -49,6 +49,7 @@ and open the template in the editor.
                     
                     $lFields = ["CharityName", "Address" , "PhoneNumber", "Description", "CharityLogin","PasswordHash","DateAdded","Latitude","Longitude","QuestBank"];
                     DBManager::getInstance()->insert_into("Charity",$lFields,$lPost);
+                    DBManager::getInstance()->upload_image("./default.jpg", "Charity", "ProfileImage", ["CharityLogin"], [get_post("login_id")],[true]);
                     session_start();
                     $_SESSION['charity'] = get_post("user");
                     header('Location: index.php' );

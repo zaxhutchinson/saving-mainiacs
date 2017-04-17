@@ -102,23 +102,52 @@ class DBManager extends mysqli{
         return $lRet;
     }
     
+    public function upload_image($aPath, $aTableName, $aField, $aWhereFields, $aWhereValues, $aQuote){
+        $lImage=addslashes(file_get_contents($aPath));
+        $lRet = "UPDATE " . $aTableName . " SET " . $aField . " = '" . $lImage . "' WHERE " . $this->zip_and_array_quote($aWhereFields,$aWhereValues,$aQuote) . ";";
+        $lQuery = $this->query($lRet);
+        mysqli_free_result($lQuery);
+        return $lRet;
+    }    
+    
     public function update_table($aTableName, $aFields, $aValues, $aWhereFields, $aWhereValues){
         $lRet = "UPDATE " . $aTableName . " SET " . $this->zip_set_arrays($aFields, $aValues) . " WHERE " . $this->zip_and_array($aWhereFields,$aWhereValues) . ";";
         $this->query($lRet);
         return $lRet;    
     }
     
+    public function select_table($aTableName, $aFields, $aWhereFields, $aWhereValues){
+        $lRet = "SELECT " . $this->array_to_string_noquote($aFields) . " FROM " . $this->array_to_string_noquote($aTableName) . " WHERE " . $this->zip_and_array($aWhereFields,$aWhereValues) . ";";
+        //echo $lRet . "<br/>";
+        return $this->query($lRet);
+    }
     
     public function zip_and_array($aFields, $aValues){
         $lColCount = count($aFields);
         $lRet = "";
         
         for( $i = 0; $i<$lColCount; $i++ ){
-            $lRet .= $this->real_escape_string($aFields[$i]) . "='" . $this->real_escape_string($aValues[$i]) . "' AND ";
+            $lRet .= $this->real_escape_string($aFields[$i]) . "=" . $this->real_escape_string($aValues[$i]) . " AND ";
         }        
 
-        return rtrim($lRet,' AND '); 
+        return rtrim($lRet,'AND '); 
     }
+    
+    public function zip_and_array_quote($aFields, $aValues, $aQuote){
+        $lColCount = count($aFields);
+        $lRet = "";
+        
+        for( $i = 0; $i<$lColCount; $i++ ){
+            if($aQuote[i]){
+                $lRet .= $this->real_escape_string($aFields[$i]) . "=" . $this->real_escape_string($aValues[$i]) . " AND ";
+            } else {
+                $lRet .= $this->real_escape_string($aFields[$i]) . "='" . $this->real_escape_string($aValues[$i]) . "' AND ";
+            }
+            
+        }        
+
+        return rtrim($lRet,'AND '); 
+    }    
     
     public function zip_set_arrays($aFields, $aValues){
         $lColCount = count($aFields);
@@ -167,40 +196,25 @@ class DBManager extends mysqli{
         
         $lName = $this->real_escape_string($aName);
         $lPassword = crypt_password($aName, $aPassword,$this->salt);
-
-        $result = $this->query("SELECT 1 FROM " . $this->credentials_table . " WHERE UserName = '" . $lName . "' AND PasswordHash = '" . $lPassword . "'");
-        return $result->data_seek(0);
+        echo $lPassword . "<br/>";
+        $lResult = $this->query("SELECT 1 FROM " . $this->credentials_table . " WHERE UserName = '" . $lName . "' AND PasswordHash = '" . $lPassword . "'");
+        //mysqli_free_result($lResult);
+        $lRet = $lResult->data_seek(0);
+        return $lRet;
     }
+    
+
     
     public function verify_charity_credentials ($aName, $aPassword){
         
         $lName = $this->real_escape_string($aName);
         $lPassword = crypt_password($aName, $aPassword,$this->salt);
 
-        $result = $this->query("SELECT 1 FROM Charity WHERE CharityLogin = '" . $lName . "' AND PasswordHash = '" . $lPassword . "'");
-        return $result->data_seek(0);
+        $lResult = $this->query("SELECT 1 FROM Charity WHERE CharityLogin = '" . $lName . "' AND PasswordHash = '" . $lPassword . "'");
+        $lRet = $lResult->data_seek(0);
+        mysqli_free_result($lResult);
+        return $lRet;
     }  
-    
-    public function get_mammogram_image_result_by_mammo_id($aMammo_id,$aImageType,$aStepSize) {
-
-        $lMammoID = $this->real_escape_string($aMammo_id);
-        $lImageType = $this->real_escape_string($aImageType);
-        $lStepSize = $this->real_escape_string($aStepSize);
-        $lQueryString = "SELECT * FROM ImageResult WHERE mammo_id = " . $lMammoID . " AND image_type = '" . $lImageType . "' AND step_size = " . $lStepSize . ";";
-        $image_result = $this->query($lQueryString);
-
-        return $image_result;
-    
-    }    
-        
-
-    public function get_mammogram_pfdata_ids($aMammoID, $aRegion, $aEqnType){
-        $lMammoID = $this->real_escape_string($aMammoID);
-        $lRegion = $this->real_escape_string($aRegion);
-        $lEqnType = $this->real_escape_string($aEqnType);
-        $lQueryString = "SELECT distinct id " . "FROM PFData " . "WHERE " . " mammo_id = " . $lMammoID . " AND " . " region = " . $lRegion . " AND " . " eqn_type = '" . $lEqnType . "' " . "ORDER BY id ASC;";
-        return $this->query($lQueryString);
-    }     
     
     public function query_to_array($aQuery, $aIndex){
         $lRet = array();
@@ -210,49 +224,8 @@ class DBManager extends mysqli{
         mysqli_free_result($aQuery);
         return $lRet;
     }
+   
 
-    public function get_mammogram_chartdata_xvalues($aMammoID, $aRegion, $aProperty){
-        $lMammoID = $this->real_escape_string($aMammoID);
-        $lRegion = $this->real_escape_string($aRegion);
-        $lProperty = $this->real_escape_string($aProperty);
-        $lQueryString = "SELECT distinct x_value " .
-                "FROM ChartData " . 
-                "WHERE " . 
-                    " mammo_id = " . $lMammoID . " AND " .
-                    " region = " . $lRegion . " AND " .
-                    " property = '" . $lProperty . "' " .
-                "ORDER BY x_value ASC;";
-        //return $lQueryString;
-        return $this->query($lQueryString);
-    }      
-    
-    public function get_mammogram_chartdata_data($aMammoID, $aRegion, $aProperty){
-        $lMammoID = $this->real_escape_string($aMammoID);
-        $lRegion = $this->real_escape_string($aRegion);
-        $lProperty = $this->real_escape_string($aProperty);
-        $lQueryString = "SELECT qvalue,x_value,y_value " .
-                "FROM ChartData " . 
-                "WHERE " . 
-                    " mammo_id = " . $lMammoID . " AND " .
-                    " region = " . $lRegion . " AND " .
-                    " property = '" . $lProperty . "' " .
-                "ORDER BY qvalue ASC, x_value ASC;";
-
-        return $this->query($lQueryString);
-    }    
-
-    public function get_mammogram_result_qvalues($aMammoID, $aProperty){
-        $lMammoID = $this->real_escape_string($aMammoID);
-        $lProperty = $this->real_escape_string($aProperty);
-        $lQueryString = "SELECT distinct qvalue " .
-                "FROM ResultQValue " . 
-                "WHERE " . 
-                    " mammo_id = " . $lMammoID . " AND " .
-                    " property_type = '" . $lProperty . "' " .
-                "ORDER BY qvalue ASC;";
-        //return $lQueryString;
-        return $this->query($lQueryString);
-    }      
     
     function table_from_querystring($aColumns, $aQueryString, $aTableTag, $aImageColumn = ""){
         $lQuery = $this->query($aQueryString);
@@ -271,6 +244,8 @@ class DBManager extends mysqli{
         $lRet .= "</table>";
         return $lRet;
     }
+    
+
     
     /**
      * Constructs a pivot table from the query
@@ -360,6 +335,8 @@ class DBManager extends mysqli{
         return $lRet;
     }
 
+    
+    
     /**
      * Builds a table body from a database query.
      * @param type $aColumns List of columns to use
@@ -374,7 +351,7 @@ class DBManager extends mysqli{
             $lRet .= "<tr>";
                 for($i = 0; $i < $lColCount; $i++){
                     if($aImageColumn == $aColumns[$i]){
-                        $lRet .= '<td><img src="data:image/png;base64,'.base64_encode( $lRow[$aColumns[$i]] ).'"/></td>';
+                        $lRet .= '<td><img src="data:image/jpeg;base64,'.base64_encode( $lRow[$aColumns[$i]] ).'"/></td>';
                     } else {
                         $lRet .= "<td>" . htmlentities($lRow[$aColumns[$i]]) . "</td>";
                     }
