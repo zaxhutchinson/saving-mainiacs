@@ -60,18 +60,12 @@ and open the template in the editor.
                 */
                 if (!$lUserIsEmpty && $lUserNameIsUnique && !$lPasswordIsEmpty && !$lPasswordComfIsEmpty && $lPasswordIsValid) {
 
-                    $lPost = post_array(["user", "name", "email"]);
-                    array_push($lPost, date("Y-m-d"));
-                    array_push($lPost, crypt_password(get_post("user"), get_post("password"), DBManager::getInstance()->get_salt() ));
+                    gen_user(get_post("user"), get_post("password"), get_post("name"), get_post("email"));
                     
-                    $lFields = ["UserName", "LoginName" , "EmailAddress", "CreateDate", "PasswordHash"];
-                    DBManager::getInstance()->insert_into("Accounts",$lFields,$lPost);
-                    DBManager::getInstance()->upload_image("./default.jpg", "Accounts", "ProfileImage", ["UserName"], [get_post("user")],[true]);
                     session_start();
                     $_SESSION['user'] = get_post("user");
                     $_SESSION['userid'] = DBManager::getInstance()->get_id_by_username(get_session_val("user"));
-                    DBManager::getInstance()->insert_into("Volunteers",["UserID", "LastUpdateTime"],$_SESSION['userid'], date("Y-m-d"));
-                    
+
                     header('Location: index.php' );
                     exit;
                 }

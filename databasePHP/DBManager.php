@@ -65,9 +65,15 @@ class DBManager extends mysqli{
      */
     public function get_db_val($aSelectField, $aTable, $aSearchField, $aSearchVal) {
         $lSearchVal = $this->real_escape_string($aSearchVal);
-        $result = $this->query("SELECT " . $aSelectField 
+        $lRet = "SELECT " . $aSelectField 
                 . " FROM " . $aTable 
-                . " WHERE " . $aSearchField . " = '" . $lSearchVal . "'");
+                . " WHERE " . $aSearchField . " = '" . $lSearchVal . "';";
+        
+        //echo $lRet . "<br/>";
+        
+        $result = $this->query($lRet);
+        
+        
         
         if ($result->num_rows > 0){
             $row = $result->fetch_row();
@@ -117,12 +123,23 @@ class DBManager extends mysqli{
     }
     
     public function select_table($aTableName, $aFields, $aWhereFields, $aWhereValues){
-        $lRet = "SELECT " . $this->array_to_string_noquote($aFields) . " FROM " . $this->array_to_string_noquote($aTableName) . " WHERE " . $this->zip_and_array($aWhereFields,$aWhereValues) . ";";
+        $lRet = "SELECT " . $this->array_to_string_noquote($aFields) . " FROM " . $this->array_to_string_noquote($aTableName) . " WHERE " . $this->zip_and_array_noquote($aWhereFields,$aWhereValues) . ";";
         //echo $lRet . "<br/>";
         return $this->query($lRet);
     }
     
     public function zip_and_array($aFields, $aValues){
+        $lColCount = count($aFields);
+        $lRet = "";
+        
+        for( $i = 0; $i<$lColCount; $i++ ){
+            $lRet .= $this->real_escape_string($aFields[$i]) . "='" . $this->real_escape_string($aValues[$i]) . "' AND ";
+        }        
+
+        return rtrim($lRet,'AND '); 
+    }
+    
+    public function zip_and_array_noquote($aFields, $aValues){
         $lColCount = count($aFields);
         $lRet = "";
         

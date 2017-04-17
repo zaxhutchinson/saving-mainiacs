@@ -32,26 +32,31 @@ and open the template in the editor.
                 * After adding the new entry, close the connection and redirect the application to editWishList.php.
                 */
                 //if (!$lUserIsEmpty && $lUserNameIsUnique && !$lPasswordIsEmpty && !$lPasswordComfIsEmpty && $lPasswordIsValid) {
-                    $lPost = post_array(["charity_name", "address", "phone_number", "description", "login_id"]);
+                    //$lPost = post_array(["charity_name", "address", "phone_number", "description", "login_id"]);
 
-                    array_push($lPost, crypt_password(get_post("login_id"), get_post("password"), DBManager::getInstance()->get_salt() ));
-                    array_push($lPost, date("Y-m-d"));
+                    //array_push($lPost, crypt_password(get_post("login_id"), get_post("password"), DBManager::getInstance()->get_salt() ));
+                    //array_push($lPost, date("Y-m-d"));
                     
 
-                    $lCoords = get_lat_long( get_post("address"), "AIzaSyAvb7YHTZJFhMJstXAOQ4KDPLzzUXemmcQ" );
+                    //$lCoords = get_lat_long( get_post("address"), "AIzaSyAvb7YHTZJFhMJstXAOQ4KDPLzzUXemmcQ" );
                     
                     
-                    array_push($lPost,  $lCoords["lat"]);
-                    array_push($lPost, $lCoords["long"]);
-                    array_push($lPost, 0);
+                    //array_push($lPost,  $lCoords["lat"]);
+                    //array_push($lPost, $lCoords["long"]);
+                    //array_push($lPost, 0);
 
                     //print_array($lPost);
                     
-                    $lFields = ["CharityName", "Address" , "PhoneNumber", "Description", "CharityLogin","PasswordHash","DateAdded","Latitude","Longitude","QuestBank"];
-                    DBManager::getInstance()->insert_into("Charity",$lFields,$lPost);
-                    DBManager::getInstance()->upload_image("./default.jpg", "Charity", "ProfileImage", ["CharityLogin"], [get_post("login_id")],[true]);
+                    //$lFields = ["CharityName", "Address" , "PhoneNumber", "Description", "CharityLogin","PasswordHash","DateAdded","Latitude","Longitude","QuestBank"];
+                    //DBManager::getInstance()->insert_into("Charity",$lFields,$lPost);
+                    //DBManager::getInstance()->upload_image("./default.jpg", "Charity", "ProfileImage", ["CharityLogin"], [get_post("login_id")],[true]);
+                    
+                    gen_charity(get_post("charity_name"), get_post("address"), get_post("phone_number"), get_post("description"), get_post("login_id"), get_post("password"));
+                    
                     session_start();
                     $_SESSION['charity'] = get_post("user");
+                    //$_SESSION['charityid'] = get_id_by_charity(get_post("user"));
+                    set_session_val('charityid', DBManager::getInstance()->get_id_by_charity(get_post("user")));
                     header('Location: index.php' );
                     exit;
                 //}

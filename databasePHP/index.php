@@ -21,7 +21,8 @@
         if ($logonCharitySuccess == true) {
             session_start();
             set_user(get_post("charity_login"));
-            header('Location: Menu.php');
+            set_session_val('charityid', DBManager::getInstance()->get_id_by_charity(get_post("charity_login")));
+            header('Location: CharityProfile.php');
             exit;
         }
         
