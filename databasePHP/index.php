@@ -3,7 +3,7 @@
 <?php
     require_once 'server_fns.php';
     require_once("DBManager.php");
-    //gen_data();
+    gen_data();
     $logonSuccess = false;
     $logonCharitySuccess = false;
     // verify user's credentials

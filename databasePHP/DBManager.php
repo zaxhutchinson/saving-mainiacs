@@ -1,5 +1,6 @@
 <?php
 include 'tablefunctions.php';
+include 'misc.php';
 
 /**
  * Description of MammoDB
@@ -46,14 +47,6 @@ class DBManager extends mysqli{
         }
         parent::set_charset('utf-8'); 
     }
-
-    public function get_id_by_username($aUserName){
-        return $this->get_db_val("UserID","Accounts", "UserName", $aUserName);
-    }
-    
-    public function get_id_by_charity($aCharityName){
-        return $this->get_db_val("CharityID","Charity", "CharityLogin", $aCharityName);
-    }
     
     /**
      * Quick search of a particular value in the database
@@ -92,18 +85,14 @@ class DBManager extends mysqli{
         return ($lResult->data_seek(0) ==  1);
     } 
     
-    public function create_user ($aName, $aPassword){
-        $lFields = ["UserName", "PasswordHash", "CreateDate"];
-        $lValues = [$aName, crypt_password($aName, $aPassword,$this->salt), date("Y-m-d")];
-        return $this->insert_into($this->credentials_table, $lFields, $lValues );
-    }
-    
-    public function user_exists($aName){
-        return $this->value_exists("Accounts", "UserName", $aName);
-    }
-    
     public function insert_into($aTableName, $aFields, $aValues){
         $lRet = "INSERT INTO " . $aTableName . " (" . $this->array_to_string_noquote($aFields) . ") VALUES (" . $this->array_to_string($aValues) . ");"; 
+        $this->query($lRet);
+        return $lRet;
+    }
+
+    public function insert_into_quotes($aTableName, $aFields, $aValues, $aQuotes){
+        $lRet = "INSERT INTO " . $aTableName . " (" . $this->array_to_string_noquote($aFields) . ") VALUES (" . $this->array_to_string_quotes($aValues, $aQuotes) . ");"; 
         $this->query($lRet);
         return $lRet;
     }
@@ -121,6 +110,12 @@ class DBManager extends mysqli{
         $this->query($lRet);
         return $lRet;    
     }
+    
+    public function update_table_quote($aTableName, $aFields, $aValues, $aValueQuotes, $aWhereFields, $aWhereValues, $aWhereQuotes){
+        $lRet = "UPDATE " . $aTableName . " SET " . $this->zip_set_arrays_quote($aFields, $aValues, $aValueQuotes) . " WHERE " . $this->zip_and_array_quote($aWhereFields,$aWhereValues, $aWhereQuotes) . ";";
+        $this->query($lRet);
+        return $lRet;    
+    }    
     
     public function select_table($aTableName, $aFields, $aWhereFields, $aWhereValues){
         $lRet = "SELECT " . $this->array_to_string_noquote($aFields) . " FROM " . $this->array_to_string_noquote($aTableName) . " WHERE " . $this->zip_and_array_noquote($aWhereFields,$aWhereValues) . ";";
@@ -176,6 +171,21 @@ class DBManager extends mysqli{
 
         return rtrim($lRet,',');        
     }
+
+    public function zip_set_arrays_quote($aFields, $aValues, $aQuotes){
+        $lColCount = count($aFields);
+        $lRet = "";
+        
+        for( $i = 0; $i<$lColCount; $i++ ){
+            if($aQuotes[$i]){
+                $lRet .= $this->real_escape_string($aFields[$i]) . "='" . $this->real_escape_string($aValues[$i]) . "',";
+            } else {
+                $lRet .= $this->real_escape_string($aFields[$i]) . "=" . $this->real_escape_string($aValues[$i]) . ",";
+            }
+        }        
+
+        return rtrim($lRet,',');        
+    }
     
     public function array_escape_string($aDataArray){
         $lColCount = count($aDataArray);
@@ -197,6 +207,21 @@ class DBManager extends mysqli{
 
         return rtrim($lRet,',');
     }    
+
+    public function array_to_string_quotes($aDataArray, $aQuotes){
+        $lColCount = count($aDataArray);
+        $lRet = "";
+        
+        for( $i = 0; $i<$lColCount; $i++ ){
+            if($aQuotes[$i]){
+                $lRet .= "'" . $this->real_escape_string($aDataArray[$i]) . "',";
+            } else {
+                $lRet .= $this->real_escape_string($aDataArray[$i]) . ",";
+            }
+        }        
+
+        return rtrim($lRet,',');
+    }   
     
     public function array_to_string($aDataArray){
         $lColCount = count($aDataArray);
@@ -209,29 +234,6 @@ class DBManager extends mysqli{
         return rtrim($lRet,',');
     }
     
-    public function verify_user_credentials ($aName, $aPassword){
-        
-        $lName = $this->real_escape_string($aName);
-        $lPassword = crypt_password($aName, $aPassword,$this->salt);
-        echo $lPassword . "<br/>";
-        $lResult = $this->query("SELECT 1 FROM " . $this->credentials_table . " WHERE UserName = '" . $lName . "' AND PasswordHash = '" . $lPassword . "'");
-        //mysqli_free_result($lResult);
-        $lRet = $lResult->data_seek(0);
-        return $lRet;
-    }
-    
-
-    
-    public function verify_charity_credentials ($aName, $aPassword){
-        
-        $lName = $this->real_escape_string($aName);
-        $lPassword = crypt_password($aName, $aPassword,$this->salt);
-
-        $lResult = $this->query("SELECT 1 FROM Charity WHERE CharityLogin = '" . $lName . "' AND PasswordHash = '" . $lPassword . "'");
-        $lRet = $lResult->data_seek(0);
-        mysqli_free_result($lResult);
-        return $lRet;
-    }  
     
     public function query_to_array($aQuery, $aIndex){
         $lRet = array();
@@ -381,4 +383,188 @@ class DBManager extends mysqli{
         return $lRet;
     }
         
+    //////////////////////////////////////////////////////////////////
+    //More specific Functions...
+    
+    //=================================================
+    // -Charity specific functions
+    
+    public function count_charities(){
+        $lRet = "SELECT COUNT(*) FROM Charity";
+        $lQuery = $this->query($lRet);
+
+        if ($lQuery->num_rows > 0){
+            $lRow = $lQuery->fetch_row();
+            return $lRow[0];
+        } else {
+            return null;
+        }
+    }
+    
+    public function rand_charity(){
+        echo $this->count_charities();
+        return rand(1,$this->count_charities());
+    }
+    
+    public function verify_charity_credentials ($aName, $aPassword){
+        
+        $lName = $this->real_escape_string($aName);
+        $lPassword = crypt_password($aName, $aPassword,$this->salt);
+
+        $lResult = $this->query("SELECT 1 FROM Charity WHERE CharityLogin = '" . $lName . "' AND PasswordHash = '" . $lPassword . "'");
+        $lRet = $lResult->data_seek(0);
+        mysqli_free_result($lResult);
+        return $lRet;
+    }  
+    
+    public function charity_exists($aCharityName){
+        return $this->value_exists("Charity", "CharityLogin", $aCharityName);
+    } 
+    
+    public function get_id_by_charity($aCharityName){
+        return $this->get_db_val("CharityID","Charity", "CharityLogin", $aCharityName);
+    }
+    
+//    public function add_quest($aCharityName, $aQuest){
+//        
+//        QuestType
+//        
+//    }
+    
+
+
+    
+    //=================================================
+    // -User specific functions
+    
+    
+    public function update_donation_rate($aUserID, $aIndex, $aCharityID, $aPercent){
+        return $this->update_table_quote("DonationRate", ["CharityID", "Percent"], [$aCharityID, $aPercent], [false,true], ["RowID", "UserID"], [$aIndex,$aUserID] );
+    }
+    
+    public function get_user_coins($aUserID){
+        return $this->get_db_val("Coins","Volunteers", "UserID", $aUserID);
+    }
+    
+    public function get_user_total_coins($aUserID){
+        return $this->get_db_val("TotalCoins","Volunteers", "UserID", $aUserID);
+    }
+    
+    public function get_user_update($aUserID){
+        return $this->get_db_val("LastUpdateTime","Volunteers", "UserID", $aUserID);
+    }
+    
+    public function day_comp($aUserID){
+        $lParse = date_parse($this->get_user_update($aUserID));
+        return strtotime(date("Y")."-".date("m")."-".date("d"))-strtotime($lParse["year"]."-".$lParse["month"]."-".$lParse["day"]);
+    }
+    
+    public function month_comp($aUserID){
+        $lParse = date_parse($this->get_user_update($aUserID));
+        return strtotime(date("Y")."-".date("m"))- strtotime($lParse["year"]."-".$lParse["month"]);
+    }
+    
+    public function add_steps($aUserID, $aSteps){
+        $lUpdateDay = "DaySteps +" . $aSteps;
+        $lUpdateMonth = "MonthSteps +" . $aSteps;
+        if($this->day_comp($aUserID) > 0){
+            $lUpdateDay = $aSteps;
+        }
+        
+        if($this->month_comp($aUserID)){
+            $lUpdateMonth = $aSteps;
+        }
+        
+        return $this->update_table_quote("Volunteers", ["DaySteps", "MonthSteps", "TotalSteps", "LastUpdateTime"], [$lUpdateDay, $lUpdateMonth, "TotalSteps +" . $aSteps, date("Y-m-d\TH:i:sP")], [false, false, false, true], ["UserID"], [$aUserID], [false] );
+    }
+    
+    
+    
+    
+    /**
+     * This function adds (or subtracts) coins to the user's account.  If the
+     * quantity is negative the number of coins are not removed from the total
+     * coins. 
+     * @param type $aUserID  The user to give coins to
+     * @param type $aQuantity The number of coins to give to the user.
+     * @return type Total coins remaining in the user's account.
+     */
+    public function add_coins($aUserID, $aQuantity){
+        $lCoins = $this->get_user_coins($aUserID);
+        $lQuantity = $aQuantity;
+
+        if( ($aQuantity < 0) && ($lCoins < abs($aQuantity)) ){
+            $lQuantity = -$lCoins;
+        }
+        $lTotal = $lCoins+$lQuantity;        //Total coins in the user account now.
+
+        $this->update_table("Volunteers", ["UserID", "Coins"], [$aUserID, $lTotal], ["UserID"], [$aUserID] );
+        
+        if( $aQuantity > 0){
+            $lTotalCoins = $this->get_user_total_coins($aUserID) + $aQuantity;
+            $this->update_table("Volunteers", ["UserID", "TotalCoins"], [$aUserID, $lTotalCoins], ["UserID"], [$aUserID] );
+        }
+        
+        return $lTotal;
+    }
+    
+    public function donate($aUserID){
+        $lPercent = 0;
+        $aTotalNumber = $this->get_user_coins($aUserID);
+        
+        if($aTotalNumber == 0){
+            return 0;
+        }
+        
+        for($i = 0; $i < 5; $i++){
+            $lQuery = $this->select_table(["DonationRate"], ["Percent","CharityID"], ["RowID", "UserID"], [$i, $aUserID]);
+            $lPercent = 0;
+            $lCharity = -1;
+            
+            if ($lQuery->num_rows > 0){
+                $lRow = $lQuery->fetch_row();
+                $lPercent = $lRow[0]/100.0;
+                $lCharity = $lRow[1];
+            }
+            
+            $lDonate = $lPercent*$aTotalNumber;
+            $this->insert_into("PointDonations", ["CharityID", "UserID", "Quantity", "Date"], [$lCharity, $aUserID, $lDonate, date("Y-m-d\TH:i:sP")]);
+            $this->add_coins($aUserID,-$lDonate);
+            
+        }
+        
+        return $aTotalNumber;
+    }
+    
+    public function verify_user_credentials ($aName, $aPassword){
+        
+        $lName = $this->real_escape_string($aName);
+        $lPassword = crypt_password($aName, $aPassword,$this->salt);
+        echo $lPassword . "<br/>";
+        $lResult = $this->query("SELECT 1 FROM " . $this->credentials_table . " WHERE UserName = '" . $lName . "' AND PasswordHash = '" . $lPassword . "'");
+        //mysqli_free_result($lResult);
+        $lRet = $lResult->data_seek(0);
+        return $lRet;
+    }
+    
+    
+    
+    public function create_user ($aName, $aPassword){
+        $lFields = ["UserName", "PasswordHash", "CreateDate"];
+        $lValues = [$aName, crypt_password($aName, $aPassword,$this->salt), date("Y-m-d")];
+        return $this->insert_into($this->credentials_table, $lFields, $lValues );
+    }
+    
+    public function user_exists($aName){
+        return $this->value_exists("Accounts", "UserName", $aName);
+    }
+    
+       
+
+    public function get_id_by_username($aUserName){
+        return $this->get_db_val("UserID","Accounts", "UserName", $aUserName);
+    }
+    
+    
+    
 }

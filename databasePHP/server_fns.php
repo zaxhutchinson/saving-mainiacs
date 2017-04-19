@@ -5,6 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+//require_once 'misc.php';
 
     function get_post($aField){
         return filter_input(INPUT_POST, $aField);
@@ -164,9 +165,30 @@ function gen_charity($aName, $aAddress, $aPhone, $aDesc, $aLogin, $aPassword){
     array_push($lPost, 0);
 
     $lFields = ["CharityName", "Address" , "PhoneNumber", "Description", "CharityLogin","PasswordHash","DateAdded","Latitude","Longitude","QuestBank"];
-    DBManager::getInstance()->insert_into("Charity",$lFields,$lPost);
-    DBManager::getInstance()->upload_image("./default.jpg", "Charity", "ProfileImage", ["CharityLogin"], [$aLogin],[true]);
+    if(!DBManager::getInstance()->charity_exists($aLogin)){
+        //echo "Charity Does Not Exist <br/>";
+        
+        DBManager::getInstance()->insert_into("Charity",$lFields,$lPost);
+        DBManager::getInstance()->upload_image("./default.jpg", "Charity", "ProfileImage", ["CharityLogin"], [$aLogin],[true]);
+    } else {
+        //echo "Charity Exists <br/>";
+    }
+    
 }
+
+function gen_quest($aCharityID, $aQuestName, $aPayment, $aQuantity, $aQuestDescription, $aDropOffLocation){
+
+    $lPost = [$aCharityID, $aQuestName, $aPayment, $aQuantity, $aQuestDescription, $aDropOffLocation];
+    $lCoords = get_lat_long( $aDropOffLocation, "AIzaSyAvb7YHTZJFhMJstXAOQ4KDPLzzUXemmcQ" );
+    array_push($lPost,  $lCoords["lat"]);
+    array_push($lPost, $lCoords["long"]);
+    
+    $lFields = ["CharityID", "QuestName", "Payment", "Quantity", "QuestDescription", "DropOffLocation","DropOffLat","DropOffLong"];
+    DBManager::getInstance()->insert_into("QuestType",$lFields,$lPost);
+    
+
+}
+
 
 function gen_user($aUser, $aPassword, $aName, $aEmail){
     $lPost = [$aUser, $aName, $aEmail];
@@ -174,8 +196,42 @@ function gen_user($aUser, $aPassword, $aName, $aEmail){
     array_push($lPost, crypt_password($aUser, $aPassword, DBManager::getInstance()->get_salt() ));
 
     $lFields = ["UserName", "LoginName" , "EmailAddress", "CreateDate", "PasswordHash"];
-    DBManager::getInstance()->insert_into("Accounts",$lFields,$lPost);
-    $lUserID = DBManager::getInstance()->get_id_by_username($aUser);
-    DBManager::getInstance()->insert_into("Volunteers",["UserID", "LastUpdateTime"], [$lUserID, date("Y-m-d")] );
-    DBManager::getInstance()->upload_image("./default.jpg", "Accounts", "ProfileImage", ["UserName"], [$aUser],[true]);
+    
+    
+
+    if(!DBManager::getInstance()->user_exists($aUser)){
+        //echo "User Does Not Exist <br/>";
+        DBManager::getInstance()->insert_into("Accounts",$lFields,$lPost);
+        $lUserID = DBManager::getInstance()->get_id_by_username($aUser);
+        
+        DBManager::getInstance()->insert_into("Volunteers",["UserID", "LastUpdateTime"], [$lUserID, date("Y-m-d")] );
+        DBManager::getInstance()->upload_image("./default.jpg", "Accounts", "ProfileImage", ["UserName"], [$aUser],[true]);
+
+        for($i = 0; $i < 5; $i++){
+            echo DBManager::getInstance()->insert_into_quotes("DonationRate", ["RowID", "UserID", "CharityID", "Percent"], [$i, $lUserID, DBManager::getInstance()->rand_charity(), 20], [true,true,false,true]);
+            echo  "<br/>";
+        }        
+        
+    } else {
+        //DBManager::getInstance()->donate()$
+//        echo "User Exists <br/>";
+        $lUserID = DBManager::getInstance()->get_id_by_username($aUser);
+//
+//        for($i = 0; $i < 5; $i++){
+//            echo DBManager::getInstance()->update_table_quote("DonationRate", ["CharityID", "Percent"], [DBManager::getInstance()->rand_charity(), 20], [false,true], ["RowID", "UserID"], [$i,$lUserID] );
+//            echo  "<br/>";
+//        }         
+        $lQuantity = rand(0,5000);
+        //$lQuantity = 0;
+        //echo "Quantity: " . $lQuantity . "<br/>";
+        //echo $lUserID . " : " . $lQuantity . " : " . DBManager::getInstance()->add_coins($lUserID, $lQuantity) . "<br/>";
+        //DBManager::getInstance()->donate($lUserID);
+        echo DBManager::getInstance()->add_steps($lUserID, $lQuantity);
+        //////echo "UserID: " . $lUserID;
+        //echo "Coins: " . DBManager::getInstance()->get_coins($aUserID) . "<br/>";
+        //echo DBManager::getInstance()->day_comp($lUserID) . " : " . DBManager::getInstance()->month_comp($lUserID) . "<br/>";
+    }
+
+    
 }
+
