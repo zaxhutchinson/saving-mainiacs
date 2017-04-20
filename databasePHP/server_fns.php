@@ -150,6 +150,10 @@ function gen_data(){
 //    DBManager::getInstance()->upload_image("./default.jpg", "Accounts", "ProfileImage", ["UserName"], ["Active78Participant"],[true]);
 //    DBManager::getInstance()->upload_image("./default.jpg", "Accounts", "ProfileImage", ["UserName"], ["iLoveDonating"],[true]);
 //    
+    
+    gen_quest(1, "Cook Food", 10, 10, "Cook food for people", "9 Summer St, Augusta, ME 04330");
+    gen_quest(1, "Bring Food", 10, 10, "Bring food to Ms. McGregor", "Orono, ME");
+    
 }
 
 function gen_charity($aName, $aAddress, $aPhone, $aDesc, $aLogin, $aPassword){
@@ -184,7 +188,7 @@ function gen_quest($aCharityID, $aQuestName, $aPayment, $aQuantity, $aQuestDescr
     array_push($lPost, $lCoords["long"]);
     
     $lFields = ["CharityID", "QuestName", "Payment", "Quantity", "QuestDescription", "DropOffLocation","DropOffLat","DropOffLong"];
-    DBManager::getInstance()->insert_into("QuestType",$lFields,$lPost);
+    echo DBManager::getInstance()->insert_into("QuestType",$lFields,$lPost);
     
 
 }
@@ -226,7 +230,7 @@ function gen_user($aUser, $aPassword, $aName, $aEmail){
         //echo "Quantity: " . $lQuantity . "<br/>";
         //echo $lUserID . " : " . $lQuantity . " : " . DBManager::getInstance()->add_coins($lUserID, $lQuantity) . "<br/>";
         //DBManager::getInstance()->donate($lUserID);
-        echo DBManager::getInstance()->add_steps($lUserID, $lQuantity);
+        //echo DBManager::getInstance()->add_steps($lUserID, $lQuantity);
         //////echo "UserID: " . $lUserID;
         //echo "Coins: " . DBManager::getInstance()->get_coins($aUserID) . "<br/>";
         //echo DBManager::getInstance()->day_comp($lUserID) . " : " . DBManager::getInstance()->month_comp($lUserID) . "<br/>";

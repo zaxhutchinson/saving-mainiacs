@@ -117,8 +117,12 @@ class DBManager extends mysqli{
         return $lRet;    
     }    
     
-    public function select_table($aTableName, $aFields, $aWhereFields, $aWhereValues){
-        $lRet = "SELECT " . $this->array_to_string_noquote($aFields) . " FROM " . $this->array_to_string_noquote($aTableName) . " WHERE " . $this->zip_and_array_noquote($aWhereFields,$aWhereValues) . ";";
+    public function select_table($aTableName, $aFields, $aWhereFields = "", $aWhereValues = ""){
+        if($aWhereFields == ""){
+            $lRet = "SELECT " . $this->array_to_string_noquote($aFields) . " FROM " . $this->array_to_string_noquote($aTableName) . ";";
+        } else {
+            $lRet = "SELECT " . $this->array_to_string_noquote($aFields) . " FROM " . $this->array_to_string_noquote($aTableName) . " WHERE " . $this->zip_and_array_noquote($aWhereFields,$aWhereValues) . ";";
+        }
         //echo $lRet . "<br/>";
         return $this->query($lRet);
     }
@@ -540,7 +544,7 @@ class DBManager extends mysqli{
         
         $lName = $this->real_escape_string($aName);
         $lPassword = crypt_password($aName, $aPassword,$this->salt);
-        echo $lPassword . "<br/>";
+        //echo $lPassword . "<br/>";
         $lResult = $this->query("SELECT 1 FROM " . $this->credentials_table . " WHERE UserName = '" . $lName . "' AND PasswordHash = '" . $lPassword . "'");
         //mysqli_free_result($lResult);
         $lRet = $lResult->data_seek(0);
