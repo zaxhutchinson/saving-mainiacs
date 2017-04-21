@@ -3,6 +3,9 @@ package com.mainiacs.saving.savingmainiacsapp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Marker;
+
 import java.util.List;
 import java.util.LinkedList;
 
@@ -10,7 +13,8 @@ import java.util.LinkedList;
  * Created by zax on 4/12/17.
  */
 
-public class DataManager implements Parcelable {
+public class DataManager
+        implements Parcelable {
     public List<Charity> charities;
     public String testData;
 
@@ -55,4 +59,5 @@ public class DataManager implements Parcelable {
         dest.writeString(testData);
         dest.writeTypedList(charities);
     }
+
 }

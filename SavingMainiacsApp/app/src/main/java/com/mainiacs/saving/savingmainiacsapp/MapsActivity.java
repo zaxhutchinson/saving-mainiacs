@@ -11,6 +11,7 @@ import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -30,12 +31,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback,
             GoogleApiClient.ConnectionCallbacks,
-            GoogleApiClient.OnConnectionFailedListener {
+            GoogleApiClient.OnConnectionFailedListener,
+            GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private CameraPosition cameraPosition;
@@ -67,16 +70,10 @@ public class MapsActivity extends FragmentActivity
         googleApiClient.connect();
 
 
+
+
         dm = getIntent().getParcelableExtra("DataManager");
         System.out.println(dm.testData);
-
-        locs.add(new LatLng(44.801, -68.777));
-        locs.add(new LatLng(44.798, -68.775));
-        locs.add(new LatLng(44.840, -68.777));
-        locs.add(new LatLng(44.801, -68.747));
-        locs.add(new LatLng(44.841, -68.777));
-        locs.add(new LatLng(44.8914, -68.766));
-        locs.add(new LatLng(44.831, -68.723));
 
 
     }
@@ -94,6 +91,8 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        mMap.setOnMarkerClickListener(this);
 
         // Add a marker in Sydney and move the camera
 //        bangor = new LatLng(44.8012, -68.7778);
@@ -208,5 +207,23 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        String marker_title = marker.getTitle();
+        Charity charity = null;
+
+        for(Charity c : dm.charities) {
+            if(c.Name().equals(marker_title)) {
+                charity = c;
+            }
+        }
+
+        if(charity != null) {
+
+        }
+
+        return false;
     }
 }
