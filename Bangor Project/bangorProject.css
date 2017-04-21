@@ -180,13 +180,19 @@ footer a
 	background-color: #126180;
 	color: white;
 	width: 80%;
-	height: 50px;
+	height: 38px;
 	margin-top: 10px;
 	left: 10%;
 	display: block;
 	position: relative;
 	font-size: 2em;
 	top:1%;
+}
+#sideLoginHeader h1
+{
+	border-style: solid;
+	border-width: 2px;
+	border-color: #126180;
 }
 #appDownload
 {

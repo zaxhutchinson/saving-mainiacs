@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group name="NetworkingProject">
+            <file>file:/home/brian/glados-git/MammoViewer/PFData.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/style.css</file>
+            <file>file:/home/brian/glados-git/MammoViewer/MammoTableMaker.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/PartitionFunction.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/MammoDB.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/ChartData.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/CreateUser.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/index.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/Menu.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/ViewImageResults.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/editWish.php</file>
+            <file>file:/home/brian/glados-git/MammoViewer/WishDB.php</file>
+        </group>
+        <group name="bbsim">
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/server_fns.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/UserProfile.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/CreateUser.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/Menu.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/tablefunctions.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/DBManager.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/index.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/PFData.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/CharityProfile.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/Admin.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/MaxGaussian.php</file>
+        </group>
+    </open-files>
+</project-private>

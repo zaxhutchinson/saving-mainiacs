@@ -1,2 +1,2 @@
 # saving-mainiacs
-A six-foot four caucasian who enjoys cheeseburgers, sunsets and Vladimir Mayakovsky.
+It can save you. But only if you live in Maine.
