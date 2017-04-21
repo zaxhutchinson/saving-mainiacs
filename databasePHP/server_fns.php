@@ -225,7 +225,7 @@ function gen_quest($aCharityID, $aQuestName, $aPayment, $aQuantity, $aQuestDescr
     array_push($lPost, $lCoords["long"]);
     
     $lFields = ["CharityID", "QuestName", "Payment", "Quantity", "QuestDescription", "DropOffLocation","DropOffLat","DropOffLong"];
-    DBManager::getInstance()->insert_into("QuestType",$lFields,$lPost);
+    echo DBManager::getInstance()->insert_into("QuestType",$lFields,$lPost);
     
 
 }

@@ -35,7 +35,6 @@ function build_json_response($aQuery, $aFields){
  
         // echoing JSON response
         echo json_encode($lResponse);
-        
     }
     
 }
