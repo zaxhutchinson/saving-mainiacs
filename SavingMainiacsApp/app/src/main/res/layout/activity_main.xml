@@ -4,13 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#939598"
     tools:context="com.mainiacs.saving.savingmainiacsapp.MainActivity">
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="359dp"
-        android:layout_height="84dp"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
         android:text="Map"
+        android:textSize="30dp"
+        android:textColor="#FFFFFF"
+        android:background="#064F94"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="16dp" />
 </android.support.constraint.ConstraintLayout>

@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void AppInit() {
         dm = new DataManager();
-        dm.testData = "No Shite.";
     }
 
     public void StartMapActivity(View view) {

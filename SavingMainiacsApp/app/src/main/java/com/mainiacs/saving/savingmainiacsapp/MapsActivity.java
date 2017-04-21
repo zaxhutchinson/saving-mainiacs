@@ -73,7 +73,6 @@ public class MapsActivity extends FragmentActivity
 
 
         dm = getIntent().getParcelableExtra("DataManager");
-        System.out.println(dm.testData);
 
 
     }
