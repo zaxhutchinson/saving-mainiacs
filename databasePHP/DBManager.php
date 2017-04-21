@@ -48,6 +48,14 @@ class DBManager extends mysqli{
         parent::set_charset('utf-8'); 
     }
     
+    public function start_transaction(){
+        $this->query("START TRANSACTION;");
+    }
+    
+    public function commit_transaction(){
+        $this->query("COMMIT;");
+    }
+    
     /**
      * Quick search of a particular value in the database
      * @param type $aSelectField Field we are returning
@@ -116,9 +124,28 @@ class DBManager extends mysqli{
         $this->query($lRet);
         return $lRet;    
     }    
+
+    /**
+     * Deletes record(s) from a table
+     * @param type $aTableName Table to remove the record from
+     * @param type $aWhereFields 
+     * @param type $aWhereValues
+     * @param type $aWhereQuotes
+     * @return string
+     */
+    public function delete_table_quote($aTableName, $aWhereFields, $aWhereValues, $aWhereQuotes){
+        $lRet = "DELETE FROM " . $aTableName . " WHERE " . $this->zip_and_array_quote($aWhereFields,$aWhereValues, $aWhereQuotes) . ";";
+        $this->query($lRet);
+        //echo $lRet;
+        return $lRet;    
+    }    
     
-    public function select_table($aTableName, $aFields, $aWhereFields, $aWhereValues){
-        $lRet = "SELECT " . $this->array_to_string_noquote($aFields) . " FROM " . $this->array_to_string_noquote($aTableName) . " WHERE " . $this->zip_and_array_noquote($aWhereFields,$aWhereValues) . ";";
+    public function select_table($aTableName, $aFields, $aWhereFields = "", $aWhereValues = ""){
+        if($aWhereFields == ""){
+            $lRet = "SELECT " . $this->array_to_string_noquote($aFields) . " FROM " . $this->array_to_string_noquote($aTableName) . ";";
+        } else {
+            $lRet = "SELECT " . $this->array_to_string_noquote($aFields) . " FROM " . $this->array_to_string_noquote($aTableName) . " WHERE " . $this->zip_and_array_noquote($aWhereFields,$aWhereValues) . ";";
+        }
         //echo $lRet . "<br/>";
         return $this->query($lRet);
     }
@@ -402,7 +429,7 @@ class DBManager extends mysqli{
     }
     
     public function rand_charity(){
-        echo $this->count_charities();
+        //echo $this->count_charities();
         return rand(1,$this->count_charities());
     }
     
@@ -424,15 +451,175 @@ class DBManager extends mysqli{
     public function get_id_by_charity($aCharityName){
         return $this->get_db_val("CharityID","Charity", "CharityLogin", $aCharityName);
     }
-    
-//    public function add_quest($aCharityName, $aQuest){
-//        
-//        QuestType
-//        
-//    }
-    
 
+    public function get_id_by_quest($aQuestID){
+        return $this->get_db_val("CharityID","QuestType", "QuestID", $aQuestID);
+    }
+    
+    public function get_charity_coins($aCharityID){
+        return $this->get_db_val("QuestBank","Charity", "CharityID", $aCharityID);
+    }
+    
+    public function get_quest_coins($aQuestID){
+        return $this->get_db_val("Payment","QuestType", "QuestID", $aQuestID);
+    }
 
+    public function get_quest_quantity($aQuestID){
+        return $this->get_db_val("Quantity","QuestType", "QuestID", $aQuestID);
+    }
+    
+    /**
+     * This function adds (or subtracts) coins to the user's account.  If the
+     * quantity is negative the number of coins are not removed from the total
+     * coins. 
+     * @param type $aCharityID  The user to give coins to
+     * @param type $aQuantity The number of coins to give to the user.
+     * @return type Total coins remaining in the user's account.
+     */
+    public function add_charity_coins($aCharityID, $aQuantity){
+        $lCoins = $this->get_charity_coins($aCharityID);
+        $lQuantity = $aQuantity;
+
+        if( ($aQuantity < 0) && ($lCoins < abs($aQuantity)) ){
+            return false;
+        }
+        
+        $lTotal = $lCoins+$lQuantity;        //Total coins in the charity account now.
+
+        $this->update_table("Charity", ["CharityID", "QuestBank"], [$aCharityID, $lTotal], ["UserID"], [$aCharityID] );
+        
+        return $lTotal;
+    }
+    
+    /**
+     * Attempts to increment a quest.  
+     * @param type $aCharityID The charity associated with the quest.
+     * @param type $aQuestID The quest to increment.
+     * @return boolean True if successful, false otherwise.
+     */
+    public function increment_quest($aQuestID, $aDecCharity){
+        
+        $lQuestCost = $this->get_quest_coins($aQuestID);
+        $lCharityID = $this->get_id_by_quest($aQuestID);
+        $lCharityCoins = $this->get_charity_coins($lCharityID);
+        
+        if($lCharityCoins >= $lQuestCost){
+            $this->start_transaction();
+            if($aDecCharity){
+                $this->add_charity_coins($lCharityID,-$lQuestCost);
+            }
+            $this->update_table_quote("QuestType", ["Quantity"], ["Quantity+1"], [false], ["QuestID"], [$aQuestID] );
+            $this->commit_transaction();
+            return true;
+        }
+        
+        return false;
+    }
+    
+/**
+     * Attempts to increment a quest.  
+     * @param type $aCharityID The charity associated with the quest.
+     * @param type $aQuestID The quest to increment.
+     * @return boolean True if successful, false otherwise.
+     */
+    public function decrement_quest($aQuestID, $aIncCharity){
+        
+        $lQuestQuantity = $this->get_quest_quantity($aQuestID);
+        $lQuestCost = $this->get_quest_coins($aQuestID);
+        $lCharityID = $this->get_id_by_quest($aQuestID);
+
+        //echo "Quest Quantity: " . $lQuestQuantity . "<br/>";
+        //echo "Quest Cost: " . $lQuestCost . "<br/>";
+        
+        if($lQuestQuantity > 0){
+            //$this->start_transaction();
+            if($aIncCharity){
+                $this->add_charity_coins($lCharityID,$lQuestCost);
+            }
+            $this->update_table_quote("QuestType", ["Quantity"], ["Quantity-1"], [false], ["QuestID"], [$aQuestID] );
+            //$this->commit_transaction();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function user_accept_quest($aUserID, $aQuestID){
+        //Quest is placed in the user's questlog
+        //Quest is decremented
+
+        $lQuestFields = ["CharityID", "Payment"];
+        $lResult = $this->select_table(["QuestType"], $lQuestFields, ["QuestID"], [$aQuestID] );        
+        
+        if ($lResult->num_rows > 0){
+            $lRow = mysqli_fetch_array($lResult);
+
+            if($this->decrement_quest($aQuestID, false)){
+                
+                $lPost = [$aQuestID, $aUserID, $lRow[0], $lRow[1], date("Y-m-d\TH:i:sP")];        
+                $lFields = ["QuestID", "UserID", "CharityID", "RewardAmount", "AcceptDate"];
+                $this->insert_into("ActiveQuests",$lFields,$lPost);
+                return true;
+            }
+            
+        }
+        
+        return false;
+            
+    }
+    
+    public function user_leave_quest($aActiveQuestID){
+        //Increments the quest number without taking from the charity bank
+        //Deletes the quest from the
+        
+        $lQuestFields = ["QuestID"];
+        $lResult = $this->select_table(["ActiveQuests"], $lQuestFields, ["ActiveID"], [$aActiveQuestID] );          
+        
+        if ($lResult->num_rows > 0){
+            $lRow = mysqli_fetch_array($lResult);
+            $this->increment_quest($lRow[0], false);
+            $this->delete_table_quote("ActiveQuests",["ActiveID"], [$aActiveQuestID],[false]);
+            return true;
+        }
+        
+        return false;
+        
+    }
+    
+    
+    public function quest_completed($aActiveQuestID){
+        //User marks the quest as completed
+        $this->update_table_quote("ActiveQuests", ["Completed", "CompletedDate"], [1,date("Y-m-d\TH:i:sP")], [true,true], ["ActiveID"], [$aActiveQuestID], [true]);
+        
+    }
+    
+    public function quest_completion_rejected($aActiveQuestID,$aRejectedComment){
+        //Charity rejects the completion of the quest
+        //Charity leaves a memo on why it was rejected.
+        $this->update_table_quote("ActiveQuests", ["Completed", "Rejected", "RejectedComment","CompletedDate","RejectedDate"], [0,1,$aRejectedComment,"NULL",date("Y-m-d\TH:i:sP")], [true,true,true,false,true], ["ActiveID"], [$aActiveQuestID], [true]);
+    }    
+    
+    public function quest_reward($aActiveQuestID){
+        //Charity rewards the user for the competion of the quest
+        
+        $lSet = $this->get_db_val("Rewarded","ActiveQuests", "ActiveID", $aActiveQuestID);
+        $lID = $this->get_db_val("ActiveID","ActiveQuests", "ActiveID", $aActiveQuestID);
+        
+        //Not the best security, but still prevents a reward from being applied multiple times.
+        if(!$lSet && $lID){
+            $lReward = $this->get_db_val("RewardAmount","ActiveQuests", "ActiveID", $aActiveQuestID);
+            $lUserID = $this->get_db_val("UserID","ActiveQuests", "ActiveID", $aActiveQuestID);
+            $this->update_table_quote("ActiveQuests", ["Rewarded", "RewardedDate"], [1,date("Y-m-d\TH:i:sP")], [true,true], ["ActiveID"], [$aActiveQuestID], [true]);
+            $this->add_coins($lUserID, $lReward);
+            return true;
+        }
+        return false;
+    }
+    
+    public function modify_quest(){
+        //Charity modifies the quest.  This can only be done if there
+        //are no active quests out.
+    }
     
     //=================================================
     // -User specific functions
@@ -540,7 +727,7 @@ class DBManager extends mysqli{
         
         $lName = $this->real_escape_string($aName);
         $lPassword = crypt_password($aName, $aPassword,$this->salt);
-        echo $lPassword . "<br/>";
+        //echo $lPassword . "<br/>";
         $lResult = $this->query("SELECT 1 FROM " . $this->credentials_table . " WHERE UserName = '" . $lName . "' AND PasswordHash = '" . $lPassword . "'");
         //mysqli_free_result($lResult);
         $lRet = $lResult->data_seek(0);
@@ -558,8 +745,7 @@ class DBManager extends mysqli{
     public function user_exists($aName){
         return $this->value_exists("Accounts", "UserName", $aName);
     }
-    
-       
+           
 
     public function get_id_by_username($aUserName){
         return $this->get_db_val("UserID","Accounts", "UserName", $aUserName);
