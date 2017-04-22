@@ -10,6 +10,7 @@ require_once "remote_misc.php";
  * and open the template in the editor.
  */
 
+// array for JSON response
 $response = array();
 $lInput = ['user', 'password'];
 
@@ -25,28 +26,24 @@ if ( isset_input_list($lInput) ) {
  
     $lUserID = $db->get_id_by_username($lUserName);
     $lVerify = $db->verify_user_credentials($lUserName, $lPassword);
+    $lFields = ["ActiveID","QuestID","UserID","CharityID","RewardAmount","Completed","Rejected","Rewarded","RejectedComment","AcceptDate","CompletedDate","RejectedDate","RewardedDate"];
+
+    $lResult = $db->select_table(["ActiveQuests"], $lFields, ["UserID","Rejected"], [$lUserID,"1"]);  
     
     if($lVerify){
-        $response["success"] = 1;
-        $response["message"] = "Session Established";
-        echo json_encode($response);
-        //session_id($lUserName);
-        //session_start();
-        set_session_val("userid",$lUserName);
+        build_json_response($lResult,$lFields);
     } else {
         $response["success"] = 0;
         $response["message"] = "Unauthorized Request";
         echo json_encode($response);
     }
+    
 } else {
     // required field is missing
     $response["success"] = 0;
-    $response["message"] = "Bad Request";
+    $response["message"] = "Required field(s) is missing";
  
     // echoing JSON response
     echo json_encode($response);
     //echo $_POST['user'];
 }
-
-//echo session_id();
-//echo get_session_val("userid");

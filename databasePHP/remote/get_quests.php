@@ -14,14 +14,12 @@ require_once "remote_misc.php";
 $response = array();
 
 // check for required fields
-if ( isset($_GET['charityid'] )  ) {
-    $lCharityID = $_GET['charityid'];
+if ( isset_input("charityid") ) {
+    $lCharityID = get_input("charityid");
     // connecting to db
     $db = new DBManager();
  
     $lFields = ["QuestID", "CharityID", "QuestName", "Payment", "Quantity", "QuestDescription", "DropOffLocation", "DropOffLat", "DropOffLong"];
-
-
     $lResult = $db->select_table(["QuestType"], $lFields, ["CharityID"], [$lCharityID] );
 
     build_json_response($lResult,$lFields);

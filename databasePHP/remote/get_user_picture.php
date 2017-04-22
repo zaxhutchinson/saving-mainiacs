@@ -11,31 +11,29 @@ require_once "remote_misc.php";
  */
 
 $response = array();
-$lInput = ['user', 'password'];
+$lInput = ['userid'];
 
 // check for required fields
 if ( isset_input_list($lInput) ) {
  
-    $lUserName = get_input('user');
-    $lPassword = get_input('password');
-
+    $lUserID = get_input('userid');
     
     // connecting to db
     $db = new DBManager();
- 
-    $lUserID = $db->get_id_by_username($lUserName);
-    $lVerify = $db->verify_user_credentials($lUserName, $lPassword);
+    $lData = $db->get_db_blob("ProfileImage", "Accounts", "UserID", $lUserID);
     
-    if($lVerify){
+    if(!is_null($lData)){
+        $response["data"] = $lData;
+        $response["type"] = "data:image/jpeg;base64";
         $response["success"] = 1;
-        $response["message"] = "Session Established";
+        $response["message"] = "Image Data Retrieved";
         echo json_encode($response);
         //session_id($lUserName);
         //session_start();
         set_session_val("userid",$lUserName);
     } else {
         $response["success"] = 0;
-        $response["message"] = "Unauthorized Request";
+        $response["message"] = "Bad Request";
         echo json_encode($response);
     }
 } else {

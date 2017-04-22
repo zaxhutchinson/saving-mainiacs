@@ -23,8 +23,8 @@ if ( true ) {
     // connecting to db
     $db = new DBManager();
  
-    $lUserID = $db->get_id_by_username($lUserName);
-    $lVerify = true; $db->verify_user_credentials($lUserName, $lPassword);
+    //$lUserID = $db->get_id_by_username($lUserName);
+    $lVerify = true; //$db->verify_user_credentials($lUserName, $lPassword);
     $lFields = ["CharityName", "CharityLogin", "Latitude", "Longitude", "Address", "PhoneNumber", "Description", "QuestBank"];
 
     //$lResult = $db->select_table(["Accounts", "Volunteers"], $lFields, ["Accounts.UserID", "Accounts.UserID"], ["Volunteers.UserID", $lUserID]);  
@@ -47,6 +47,3 @@ if ( true ) {
     echo json_encode($response);
     //echo $_POST['user'];
 }
-
-echo "SessionID";
-echo get_session_val("userid");

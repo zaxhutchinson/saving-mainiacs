@@ -10,43 +10,42 @@ require_once "remote_misc.php";
  * and open the template in the editor.
  */
 
+// array for JSON response
 $response = array();
-$lInput = ['user', 'password'];
-
+$lInput = ['charity', 'password','questname','desc','address'];
 // check for required fields
 if ( isset_input_list($lInput) ) {
  
-    $lUserName = get_input('user');
+    $lCharityName = get_input('charity');
     $lPassword = get_input('password');
-
+    $lQuestName = get_input('questname');
+    $lQuantity = 0;
+    $lQuestDescription = get_input('desc');
+    $lDropOffLocation = get_input('address');
     
     // connecting to db
     $db = new DBManager();
  
-    $lUserID = $db->get_id_by_username($lUserName);
-    $lVerify = $db->verify_user_credentials($lUserName, $lPassword);
+    $lCharityID = $db->get_id_by_charity($lCharityName);
+    $lVerify = $db->verify_charity_credentials($lCharityName, $lPassword);
     
     if($lVerify){
+        gen_quest($lCharityID, $lQuestName, $lPayment, $lQuantity, $lQuestDescription, $lDropOffLocation);
         $response["success"] = 1;
-        $response["message"] = "Session Established";
+        $response["message"] = "Insert Successful";
         echo json_encode($response);
-        //session_id($lUserName);
-        //session_start();
-        set_session_val("userid",$lUserName);
+        
     } else {
         $response["success"] = 0;
         $response["message"] = "Unauthorized Request";
         echo json_encode($response);
     }
+    
 } else {
     // required field is missing
     $response["success"] = 0;
-    $response["message"] = "Bad Request";
- 
-    // echoing JSON response
-    echo json_encode($response);
-    //echo $_POST['user'];
-}
+    $response["message"] = "Required field(s) is missing";
 
-//echo session_id();
-//echo get_session_val("userid");
+    echo json_encode($response);
+
+}

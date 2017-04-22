@@ -7,10 +7,47 @@
  */
 //require_once 'misc.php';
 
+    function isset_input_list($aList){
+        $lRet = true;
+        $lCount = count($aList);
+        
+        for($i = 0; $i < $lCount && $lRet; $i++){
+            $lRet &= isset_input($aList[$i]);
+        }
+        
+        return $lRet;
+    }
+
     function get_post($aField){
         return filter_input(INPUT_POST, $aField);
     }
 
+    function get_get($aField){
+        return filter_input(INPUT_GET, $aField);
+    }
+    
+    function isset_post($aField){
+        return (get_post($aField) != "");
+    }
+    
+    function isset_get($aField){
+        return (get_get($aField) != "");
+    }
+    
+    function isset_input($aField){
+        return (isset_get($aField) || isset_post($aField));
+    }
+    
+    function get_input($aField){
+        if(isset_get($aField)){
+            return get_get($aField);
+        } else if (isset_post($aField)){
+            return get_post($aField);
+        } else {
+            return false;
+        }
+    }
+    
     function post_array($aArray){
         $lRet = [];
         for($i = 0; $i < count($aArray); $i++){
@@ -192,6 +229,8 @@ function gen_quest($aCharityID, $aQuestName, $aPayment, $aQuantity, $aQuestDescr
     
 
 }
+
+
 
 
 function gen_user($aUser, $aPassword, $aName, $aEmail){

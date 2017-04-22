@@ -16,18 +16,43 @@
             <file>file:/home/brian/glados-git/MammoViewer/editWish.php</file>
             <file>file:/home/brian/glados-git/MammoViewer/WishDB.php</file>
         </group>
-        <group name="bbsim">
+        <group>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/reward_quest.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_user_donationrate.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/reject_quest.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_charity_picture.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/server_fns.php</file>
-            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/UserProfile.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_user_picture.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/CreateUser.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_quests.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/Menu.php</file>
-            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/tablefunctions.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_user_donations.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_charity_list.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_user_pending_quests.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_user_rejected_quests.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_user_active_quests.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/login.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/DBBrowse.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/insert_quest.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_user_rewarded_quests.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/ChartData.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/DBManager.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/index.php</file>
+        </group>
+        <group name="bbsim">
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_user_donationrate.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/server_fns.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/UserProfile.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_charity_rank.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/CreateUser.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/Menu.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/PFData.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/CharityProfile.php</file>
-            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/Admin.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/MaxGaussian.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_user_rank.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/DBManager.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/index.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/Admin.php</file>
         </group>
     </open-files>
 </project-private>

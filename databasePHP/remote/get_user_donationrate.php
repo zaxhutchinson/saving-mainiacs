@@ -12,12 +12,13 @@ require_once "remote_misc.php";
 
 // array for JSON response
 $response = array();
+$lInput = ['user', 'password'];
 
 // check for required fields
-if ( isset($_GET['user'] ) && isset($_GET['password'] ) ) {
+if ( isset_input_list($lInput) ) {
  
-    $lUserName = $_GET['user']; //get_post("name");
-    $lPassword = $_GET['password']; //isset(get_post("password"));
+    $lUserName = get_input('user');
+    $lPassword = get_input('password');
 
     
     // connecting to db
@@ -25,12 +26,13 @@ if ( isset($_GET['user'] ) && isset($_GET['password'] ) ) {
  
     $lUserID = $db->get_id_by_username($lUserName);
     $lVerify = $db->verify_user_credentials($lUserName, $lPassword);
-    $lFields = ["RowID", "UserID", "CharityID", "Percent"];
-
-    $lResult = $db->select_table(["DonationRate"], $lFields, ["UserID"], [$lUserID]);  
+    $lFields = ["RowID", "UserID", "DonationRate.CharityID", "Percent", "CharityName"];
+    $lFieldNames = ["RowID", "UserID", "CharityID", "Percent", "CharityName"];;
+    
+    $lResult = $db->select_table(["DonationRate","Charity"], $lFields, ["UserID","DonationRate.CharityID"], [$lUserID, "Charity.CharityID"]);  
     
     if($lVerify){
-        build_json_response($lResult,$lFields);
+        build_json_response($lResult,$lFieldNames);
     } else {
         $response["success"] = 0;
         $response["message"] = "Unauthorized Request";

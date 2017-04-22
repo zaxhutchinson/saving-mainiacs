@@ -12,34 +12,28 @@ require_once "remote_misc.php";
 
 // array for JSON response
 $response = array();
-$lInput = ['user', 'password','coins','lat','long','steps'];
+
 // check for required fields
-if ( isset_input_list($lInput) ) {
+if ( true ) {
  
-    $lUserName = get_input('user');
-    $lPassword = get_input('password');
-    $lAddCoins = get_input('coins');
-    $lLat = get_input('lat');
-    $lLong = get_input('long');
-    $lSteps = get_input('steps');
+    //$lUserName = $_GET['user']; //get_post("name");
+    //$lPassword = $_GET['password']; //isset(get_post("password"));
+
     
     // connecting to db
     $db = new DBManager();
  
-    $lUserID = $db->get_id_by_username($lUserName);
-    $lVerify = $db->verify_user_credentials($lUserName, $lPassword);
-    //$lFields = ["UserName", "LoginName", "EmailAddress", "DaySteps", "MonthSteps", "TotalSteps", "LastLatitude", "LastLongitude", "Coins", "TotalCoins"];
+    //$lUserID = $db->get_id_by_username($lUserName);
+    $lVerify = true; //$db->verify_user_credentials($lUserName, $lPassword);
+    //$lFields = ["CharityName", "CharityLogin", "Latitude", "Longitude", "Address", "PhoneNumber", "Description", "QuestBank"];
 
     //$lResult = $db->select_table(["Accounts", "Volunteers"], $lFields, ["Accounts.UserID", "Accounts.UserID"], ["Volunteers.UserID", $lUserID]);  
+    //$lResult = $db->select_table(["Charity"], ["CharityName", "CharityLogin", "Latitude", "Longitude", "Address", "PhoneNumber", "Description", "QuestBank"]);
+    $lResult = $db->query("SELECT CharityName,PointDonations.CharityID,sum(Quantity) AS SUMQuantity FROM Charity,PointDonations WHERE PointDonations.CharityID=Charity.CharityID  GROUP BY PointDonations.CharityID ORDER BY SUMQuantity DESC;");
+    $lFields = ["CharityName", "CharityID", "SUMQuantity"];
     
     if($lVerify){
-        $db->add_coins($lUserID, $lAddCoins);
-        $db->add_steps($lUserID, $lSteps);
-        $db->update_table("Volunteers", ["LastLatitude", "LastLongitude" ], [$lLat, $lLong], ["UserID"], [$lUserID]);
-        $response["success"] = 1;
-        $response["message"] = "Update Successful";
-        echo json_encode($response);
-        
+        build_json_response($lResult,$lFields);
     } else {
         $response["success"] = 0;
         $response["message"] = "Unauthorized Request";
