@@ -15,7 +15,8 @@ public class Charity implements Parcelable{
 
     private int id;
     private String name;
-    private String address;
+    private String address1;
+    private String address2;
     private double latitude;
     private double longitude;
     private List<Quest> quests;
@@ -23,7 +24,13 @@ public class Charity implements Parcelable{
     public Charity(int id, String name, String address, double latitude, double longitude) {
         this.id = id;
         this.name = name;
-        this.address = address;
+
+        String[] spltAddr = address.split(",");
+        this.address1 = spltAddr[0];
+
+        if(spltAddr.length > 0)
+            this.address2 = spltAddr[1];
+
         this.longitude = longitude;
         this.latitude = latitude;
 
@@ -33,7 +40,8 @@ public class Charity implements Parcelable{
     private Charity(Parcel in) {
         id = in.readInt();
         name = in.readString();
-        address = in.readString();
+        address1 = in.readString();
+        address2 = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
         quests = in.createTypedArrayList(Quest.CREATOR);
@@ -57,9 +65,10 @@ public class Charity implements Parcelable{
     public String Name() {
         return name;
     }
-    public String Address() {
-        return address;
+    public String Address1() {
+        return address1;
     }
+    public String Address2() { return address2; }
     public double Latitude() {
         return latitude;
     }
@@ -69,8 +78,8 @@ public class Charity implements Parcelable{
     public void Name(String name) {
         this.name = name;
     }
-    public void Address(String address) {
-        this.address = address;
+    public void Address1(String address) {
+        this.address1 = address;
     }
     public void Latitude(double latitude) {
         this.latitude = latitude;
@@ -88,7 +97,8 @@ public class Charity implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(name);
-        dest.writeString(address);
+        dest.writeString(address1);
+        dest.writeString(address2);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeTypedList(quests);
