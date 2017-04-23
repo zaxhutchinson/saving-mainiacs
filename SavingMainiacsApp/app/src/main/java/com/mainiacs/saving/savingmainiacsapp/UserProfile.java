@@ -27,6 +27,17 @@ public class UserProfile implements Parcelable {
     private int coins;
     private int total_coins;
 
+    public String UserName() { return user_name; }
+    public String LoginName() { return login_name; }
+    public String Email() { return email_address; }
+    public int DaySteps() { return day_steps; }
+    public int MonthSteps() { return month_steps; }
+    public int TotalSteps() { return total_steps; }
+    public double Latitude() { return last_lat; }
+    public double Longitude() { return last_long; }
+    public int Coins() { return coins; }
+    public int TotalCoins() { return total_coins; }
+
     public UserProfile() {
 
     }
