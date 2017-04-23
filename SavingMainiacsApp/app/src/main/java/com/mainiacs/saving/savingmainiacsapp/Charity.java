@@ -4,6 +4,9 @@ package com.mainiacs.saving.savingmainiacsapp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.LinkedList;
 
@@ -19,6 +22,7 @@ public class Charity implements Parcelable{
     private String address2;
     private double latitude;
     private double longitude;
+    private String phone;
     private List<Quest> quests;
 
     public Charity(int id, String name, String address, double latitude, double longitude) {
@@ -30,11 +34,33 @@ public class Charity implements Parcelable{
 
         if(spltAddr.length > 0)
             this.address2 = spltAddr[1];
+        if(spltAddr.length > 1)
+            this.address2 += ", " + spltAddr[2];
 
         this.longitude = longitude;
         this.latitude = latitude;
 
         quests = new LinkedList<Quest>();
+    }
+
+    public Charity(JSONObject obj) {
+        try {
+            this.id = obj.getInt("CharityID");
+            this.name = obj.getString("CharityName");
+            String addr = obj.getString("Address");
+            String[] spltAddr = addr.split(",");
+            this.address1 = spltAddr[0];
+            if(spltAddr.length > 0) {
+                this.address2 = spltAddr[1];
+            }
+            this.longitude = obj.getDouble("Longitude");
+            this.latitude = obj.getDouble("Latitude");
+            this.phone = obj.getString("PhoneNumber");
+            this.quests = new LinkedList<Quest>();
+        }
+        catch(JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private Charity(Parcel in) {
@@ -44,6 +70,7 @@ public class Charity implements Parcelable{
         address2 = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
+        phone = in.readString();
         quests = in.createTypedArrayList(Quest.CREATOR);
     }
 
@@ -75,6 +102,7 @@ public class Charity implements Parcelable{
     public double Longitude() {
         return longitude;
     }
+    public String Phone() { return phone; }
     public void Name(String name) {
         this.name = name;
     }
@@ -87,6 +115,11 @@ public class Charity implements Parcelable{
     public void Longitude(double longitude) {
         this.longitude = longitude;
     }
+    public void Phone(String phone) {this.phone = phone;}
+
+    public void AddQuest(Quest q) { quests.add(q); }
+    public void RemoveQuest(Quest q) { quests.remove(q); }
+    public List<Quest> GetAllQuests() { return quests; }
 
     @Override
     public int describeContents() {
@@ -101,6 +134,19 @@ public class Charity implements Parcelable{
         dest.writeString(address2);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
+        dest.writeString(phone);
         dest.writeTypedList(quests);
+    }
+
+    public int GetNumberOfCurrentQuests() {
+        return quests.size();
+    }
+
+    @Override
+    public String toString() {
+        String str = "Name: " + Name() + "\n";
+        str += "Address: " + Address1() + ", " + Address2() + "\n";
+        str += "LatLong: " + Double.toString(Latitude()) + ", " + Double.toString(Longitude()) + "\n";
+        return str;
     }
 }
