@@ -106,4 +106,6 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <string name="charity_fragment">CharityFragment</string>
+    <string name="quest_fragment">QuestFragment</string>
 </resources>

@@ -15,10 +15,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.widget.EditText;
+import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -77,6 +78,9 @@ public class MapsActivity extends FragmentActivity
     private Map<Marker, Charity> charityMap;
     private Map<Marker, Quest> questMap;
 
+    private ScrollView charityView;
+    private ScrollView questView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,8 +90,10 @@ public class MapsActivity extends FragmentActivity
         charityMap = new HashMap<Marker, Charity>();
         questMap = new HashMap<Marker, Quest>();
 
+
+
         googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this,this)
+                .enableAutoManage(this, this)
                 .addConnectionCallbacks(this)
                 .addApi(LocationServices.API)
                 .addApi(Places.GEO_DATA_API)
@@ -97,9 +103,15 @@ public class MapsActivity extends FragmentActivity
 
         dm = getIntent().getParcelableExtra("DataManager");
 
-        SupportMapFragment mf = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mf = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mf.getMapAsync(this);
 
+
+        charityView = (ScrollView)findViewById(R.id.charityView);
+        questView = (ScrollView)findViewById(R.id.questView);
+
+        charityView.setVisibility(View.GONE);
+        questView.setVisibility(View.GONE);
     }
 
 
@@ -125,10 +137,10 @@ public class MapsActivity extends FragmentActivity
     }
 
     public void displayCharityMarkers() {
-        for(Charity charity : dm.charities) {
+        for (Charity charity : dm.charities) {
             Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(charity.Latitude(), charity.Longitude()))
-                    .title("Charity\n"+charity.Name()));
+                    .title("Charity\n" + charity.Name()));
 
             charityMap.put(marker, charity);
 
@@ -136,32 +148,29 @@ public class MapsActivity extends FragmentActivity
     }
 
     private void requestDeviceLocation() {
-        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
-        }
-        else {
+        } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
 
-        if(locationPermissionGranted) {
+        if (locationPermissionGranted) {
             lastLocation = LocationServices.FusedLocationApi
                     .getLastLocation(googleApiClient);
         }
 
-        if(cameraPosition != null) {
+        if (cameraPosition != null) {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }
-        else if (lastLocation != null) {
+        } else if (lastLocation != null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(lastLocation.getLatitude(),
                             lastLocation.getLongitude()), DEFAULT_ZOOM));
-        }
-        else {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BANGOR,DEFAULT_ZOOM));
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BANGOR, DEFAULT_ZOOM));
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
 
@@ -231,12 +240,25 @@ public class MapsActivity extends FragmentActivity
 
     }
 
+    void ShowQuestView() {
+        charityView.setVisibility(View.GONE);
+        questView.setVisibility(View.VISIBLE);
+    }
+
+    void ShowCharityView() {
+        questView.setVisibility(View.GONE);
+        charityView.setVisibility(View.VISIBLE);
+    }
+
+
     @Override
     public boolean onMarkerClick(Marker marker) {
 
         String[] markerTitle = marker.getTitle().split("\n");
 
         if(markerTitle[0].equals("Charity")) {
+
+            ShowCharityView();
 
             Charity charity = charityMap.get(marker);
 
@@ -254,6 +276,12 @@ public class MapsActivity extends FragmentActivity
         }
         else if(markerTitle[0].equals("Quest")) {
 
+            ShowQuestView();
+
+            Quest quest = questMap.get(marker);
+
+            PopulateQuestInfo(quest);
+
         }
 
         return false;
@@ -269,6 +297,20 @@ public class MapsActivity extends FragmentActivity
         charityAddr1.setText(charity.Address1());
         charityAddr2.setText(charity.Address2());
         charityPhone.setText(charity.Phone());
+    }
+
+    void PopulateQuestInfo(Quest quest) {
+        TextView questName = (TextView)findViewById(R.id.questName);
+        TextView questDesc = (TextView)findViewById(R.id.questDesc);
+        TextView questLocation = (TextView)findViewById(R.id.questLocation);
+        TextView questQuantity = (TextView)findViewById(R.id.questQuantity);
+        TextView questPayment = (TextView)findViewById(R.id.questPayment);
+
+        questName.setText(quest.Name());
+        questDesc.setText(quest.Description());
+        questLocation.setText(quest.DropOffLocation());
+        questQuantity.setText(Integer.toString(quest.Quantity()));
+        questPayment.setText(Integer.toString(quest.Payment()));
     }
 
     void DisplayQuests(Charity charity) {
