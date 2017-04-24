@@ -14,6 +14,12 @@
         android:background="#064F94"
         android:layout_margin="10dip">
 
+        <ImageView
+            android:id="@+id/userpic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"/>
+
         <TextView
             android:id="@+id/userameText"
             android:layout_width="fill_parent"
@@ -88,6 +94,54 @@
 
         <TextView
             android:id="@+id/userTotalSteps"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sm_text_view"
+            android:textColor="#064F94"
+            android:textSize="30sp"/>
+
+        <TextView
+            android:id="@+id/userCoinsText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Coins"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"/>
+
+        <TextView
+            android:id="@+id/userCoins"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sm_text_view"
+            android:textColor="#064F94"
+            android:textSize="30sp"/>
+
+        <TextView
+            android:id="@+id/userTotalCoinsText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Total Coins"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"/>
+
+        <TextView
+            android:id="@+id/userTotalCoins"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sm_text_view"
+            android:textColor="#064F94"
+            android:textSize="30sp"/>
+
+        <TextView
+            android:id="@+id/userLatLongText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Location"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"/>
+
+        <TextView
+            android:id="@+id/userLatLong"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/sm_text_view"

@@ -4,6 +4,7 @@ package com.mainiacs.saving.savingmainiacsapp;
  * Created by zax on 4/21/17.
  */
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 
 public class UserProfile implements Parcelable {
 
+    private int id;
     private String user_name;
     private String login_name;
     private String email_address;
@@ -26,7 +28,9 @@ public class UserProfile implements Parcelable {
     private double last_long;
     private int coins;
     private int total_coins;
+    Bitmap Picture;
 
+    public int ID() { return id; }
     public String UserName() { return user_name; }
     public String LoginName() { return login_name; }
     public String Email() { return email_address; }
@@ -46,6 +50,7 @@ public class UserProfile implements Parcelable {
         try {
             JSONArray jarr = obj.optJSONArray("results");
             JSONObject data = jarr.getJSONObject(0);
+            id = data.getInt("UserID");
             user_name = data.getString("UserName");
             login_name = data.getString("LoginName");
             email_address = data.getString("EmailAddress");
@@ -63,6 +68,7 @@ public class UserProfile implements Parcelable {
     }
 
     protected UserProfile(Parcel in) {
+        id = in.readInt();
         user_name = in.readString();
         login_name = in.readString();
         email_address = in.readString();
@@ -94,6 +100,7 @@ public class UserProfile implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(user_name);
         dest.writeString(login_name);
         dest.writeString(email_address);
