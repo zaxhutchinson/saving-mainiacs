@@ -211,7 +211,9 @@ function gen_charity($aName, $aAddress, $aPhone, $aDesc, $aLogin, $aPassword){
         
         DBManager::getInstance()->insert_into("Charity",$lFields,$lPost);
         DBManager::getInstance()->upload_image("./default.jpg", "Charity", "ProfileImage", ["CharityLogin"], [$aLogin],[true]);
+        return true;
     } else {
+        return false;
         //echo "Charity Exists <br/>";
     }
     
@@ -225,7 +227,7 @@ function gen_quest($aCharityID, $aQuestName, $aPayment, $aQuantity, $aQuestDescr
     array_push($lPost, $lCoords["long"]);
     
     $lFields = ["CharityID", "QuestName", "Payment", "Quantity", "QuestDescription", "DropOffLocation","DropOffLat","DropOffLong"];
-    echo DBManager::getInstance()->insert_into("QuestType",$lFields,$lPost);
+    DBManager::getInstance()->insert_into("QuestType",$lFields,$lPost);
     
 
 }
@@ -251,20 +253,22 @@ function gen_user($aUser, $aPassword, $aName, $aEmail){
         DBManager::getInstance()->upload_image("./default.jpg", "Accounts", "ProfileImage", ["UserName"], [$aUser],[true]);
 
         for($i = 0; $i < 5; $i++){
-            echo DBManager::getInstance()->insert_into_quotes("DonationRate", ["RowID", "UserID", "CharityID", "Percent"], [$i, $lUserID, DBManager::getInstance()->rand_charity(), 20], [true,true,false,true]);
-            echo  "<br/>";
+            DBManager::getInstance()->insert_into_quotes("DonationRate", ["RowID", "UserID", "CharityID", "Percent"], [$i, $lUserID, DBManager::getInstance()->rand_charity(), 20], [true,true,false,true]);
+            //echo  "<br/>";
         }        
-        
+        return true;
     } else {
+        //DBManager::getInstance()->upload_image("./default.jpg", "Accounts", "ProfileImage", ["UserName"], [$aUser],[true]);
+        return false;
         //DBManager::getInstance()->donate()$
 //        echo "User Exists <br/>";
-        $lUserID = DBManager::getInstance()->get_id_by_username($aUser);
+        //$lUserID = DBManager::getInstance()->get_id_by_username($aUser);
 //
 //        for($i = 0; $i < 5; $i++){
 //            echo DBManager::getInstance()->update_table_quote("DonationRate", ["CharityID", "Percent"], [DBManager::getInstance()->rand_charity(), 20], [false,true], ["RowID", "UserID"], [$i,$lUserID] );
 //            echo  "<br/>";
 //        }         
-        $lQuantity = rand(0,5000);
+        //$lQuantity = rand(0,5000);
         //$lQuantity = 0;
         //echo "Quantity: " . $lQuantity . "<br/>";
         //echo $lUserID . " : " . $lQuantity . " : " . DBManager::getInstance()->add_coins($lUserID, $lQuantity) . "<br/>";

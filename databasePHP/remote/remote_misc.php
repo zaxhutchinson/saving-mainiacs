@@ -38,3 +38,36 @@ function build_json_response($aQuery, $aFields){
     }
     
 }
+
+function build_json_response_string($aQuery, $aFields){
+    
+    if ($aQuery->num_rows > 0){
+
+        $lNumbCols = count($aFields);
+        $lResponse["results"] = array();
+        $lResponse["success"] = 1;
+        
+        while ($lRow = mysqli_fetch_array($aQuery)) {
+
+            $lData = array();
+            for($i = 0; $i < $lNumbCols; $i++){
+                $lData[$aFields[$i]] = $lRow[$i];
+
+            }
+            
+            array_push($lResponse["results"], $lData);
+            
+        }
+
+        // echoing JSON response
+        return json_encode($lResponse);
+    } else {
+        // failed to insert row
+        $lResponse["success"] = 0;
+        $lResponse["message"] = "Data not found.";
+ 
+        // echoing JSON response
+        return json_encode($lResponse);
+    }
+    
+}

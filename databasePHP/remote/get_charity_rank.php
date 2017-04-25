@@ -29,8 +29,11 @@ if ( true ) {
 
     //$lResult = $db->select_table(["Accounts", "Volunteers"], $lFields, ["Accounts.UserID", "Accounts.UserID"], ["Volunteers.UserID", $lUserID]);  
     //$lResult = $db->select_table(["Charity"], ["CharityName", "CharityLogin", "Latitude", "Longitude", "Address", "PhoneNumber", "Description", "QuestBank"]);
-    $lResult = $db->query("SELECT CharityName,PointDonations.CharityID,sum(Quantity) AS SUMQuantity FROM Charity,PointDonations WHERE PointDonations.CharityID=Charity.CharityID  GROUP BY PointDonations.CharityID ORDER BY SUMQuantity DESC;");
-    $lFields = ["CharityName", "CharityID", "SUMQuantity"];
+    $lResult = $db->query("SET @rank=0;");
+    $lResult = $db->query("SELECT @rank:=@rank+1 AS Rank, CharityName,CharityID,SUMQuantity FROM (SELECT CharityName,PointDonations.CharityID as CharityID,sum(Quantity) AS SUMQuantity FROM Charity,PointDonations WHERE PointDonations.CharityID=Charity.CharityID  GROUP BY PointDonations.CharityID ORDER BY SUMQuantity DESC) AS Temp;");
+    
+    //$lResult = $db->query("SELECT CharityName,PointDonations.CharityID,sum(Quantity) AS SUMQuantity FROM Charity,PointDonations WHERE PointDonations.CharityID=Charity.CharityID  GROUP BY PointDonations.CharityID ORDER BY SUMQuantity DESC;");
+    $lFields = ["Rank", "CharityName", "CharityID", "SUMQuantity"];
     
     if($lVerify){
         build_json_response($lResult,$lFields);

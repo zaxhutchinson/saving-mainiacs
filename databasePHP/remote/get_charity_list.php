@@ -25,10 +25,10 @@ if ( true ) {
  
     //$lUserID = $db->get_id_by_username($lUserName);
     $lVerify = true; //$db->verify_user_credentials($lUserName, $lPassword);
-    $lFields = ["CharityName", "CharityLogin", "Latitude", "Longitude", "Address", "PhoneNumber", "Description", "QuestBank"];
+    $lFields = ["CharityID","CharityName", "CharityLogin", "Latitude", "Longitude", "Address", "PhoneNumber", "Description", "QuestBank"];
 
     //$lResult = $db->select_table(["Accounts", "Volunteers"], $lFields, ["Accounts.UserID", "Accounts.UserID"], ["Volunteers.UserID", $lUserID]);  
-    $lResult = $db->select_table(["Charity"], ["CharityName", "CharityLogin", "Latitude", "Longitude", "Address", "PhoneNumber", "Description", "QuestBank"]);
+    $lResult = $db->select_table(["Charity"], $lFields);
     
     if($lVerify){
         build_json_response($lResult,$lFields);
