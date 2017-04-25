@@ -534,7 +534,8 @@ tr:nth-child(odd) {
 	color: white;
 	margin-top: 10px;
 }
-input[type=text], select {
+
+type=text], select {
     width: 80%;
     padding: 10px 15px;
     margin: 8px 0;
