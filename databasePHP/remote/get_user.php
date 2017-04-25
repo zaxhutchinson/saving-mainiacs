@@ -26,12 +26,13 @@ if ( isset_input_list($lInput) ) {
  
     $lUserID = $db->get_id_by_username($lUserName);
     $lVerify = $db->verify_user_credentials($lUserName, $lPassword);
-    $lFields = ["UserName", "LoginName", "EmailAddress", "DaySteps", "MonthSteps", "TotalSteps", "LastLatitude", "LastLongitude", "Coins", "TotalCoins"];
-
+    $lFields = ["Accounts.UserID","UserName", "LoginName", "EmailAddress", "DaySteps", "MonthSteps", "TotalSteps", "LastLatitude", "LastLongitude", "Coins", "TotalCoins"];
+    $lFieldsNames = ["UserID","UserName", "LoginName", "EmailAddress", "DaySteps", "MonthSteps", "TotalSteps", "LastLatitude", "LastLongitude", "Coins", "TotalCoins"];
+    
     $lResult = $db->select_table(["Accounts", "Volunteers"], $lFields, ["Accounts.UserID", "Accounts.UserID"], ["Volunteers.UserID", $lUserID]);  
     
     if($lVerify){
-        build_json_response($lResult,$lFields);
+        build_json_response($lResult,$lFieldsNames);
     } else {
         $response["success"] = 0;
         $response["message"] = "Unauthorized Request";

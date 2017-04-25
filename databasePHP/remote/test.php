@@ -16,6 +16,11 @@ $response = array();
 // check for required fields
 if ( true ) {
  
+    $lHeader = get_input("h");
+    echo $lHeader . "<br/>";
+    echo gzdecode($lHeader);
+    //echo (urlendecode($lHeader)) . "<br/>";
+    
     //$lUserName = $_GET['user']; //get_post("name");
     //$lPassword = $_GET['password']; //isset(get_post("password"));
 
@@ -36,11 +41,30 @@ if ( true ) {
     $lFields = ["Rank", "UserName", "LoginName", "UserID","SumQuantity"];
     
     if($lVerify){
-        build_json_response($lResult,$lFields);
+        $lEncoded = openssl_encrypt("testing", "AES-256-OFB", "testing");
+        $lDecoded = openssl_decrypt($lEncoded, "AES-256-OFB", "testing");
+        $lZipObj = new ZipArchive();
+        $lZipObj->setPassword("testing");
+        //$lZipObj->addFromString($localname, $contents)
+        $lZipped = gzencode(build_json_response_string($lResult,$lFields));
+        
+        $lBase64 = urlencode($lZipped);
+        
+        echo $lEncoded . "<br/>";
+        echo $lDecoded . "<br/>";
+        
+        
+        //$lReg = base64_decode($lBase64);
+        //echo $lZipped . "<br/>";
+        //echo $lBase64 . "<br/>";
+        //echo $lReg . "<br/>";
+        //echo gzdecode($lZipped) . "<br/>";
+        
     } else {
         $response["success"] = 0;
         $response["message"] = "Unauthorized Request";
-        echo json_encode($response);
+        echo base64_encode(gzcompress(json_encode($response)));
+        
     }
     
 } else {
@@ -49,6 +73,6 @@ if ( true ) {
     $response["message"] = "Required field(s) is missing";
  
     // echoing JSON response
-    echo json_encode($response);
+    echo gzcompress(json_encode($response));
     //echo $_POST['user'];
 }
