@@ -337,6 +337,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     if(jsonObject.getInt("success")==1) {
 
                         dm.userProfile = new UserProfile(jsonObject);
+                        dm.userProfile.UserName(mEmail);
+                        dm.userProfile.Password(mPassword);
                         LoadMainMenu();
 
                     }
@@ -389,6 +391,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
                         RequestUserProfile(queue);
+
 
                     }
                     else {

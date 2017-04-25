@@ -9,6 +9,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -19,6 +20,7 @@ public class UserProfile implements Parcelable {
 
     private int id;
     private String user_name;
+    private String password;
     private String login_name;
     private String email_address;
     private int day_steps;
@@ -29,9 +31,13 @@ public class UserProfile implements Parcelable {
     private int coins;
     private int total_coins;
     Bitmap Picture;
+    List<Quest> activeQuests;
 
     public int ID() { return id; }
     public String UserName() { return user_name; }
+    public void UserName(String value) { user_name = value; }
+    public String Password() { return password; }
+    public void Password(String value) { password = value; }
     public String LoginName() { return login_name; }
     public String Email() { return email_address; }
     public int DaySteps() { return day_steps; }
@@ -65,11 +71,14 @@ public class UserProfile implements Parcelable {
         catch(JSONException e) {
             e.printStackTrace();
         }
+
+        activeQuests = new ArrayList<>();
     }
 
     protected UserProfile(Parcel in) {
         id = in.readInt();
         user_name = in.readString();
+        password = in.readString();
         login_name = in.readString();
         email_address = in.readString();
         day_steps = in.readInt();
@@ -79,6 +88,7 @@ public class UserProfile implements Parcelable {
         last_long = in.readDouble();
         coins = in.readInt();
         total_coins = in.readInt();
+        activeQuests = in.createTypedArrayList(Quest.CREATOR);
     }
 
     public static final Creator<UserProfile> CREATOR = new Creator<UserProfile>() {
@@ -102,6 +112,7 @@ public class UserProfile implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(user_name);
+        dest.writeString(password);
         dest.writeString(login_name);
         dest.writeString(email_address);
         dest.writeInt(day_steps);
@@ -111,5 +122,6 @@ public class UserProfile implements Parcelable {
         dest.writeDouble(last_long);
         dest.writeInt(coins);
         dest.writeInt(total_coins);
+        dest.writeTypedList(activeQuests);
     }
 }

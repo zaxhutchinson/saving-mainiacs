@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -19,8 +20,10 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -77,9 +80,13 @@ public class MapsActivity extends FragmentActivity
 
     private Map<Marker, Charity> charityMap;
     private Map<Marker, Quest> questMap;
+    private Quest currentQuest;
+    private Charity currentCharity;
 
     private ScrollView charityView;
     private ScrollView questView;
+
+    private Button acceptQuestButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,8 +119,54 @@ public class MapsActivity extends FragmentActivity
 
         charityView.setVisibility(View.GONE);
         questView.setVisibility(View.GONE);
+
+        acceptQuestButton = (Button)findViewById(R.id.acceptQuestBtn);
+        acceptQuestButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                acceptQuest(view);
+            }
+        });
     }
 
+    private void acceptQuest(View view) {
+        final RequestQueue queue = Volley.newRequestQueue(this);
+
+        String url = "https://abnet.ddns.net/mucoftware/remote/accept_quest.php?user=" +
+                dm.userProfile.UserName() + "&password=" + dm.userProfile.Password() +
+                "&questid=" + currentQuest.ID();
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    if(jsonObject.getInt("success")==1) {
+
+                        Context context = getApplicationContext();
+                        CharSequence msg = jsonObject.getString("message");
+                        int length = Toast.LENGTH_SHORT;
+                        Toast.makeText(context, msg, length).show();
+
+                        // Add quest to user profile.
+
+                    }
+                    else {
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+
+        queue.add(jsonObjectRequest);
+    }
 
     /**
      * Manipulates the map once available.
@@ -260,9 +313,9 @@ public class MapsActivity extends FragmentActivity
 
             ShowCharityView();
 
-            Charity charity = charityMap.get(marker);
+            currentCharity = charityMap.get(marker);
 
-            PopulateCharityInfo(charity);
+            PopulateCharityInfo(currentCharity);
 
             //System.out.println(charity.toString());
 
@@ -272,15 +325,15 @@ public class MapsActivity extends FragmentActivity
 
             questMap.clear();
 
-            GetQuests(charity);
+            GetQuests(currentCharity);
         }
         else if(markerTitle[0].equals("Quest")) {
 
             ShowQuestView();
 
-            Quest quest = questMap.get(marker);
+            currentQuest = questMap.get(marker);
 
-            PopulateQuestInfo(quest);
+            PopulateQuestInfo(currentQuest);
 
         }
 
