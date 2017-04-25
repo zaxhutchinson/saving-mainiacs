@@ -2,7 +2,9 @@ package com.mainiacs.saving.savingmainiacsapp;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import android.Manifest;
@@ -11,11 +13,21 @@ import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.view.View;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -24,31 +36,50 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
 
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MapsActivity extends FragmentActivity
         implements OnMapReadyCallback,
             GoogleApiClient.ConnectionCallbacks,
-            GoogleApiClient.OnConnectionFailedListener {
+            GoogleApiClient.OnConnectionFailedListener,
+            GoogleMap.OnMarkerClickListener {
+
+
+    private static String ALL_CHARITIES_URL = "https://abnet.ddns.net/mucoftware/remote/get_charity_list.php";
+    private static String CHARITY_QUEST_URL = "https://abnet.ddns.net/mucoftware/remote/get_quests.php?charityid=";
 
     private GoogleMap mMap;
     private CameraPosition cameraPosition;
     private GoogleApiClient googleApiClient;
 
-    LatLng bangor;
+    private static LatLng BANGOR = new LatLng(44.8012, -68.7778);
     private DataManager dm;
-    LinkedList<LatLng> locs = new LinkedList<>();
 
     boolean locationPermissionGranted;
-    private static final int DEFAULT_ZOOM = 12;
+    private static final int DEFAULT_ZOOM = 10;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private Location lastLocation;
+
+    private Map<Marker, Charity> charityMap;
+    private Map<Marker, Quest> questMap;
+
+    private ScrollView charityView;
+    private ScrollView questView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +87,13 @@ public class MapsActivity extends FragmentActivity
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
+        charityMap = new HashMap<Marker, Charity>();
+        questMap = new HashMap<Marker, Quest>();
+
+
 
         googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this,this)
+                .enableAutoManage(this, this)
                 .addConnectionCallbacks(this)
                 .addApi(LocationServices.API)
                 .addApi(Places.GEO_DATA_API)
@@ -66,19 +101,17 @@ public class MapsActivity extends FragmentActivity
                 .build();
         googleApiClient.connect();
 
-
         dm = getIntent().getParcelableExtra("DataManager");
-        System.out.println(dm.testData);
 
-        locs.add(new LatLng(44.801, -68.777));
-        locs.add(new LatLng(44.798, -68.775));
-        locs.add(new LatLng(44.840, -68.777));
-        locs.add(new LatLng(44.801, -68.747));
-        locs.add(new LatLng(44.841, -68.777));
-        locs.add(new LatLng(44.8914, -68.766));
-        locs.add(new LatLng(44.831, -68.723));
+        SupportMapFragment mf = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mf.getMapAsync(this);
 
 
+        charityView = (ScrollView)findViewById(R.id.charityView);
+        questView = (ScrollView)findViewById(R.id.questView);
+
+        charityView.setVisibility(View.GONE);
+        questView.setVisibility(View.GONE);
     }
 
 
@@ -95,52 +128,49 @@ public class MapsActivity extends FragmentActivity
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-//        bangor = new LatLng(44.8012, -68.7778);
-//        mMap.addMarker(new MarkerOptions().position(bangor).title("Bangor was here."));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(bangor));
+        GetCharities();
 
-        updateLocationUI();
 
         requestDeviceLocation();
-
-        //displayQuestMarkers(locs);
+        updateLocationUI();
+        mMap.setOnMarkerClickListener(this);
     }
 
-    public void displayQuestMarkers(LinkedList<LatLng> locations) {
-        for(LatLng ll : locations) {
-           mMap.addMarker(new MarkerOptions()
-                .position(ll));
+    public void displayCharityMarkers() {
+        for (Charity charity : dm.charities) {
+            Marker marker = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(charity.Latitude(), charity.Longitude()))
+                    .title("Charity\n" + charity.Name()));
+
+            charityMap.put(marker, charity);
+
         }
     }
 
     private void requestDeviceLocation() {
-        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = true;
-        }
-        else {
+        } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
 
-        if(locationPermissionGranted) {
+        if (locationPermissionGranted) {
             lastLocation = LocationServices.FusedLocationApi
                     .getLastLocation(googleApiClient);
         }
 
-        if(cameraPosition != null) {
+        if (cameraPosition != null) {
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }
-        else if (lastLocation != null) {
+        } else if (lastLocation != null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(lastLocation.getLatitude(),
                             lastLocation.getLongitude()), DEFAULT_ZOOM));
-        }
-        else {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bangor,DEFAULT_ZOOM));
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BANGOR, DEFAULT_ZOOM));
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
         }
 
@@ -209,4 +239,170 @@ public class MapsActivity extends FragmentActivity
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
+    void ShowQuestView() {
+        charityView.setVisibility(View.GONE);
+        questView.setVisibility(View.VISIBLE);
+    }
+
+    void ShowCharityView() {
+        questView.setVisibility(View.GONE);
+        charityView.setVisibility(View.VISIBLE);
+    }
+
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+        String[] markerTitle = marker.getTitle().split("\n");
+
+        if(markerTitle[0].equals("Charity")) {
+
+            ShowCharityView();
+
+            Charity charity = charityMap.get(marker);
+
+            PopulateCharityInfo(charity);
+
+            //System.out.println(charity.toString());
+
+            for (Marker m : questMap.keySet()) {
+                m.remove();
+            }
+
+            questMap.clear();
+
+            GetQuests(charity);
+        }
+        else if(markerTitle[0].equals("Quest")) {
+
+            ShowQuestView();
+
+            Quest quest = questMap.get(marker);
+
+            PopulateQuestInfo(quest);
+
+        }
+
+        return false;
+    }
+
+    void PopulateCharityInfo(Charity charity) {
+        TextView charityName = (TextView)findViewById(R.id.charityName);
+        TextView charityAddr1 = (TextView)findViewById(R.id.charityAddress1);
+        TextView charityAddr2 = (TextView)findViewById(R.id.charityAddress2);
+        TextView charityPhone = (TextView)findViewById(R.id.charityPhone);
+
+        charityName.setText(charity.Name());
+        charityAddr1.setText(charity.Address1());
+        charityAddr2.setText(charity.Address2());
+        charityPhone.setText(charity.Phone());
+    }
+
+    void PopulateQuestInfo(Quest quest) {
+        TextView questName = (TextView)findViewById(R.id.questName);
+        TextView questDesc = (TextView)findViewById(R.id.questDesc);
+        TextView questLocation = (TextView)findViewById(R.id.questLocation);
+        TextView questQuantity = (TextView)findViewById(R.id.questQuantity);
+        TextView questPayment = (TextView)findViewById(R.id.questPayment);
+
+        questName.setText(quest.Name());
+        questDesc.setText(quest.Description());
+        questLocation.setText(quest.DropOffLocation());
+        questQuantity.setText(Integer.toString(quest.Quantity()));
+        questPayment.setText(Integer.toString(quest.Payment()));
+    }
+
+    void DisplayQuests(Charity charity) {
+        //System.out.println(Integer.toString(charity.GetAllQuests().size()));
+        for(Quest quest : charity.GetAllQuests()) {
+            Marker m = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(quest.Latitude(), quest.Longitude()))
+                    .title("Quest\n"+quest.Name())
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+            questMap.put(m,quest);
+        }
+    }
+
+    public void GetCharities() {
+
+        final RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, ALL_CHARITIES_URL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                //System.out.println(jsonObject.toString());
+                try {
+                    if(jsonObject.getInt("success")==1) {
+
+                        JSONArray charities = jsonObject.getJSONArray("results");
+                        for(int i = 0; i < charities.length(); i++) {
+                            dm.charities.add(new Charity(charities.getJSONObject(i)));
+                        }
+                        displayCharityMarkers();
+
+                    }
+                    else {
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+
+        queue.add(jsonObjectRequest);
+    }
+
+    public void GetQuests(final Charity charity) {
+
+        String url = CHARITY_QUEST_URL + Integer.toString(charity.ID());
+
+        final RequestQueue queue = Volley.newRequestQueue(this);
+        final LinkedList<Quest> all_quests = new LinkedList<Quest>();
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                //System.out.println(jsonObject.toString());
+                try {
+                    if(jsonObject.getInt("success")==1) {
+
+                        JSONArray quests = jsonObject.getJSONArray("results");
+
+                        charity.GetAllQuests().clear();
+
+                        for(int i = 0; i < quests.length(); i++) {
+                            charity.AddQuest(new Quest(quests.getJSONObject(i)));
+                        }
+
+                        DisplayQuests(charity);
+                    }
+                    else {
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+        }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+
+        queue.add(jsonObjectRequest);
+    }
+
 }

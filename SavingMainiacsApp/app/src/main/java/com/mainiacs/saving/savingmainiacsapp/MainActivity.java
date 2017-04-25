@@ -11,6 +11,7 @@ import android.widget.EditText;
 public class MainActivity extends AppCompatActivity {
 
     Button btnGoToMap;
+    Button btnGoToProfile;
     DataManager dm;
 
     @Override
@@ -27,15 +28,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        btnGoToProfile = (Button)findViewById(R.id.buttonUserProfile);
+        btnGoToProfile.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                StartUserProfileActivity(view);
+            }
+        });
+
+
     }
 
     public void AppInit() {
-        dm = new DataManager();
-        dm.testData = "No Shite.";
+
+        dm = getIntent().getParcelableExtra("DataManager");
     }
 
     public void StartMapActivity(View view) {
         Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("DataManager",dm);
+        startActivity(intent);
+    }
+
+    public void StartUserProfileActivity(View view) {
+        Intent intent = new Intent(this, UserProfileActivity.class);
         intent.putExtra("DataManager",dm);
         startActivity(intent);
     }

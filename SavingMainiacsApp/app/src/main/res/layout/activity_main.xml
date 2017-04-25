@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mainiacs.saving.savingmainiacsapp.MainActivity">
+    android:orientation="vertical"
+    android:layout_margin="5dip"
+    android:background="#DDDDDD">
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="359dp"
-        android:layout_height="84dp"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
         android:text="Map"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp" />
-</android.support.constraint.ConstraintLayout>
+        android:textSize="30dp"
+        android:textColor="#FFFFFF"
+        android:background="#064F94"
+        android:layout_marginBottom="5dp"/>
+    <Button
+        android:id="@+id/buttonUserProfile"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:text="Profile"
+        android:textSize="30dp"
+        android:textColor="#FFFFFF"
+        android:background="#064F94"
+        android:layout_marginBottom="5dp"/>
+</LinearLayout>
