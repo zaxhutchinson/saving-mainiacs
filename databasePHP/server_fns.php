@@ -282,3 +282,64 @@ function gen_user($aUser, $aPassword, $aName, $aEmail){
     
 }
 
+function normalize($aList){
+
+    $lRet = [];
+    $lSize = count($aList);
+    $lSum = 0;
+
+    for($i = 0; $i < $lSize; $i++){
+        $lSum += $aList[$i];
+    }
+
+    $lSum /= 100;
+    
+    for($i = 0; $i < $lSize; $i++){
+        $lRet[$i] = $aList[$i]/$lSum;
+    }
+
+    return $lRet;
+}
+
+function min_index($aList){
+    $lRet = 0;
+    $lMin = $aList[0];
+    $lSize = count($aList);
+    
+    for($i = 1; $i < $lSize; $i++){
+        if($aList[$i] < $lMin){
+            $lMin = $aList[$i];
+            $lRet = $i;
+        }
+    }
+    
+    return $lRet;
+}
+
+function normalize_int($aList){
+    
+    $lFirstNorm = normalize($aList);
+    $lSize = count($aList);
+    $lFloors = [];
+    $lFloorSum = 0;
+    
+    for($i = 0; $i < $lSize; $i++){
+        $lFloors[$i] = floor($lFirstNorm[$i]);
+        $lFloorSum += $lFloors[$i];
+        $lRemainders[$i] = $lFirstNorm[$i]-$lFloors[$i];
+    }    
+    
+    $lCounter = 100-$lFloorSum;
+    
+    while($lCounter){
+        
+        $lMin = min_index($lRemainders);
+        $lFloors[$lMin] += 1;
+        $lCounter -= 1;
+        $lRemainders[$lMin] = 1-$lRemainders[$lMin];
+    }
+    
+    return $lFloors;
+    
+    
+}

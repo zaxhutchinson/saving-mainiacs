@@ -12,17 +12,16 @@ require_once "remote_misc.php";
 
 // array for JSON response
 $response = array();
-$lInput = ['user', 'password','coins','lat','long','steps'];
+$lInput = ['user', 'password','c1','c2','c3','c4','c5','p1','p2','p3','p4','p5'];
 // check for required fields
 if ( isset_input_list($lInput) ) {
  
     $lUserName = get_input('user');
     $lPassword = get_input('password');
-    $lAddCoins = get_input('coins');
-    $lLat = get_input('lat');
-    $lLong = get_input('long');
-    $lSteps = get_input('steps');
     
+    $lPercents = [get_input('p1'), get_input('p2'), get_input('p3'), get_input('p4') ,get_input('p5')];
+    $lCharityIDs = [get_input('c1'), get_input('c2'), get_input('c3'), get_input('c4') ,get_input('c5')];
+
     // connecting to db
     $db = new DBManager();
  
@@ -33,9 +32,9 @@ if ( isset_input_list($lInput) ) {
     //$lResult = $db->select_table(["Accounts", "Volunteers"], $lFields, ["Accounts.UserID", "Accounts.UserID"], ["Volunteers.UserID", $lUserID]);  
     
     if($lVerify){
-        $db->add_coins($lUserID, $lAddCoins);
-        $db->add_steps($lUserID, $lSteps);
-        $db->update_table("Volunteers", ["LastLatitude", "LastLongitude" ], [$lLat, $lLong], ["UserID"], [$lUserID]);
+        
+        $db->update_donations($lUserID, $lCharityIDs, $lPercents);
+        
         $response["success"] = 1;
         $response["message"] = "Update Successful";
         echo json_encode($response);

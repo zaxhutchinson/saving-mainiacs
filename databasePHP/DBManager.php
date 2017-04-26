@@ -646,6 +646,17 @@ class DBManager extends mysqli{
     public function update_donation_rate($aUserID, $aIndex, $aCharityID, $aPercent){
         return $this->update_table_quote("DonationRate", ["CharityID", "Percent"], [$aCharityID, $aPercent], [false,true], ["RowID", "UserID"], [$aIndex,$aUserID] );
     }
+
+    public function update_donations($aUserID, $aCharityIDs, $aPercents){
+        
+        $lNorm = normalize_int($aPercents);
+        
+        for($i = 0; $i < 5; $i++){
+            //echo $i . " : " . $aCharityIDs[$i] . " : " . $lNorm[$i] . "<br/>";
+            $this->update_donation_rate($aUserID, $i, $aCharityIDs[$i], $lNorm[$i]);
+        }
+        
+    }
     
     public function get_user_coins($aUserID){
         return $this->get_db_val("Coins","Volunteers", "UserID", $aUserID);

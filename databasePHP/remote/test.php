@@ -14,7 +14,7 @@ require_once "remote_misc.php";
 $response = array();
 
 // check for required fields
-if ( true ) {
+if ( false ) {
  
     $lHeader = get_input("h");
     echo $lHeader . "<br/>";
@@ -69,10 +69,15 @@ if ( true ) {
     
 } else {
     // required field is missing
-    $response["success"] = 0;
-    $response["message"] = "Required field(s) is missing";
+    //$response["success"] = 0;
+    //$response["message"] = "Required field(s) is missing";
  
     // echoing JSON response
-    echo gzcompress(json_encode($response));
+    //echo gzcompress(json_encode($response));
     //echo $_POST['user'];
+    
+    print_r( [12,45,66,77,46] );
+    print_r( normalize([12,45,66,77,46]) );
+    print_r( normalize_int([12,45,66,77,46]) );
+    
 }
