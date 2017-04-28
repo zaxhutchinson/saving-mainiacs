@@ -76,8 +76,10 @@ if ( false ) {
     //echo gzcompress(json_encode($response));
     //echo $_POST['user'];
     
-    print_r( [12,45,66,77,46] );
-    print_r( normalize([12,45,66,77,46]) );
-    print_r( normalize_int([12,45,66,77,46]) );
+    //print_r( [12,45,66,77,46] );
+    //print_r( normalize([12,45,66,77,46]) );
+    //print_r( normalize_int([12,45,66,77,46]) );
+    
+    echo base64_encode(file_get_contents("test.jpg"));
     
 }

@@ -12,18 +12,14 @@ require_once "remote_misc.php";
 
 // array for JSON response
 $response = array();
-$lInput = ['charity', 'password','questname','desc','address','payment'];
+$lInput = ['charity', 'password','questid','quantity'];
 // check for required fields
 if ( isset_input_list($lInput) ) {
  
     $lCharityName = get_input('charity');
     $lPassword = get_input('password');
-    $lQuestName = get_input('questname');
-    $lQuantity = 0;
-    $lQuestDescription = get_input('desc');
-    $lDropOffLocation = get_input('address');
-    $lPayment = get_input('payment');
-    //$lQuantity = get_input('quantity');
+    $lQuantity = get_input('quantity');
+    $lQuestID = get_input('questid');
     // connecting to db
     $db = new DBManager();
  
@@ -31,7 +27,10 @@ if ( isset_input_list($lInput) ) {
     $lVerify = $db->verify_charity_credentials($lCharityName, $lPassword);
     
     if($lVerify){
-        gen_quest($lCharityID, $lQuestName, $lPayment, 0, $lQuestDescription, $lDropOffLocation);
+
+        for($i = 0; $i < $lQuantity; $i++){
+            $db->decrement_quest($lQuestID, true);
+        }
         
         $response["success"] = 1;
         $response["message"] = "Insert Successful";

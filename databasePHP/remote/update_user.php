@@ -12,20 +12,24 @@ require_once "remote_misc.php";
 
 // array for JSON response
 $response = array();
-$lInput = ['user', 'password','coins','lat','long','steps'];
+$lInput = ['user', 'password','lat','long','steps'];
 // check for required fields
 if ( isset_input_list($lInput) ) {
  
     $lUserName = get_input('user');
     $lPassword = get_input('password');
-    $lAddCoins = get_input('coins');
+    
     $lLat = get_input('lat');
     $lLong = get_input('long');
     $lSteps = get_input('steps');
+
+    $lStepsPerCoin = 100;
     
     // connecting to db
     $db = new DBManager();
+    
  
+    
     $lUserID = $db->get_id_by_username($lUserName);
     $lVerify = $db->verify_user_credentials($lUserName, $lPassword);
     //$lFields = ["UserName", "LoginName", "EmailAddress", "DaySteps", "MonthSteps", "TotalSteps", "LastLatitude", "LastLongitude", "Coins", "TotalCoins"];
@@ -33,9 +37,14 @@ if ( isset_input_list($lInput) ) {
     //$lResult = $db->select_table(["Accounts", "Volunteers"], $lFields, ["Accounts.UserID", "Accounts.UserID"], ["Volunteers.UserID", $lUserID]);  
     
     if($lVerify){
+
+        $lOldRemainder = $db->get_remainder_coins($lUserID);
+        $lAddCoins = ($lSteps+$lOldRemainder)/$lStepsPerCoin;
+        $lRemainder = ($lSteps+$lOldRemainder)%$lStepsPerCoin;   
+    
         $db->add_coins($lUserID, $lAddCoins);
         $db->add_steps($lUserID, $lSteps);
-        $db->update_table("Volunteers", ["LastLatitude", "LastLongitude" ], [$lLat, $lLong], ["UserID"], [$lUserID]);
+        $db->update_table("Volunteers", ["LastLatitude", "LastLongitude", "Remainder" ], [$lLat, $lLong,$lRemainder], ["UserID"], [$lUserID]);
         $response["success"] = 1;
         $response["message"] = "Update Successful";
         echo json_encode($response);
