@@ -206,10 +206,20 @@
 							<br>
 							<br>
 								<?php
-									$url = 'https://abnet.ddns.net/mucoftware/remote/get_user.php?user=helpfulguy78&password=helpfulguy78';
-									$jsondata = file_get_contents($url);
-									$obj = json_decode($jsondata,true);
-									echo "<h1>".$obj["results"][0]['Coins']."</h1>";
+									$urlRank = "https://abnet.ddns.net/mucoftware/remote/get_charity_rank.php";
+									$jsonRank = file_get_contents($urlRank);
+									$objRank = json_decode($jsonRank,true);
+									$n = 0;
+
+									foreach ($array as $key => $jsons) {
+										foreach ($jsons as $key => $value) {
+											if(1==$objRank['results'][$n]['CharityID'])
+											{
+												echo "<h1>".$objRank["results"][0]['Rank']."</h1>";
+											}
+										$n++;
+									} 
+									}
 								?>
 						</div>
 					</div>

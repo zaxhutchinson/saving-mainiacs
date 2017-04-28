@@ -19,7 +19,7 @@ main
 	position: relative;
 	height: 85px;
 	width: 100%;
-	min-width: 1024px;
+	min-width: 1250px;
   	max-width: 1250px;
   	background-color: #064F94;
 }
@@ -61,7 +61,7 @@ main
 }
 #contain
 {
-	min-width: 1024px;
+	min-width: 1250px;
   	max-width: 1250px;
 }
 #donationLeftUser
@@ -254,7 +254,7 @@ footer
 	text-align: center;
 	font-family: Arial, "Helvetica Neue", Helvetica, "Nimbus Sans L", sans-serif;
 	font-size: 100%;
-	min-width: 1024px;
+	min-width: 1250px;
   	max-width: 1250px;
 }
 footer a
@@ -387,12 +387,6 @@ tr:nth-child(odd) {
 	background-color: #126180;
 	color: white;
 }
-/*caption
-{
-	font-size: 2em;
-	font-family: arial, sans-serif;
-	text-align: left;
-}*/
 #charQTable
 {
 	width: 700px;

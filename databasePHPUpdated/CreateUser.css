@@ -80,6 +80,26 @@ input[type=text], select {
     box-sizing: border-box;
     background-color: #fff;
 }
+input[type=email], select {
+    width: 40%;
+    padding: 10px 15px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #064F94;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+input[type=tel], select {
+    width: 40%;
+    padding: 10px 15px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #064F94;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #fff;
+}
 input[type=password], select {
     width: 40%;
     padding: 10px 15px;
