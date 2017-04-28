@@ -55,13 +55,16 @@
         </activity>
         <activity
             android:name=".UserProfileActivity"
-            android:label="@string/title_activity_user_profile"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:label="Profile"
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mainiacs.saving.savingmainiacsapp.MainActivity" />
         </activity>
+        <service
+            android:name="StepCounter"
+            android:exported="false" />
+
     </application>
 
 </manifest>

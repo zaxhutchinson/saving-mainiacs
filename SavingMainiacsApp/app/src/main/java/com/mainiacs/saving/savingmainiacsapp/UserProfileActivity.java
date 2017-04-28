@@ -7,8 +7,12 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -29,6 +33,9 @@ public class UserProfileActivity extends AppCompatActivity {
     DataManager dm;
     UserProfile user;
 
+    ScrollView userProfileMain;
+    ScrollView userProfileQuests;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +43,9 @@ public class UserProfileActivity extends AppCompatActivity {
 
         dm = getIntent().getParcelableExtra("DataManager");
         user = dm.userProfile;
+
+        userProfileMain = (ScrollView)findViewById(R.id.userProfileMain);
+        userProfileQuests = (ScrollView)findViewById(R.id.userProfileQuests);
 
     }
 
@@ -46,6 +56,26 @@ public class UserProfileActivity extends AppCompatActivity {
         GetUserPicture();
         PopulateUserData();
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.user_profile_main:
+                DisplayUserProfileMain();
+                break;
+            case R.id.user_profile_quest:
+                DisplayUserProfileQuests();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_user_profile, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     void PopulateUserData() {
@@ -105,5 +135,15 @@ public class UserProfileActivity extends AppCompatActivity {
         );
 
         queue.add(jsonObjectRequest);
+    }
+
+    void DisplayUserProfileMain() {
+        userProfileQuests.setVisibility(View.GONE);
+        userProfileMain.setVisibility(View.VISIBLE);
+    }
+
+    void DisplayUserProfileQuests() {
+        userProfileMain.setVisibility(View.GONE);
+        userProfileQuests.setVisibility(View.VISIBLE);
     }
 }

@@ -147,7 +147,11 @@ public class MapsActivity extends FragmentActivity
                         int length = Toast.LENGTH_SHORT;
                         Toast.makeText(context, msg, length).show();
 
-                        // Add quest to user profile.
+                        dm.userProfile.activeQuests.add(currentQuest);
+
+                        currentQuest = null;
+                        ClearQuestDisplay();
+                        DisplayCharityInfo();
 
                     }
                     else {
@@ -311,33 +315,44 @@ public class MapsActivity extends FragmentActivity
 
         if(markerTitle[0].equals("Charity")) {
 
-            ShowCharityView();
-
             currentCharity = charityMap.get(marker);
 
-            PopulateCharityInfo(currentCharity);
+            DisplayCharityInfo();
 
-            //System.out.println(charity.toString());
+            ClearQuestDisplay();
 
-            for (Marker m : questMap.keySet()) {
-                m.remove();
-            }
-
-            questMap.clear();
-
-            GetQuests(currentCharity);
         }
         else if(markerTitle[0].equals("Quest")) {
 
-            ShowQuestView();
-
             currentQuest = questMap.get(marker);
 
-            PopulateQuestInfo(currentQuest);
+            DisplayQuestInfo();
 
         }
 
         return false;
+    }
+
+    void DisplayCharityInfo() {
+        ShowCharityView();
+
+        PopulateCharityInfo(currentCharity);
+    }
+
+    void DisplayQuestInfo() {
+        ShowQuestView();
+
+        PopulateQuestInfo(currentQuest);
+    }
+
+    void ClearQuestDisplay() {
+        for (Marker m : questMap.keySet()) {
+            m.remove();
+        }
+
+        questMap.clear();
+
+        GetQuests(currentCharity);
     }
 
     void PopulateCharityInfo(Charity charity) {
