@@ -2,6 +2,7 @@ package com.mainiacs.saving.savingmainiacsapp;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -28,13 +30,17 @@ import org.json.JSONObject;
 
 public class UserProfileActivity extends AppCompatActivity {
 
+    private static String SEND_STEP_URL = "https://abnet.ddns.net/mucoftware/remote/update_user.php?";
     private static String USER_PICTURE_URL = "https://abnet.ddns.net/mucoftware/remote/get_user_picture.php?userid=";
 
     DataManager dm;
     UserProfile user;
+    StepCounterService stepCounterService;
 
     ScrollView userProfileMain;
     ScrollView userProfileQuests;
+    Handler sendHandler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +52,17 @@ public class UserProfileActivity extends AppCompatActivity {
 
         userProfileMain = (ScrollView)findViewById(R.id.userProfileMain);
         userProfileQuests = (ScrollView)findViewById(R.id.userProfileQuests);
+
+        stepCounterService = new StepCounterService(user);
+
+        sendHandler = new Handler();
+        sendHandler.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                SendUpdateToDB();
+            }
+        }, 1000);//300000);
 
     }
 
@@ -145,5 +162,48 @@ public class UserProfileActivity extends AppCompatActivity {
     void DisplayUserProfileQuests() {
         userProfileMain.setVisibility(View.GONE);
         userProfileQuests.setVisibility(View.VISIBLE);
+    }
+
+    void SendUpdateToDB() {
+
+        //user=helpfulguy78&password=helpfulguy78&lat=1&long=1&steps=117
+        String url = SEND_STEP_URL + "user=" + user.UserName() +
+                "&password=" + user.Password() +
+                "&lat=" + Double.toString(user.Latitude()) +
+                "&long=" + Double.toString(user.Longitude()) +
+                "&steps=" + Integer.toString(user.TempSteps());
+
+        final RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                System.out.println(jsonObject.toString());
+                try {
+                    if(jsonObject.getInt("success")==1) {
+
+
+                        //RequestUserProfile(queue);
+                        Toast.makeText(getParent(), Integer.toString(user.TempSteps()), Toast.LENGTH_LONG).show();
+
+                    }
+                    else {
+                        //mEmailView.setError("Error logging in.");
+                        //focusView.requestFocus();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+
+        queue.add(jsonObjectRequest);
     }
 }

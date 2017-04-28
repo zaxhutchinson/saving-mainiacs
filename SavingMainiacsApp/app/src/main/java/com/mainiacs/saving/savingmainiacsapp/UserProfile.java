@@ -23,6 +23,7 @@ public class UserProfile implements Parcelable {
     private String password;
     private String login_name;
     private String email_address;
+    private int temp_steps;
     private int day_steps;
     private int month_steps;
     private int total_steps;
@@ -40,6 +41,8 @@ public class UserProfile implements Parcelable {
     public void Password(String value) { password = value; }
     public String LoginName() { return login_name; }
     public String Email() { return email_address; }
+    public int TempSteps() { return temp_steps; }
+    public void TempSteps(int value) { temp_steps =+ value; }
     public int DaySteps() { return day_steps; }
     public int MonthSteps() { return month_steps; }
     public int TotalSteps() { return total_steps; }
@@ -67,6 +70,8 @@ public class UserProfile implements Parcelable {
             last_long = data.getDouble("LastLongitude");
             coins = data.getInt("Coins");
             total_coins = data.getInt("TotalCoins");
+
+            temp_steps = 0;
         }
         catch(JSONException e) {
             e.printStackTrace();
