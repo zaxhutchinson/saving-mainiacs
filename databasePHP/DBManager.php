@@ -129,6 +129,13 @@ class DBManager extends mysqli{
         mysqli_free_result($lQuery);
         return $lRet;
     }    
+
+    public function upload_image_data($aData, $aTableName, $aField, $aWhereFields, $aWhereValues, $aQuote){
+        $lRet = "UPDATE " . $aTableName . " SET " . $aField . " = '" . addslashes($aData) . "' WHERE " . $this->zip_and_array_quote($aWhereFields,$aWhereValues,$aQuote) . ";";
+        $lQuery = $this->query($lRet);
+        mysqli_free_result($lQuery);
+        return $lRet;
+    } 
     
     public function update_table($aTableName, $aFields, $aValues, $aWhereFields, $aWhereValues){
         $lRet = "UPDATE " . $aTableName . " SET " . $this->zip_set_arrays($aFields, $aValues) . " WHERE " . $this->zip_and_array($aWhereFields,$aWhereValues) . ";";
@@ -498,13 +505,17 @@ class DBManager extends mysqli{
         $lCoins = $this->get_charity_coins($aCharityID);
         $lQuantity = $aQuantity;
 
+        //echo $lCoins . " : " . $lQuantity . "<br/>";
+        
         if( ($aQuantity < 0) && ($lCoins < abs($aQuantity)) ){
             return false;
         }
         
         $lTotal = $lCoins+$lQuantity;        //Total coins in the charity account now.
 
-        $this->update_table("Charity", ["CharityID", "QuestBank"], [$aCharityID, $lTotal], ["UserID"], [$aCharityID] );
+        //echo $lCoins . " : " . $lQuantity . " : " . $lTotal . "<br/>";
+        
+        $this->update_table("Charity", ["CharityID", "QuestBank"], [$aCharityID, $lTotal], ["CharityID"], [$aCharityID] );
         
         return $lTotal;
     }
@@ -656,6 +667,10 @@ class DBManager extends mysqli{
             $this->update_donation_rate($aUserID, $i, $aCharityIDs[$i], $lNorm[$i]);
         }
         
+    }
+    
+    public function get_remainder_coins($aUserID){
+        return $this->get_db_val("Remainder","Volunteers", "UserID", $aUserID);
     }
     
     public function get_user_coins($aUserID){

@@ -12,29 +12,28 @@ require_once "remote_misc.php";
 
 // array for JSON response
 $response = array();
-$lInput = ['charity', 'password','questname','desc','address','payment'];
+$lInput = ['charity', 'password','picture'];
 // check for required fields
 if ( isset_input_list($lInput) ) {
  
-    $lCharityName = get_input('charity');
+    $lUserName = get_input('charity');
     $lPassword = get_input('password');
-    $lQuestName = get_input('questname');
-    $lQuantity = 0;
-    $lQuestDescription = get_input('desc');
-    $lDropOffLocation = get_input('address');
-    $lPayment = get_input('payment');
-    //$lQuantity = get_input('quantity');
+    $lPicture = base64_decode(get_input('picture'));
+    
     // connecting to db
     $db = new DBManager();
- 
-    $lCharityID = $db->get_id_by_charity($lCharityName);
-    $lVerify = $db->verify_charity_credentials($lCharityName, $lPassword);
+    $lCharityID = $db->get_id_by_charity($aCharityName);
+    $lVerify = $db->verify_user_credentials($lUserName, $lPassword);
+    //$lFields = ["UserName", "LoginName", "EmailAddress", "DaySteps", "MonthSteps", "TotalSteps", "LastLatitude", "LastLongitude", "Coins", "TotalCoins"];
+
+    //$lResult = $db->select_table(["Accounts", "Volunteers"], $lFields, ["Accounts.UserID", "Accounts.UserID"], ["Volunteers.UserID", $lUserID]);  
     
     if($lVerify){
-        gen_quest($lCharityID, $lQuestName, $lPayment, 0, $lQuestDescription, $lDropOffLocation);
-        
+        $db->add_coins($lUserID, $lAddCoins);
+        $db->add_steps($lUserID, $lSteps);
+        $db->upload_image_data($lPicture, "Charity", "ProfileImage", ["CharityID"], [$lCharityID],[true]);
         $response["success"] = 1;
-        $response["message"] = "Insert Successful";
+        $response["message"] = "Update Successful";
         echo json_encode($response);
         
     } else {
@@ -47,7 +46,8 @@ if ( isset_input_list($lInput) ) {
     // required field is missing
     $response["success"] = 0;
     $response["message"] = "Required field(s) is missing";
-
+ 
+    // echoing JSON response
     echo json_encode($response);
-
+    //echo $_POST['user'];
 }

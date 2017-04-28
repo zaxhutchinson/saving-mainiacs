@@ -40,24 +40,34 @@
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/index.php</file>
         </group>
         <group name="bbsim">
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/update_user_donations.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/test.jpg</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_user_donationrate.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/server_fns.php</file>
-            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/UserProfile.php</file>
-            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_charity_rank.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/CreateUser.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/Menu.php</file>
-            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/PFData.php</file>
-            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/CharityProfile.php</file>
-            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_charity_list.php</file>
-            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/insert_user.php</file>
-            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/MaxGaussian.php</file>
-            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/insert_quest.php</file>
-            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/insert_charity.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/charity_dec_quest.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/update_user.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/remote_misc.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_user_rank.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/DBManager.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/test.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/misc.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_user.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/UserProfile.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_charity_rank.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/CharityProfile.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_charity_list.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/update_user_picture.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/update_charity_picture.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/insert_user.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/insert_quest.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/insert_charity.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/charity_inc_quest.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/CreateCharity.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/index.php</file>
             <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/Admin.php</file>
-            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/get_user.php</file>
+            <file>file:/home/brian/ownCloud/documents/SchoolDocs/COS520-S17/project/saving-mainiacs/databasePHP/remote/donate_user_coins.php</file>
         </group>
     </open-files>
 </project-private>
