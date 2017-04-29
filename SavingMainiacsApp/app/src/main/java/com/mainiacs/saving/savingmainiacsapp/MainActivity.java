@@ -2,7 +2,6 @@ package com.mainiacs.saving.savingmainiacsapp;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -13,7 +12,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -27,15 +25,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +38,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static String PROFILE_STRING = "https://abnet.ddns.net/mucoftware/remote/get_user.php?";
     private static String USER_PICTURE_URL = "https://abnet.ddns.net/mucoftware/remote/get_user_picture.php?userid=";
     private static String SEND_STEP_URL = "https://abnet.ddns.net/mucoftware/remote/update_user.php?";
 
@@ -50,6 +46,8 @@ public class MainActivity extends AppCompatActivity
 
     DataManager dm;
     UserProfile user;
+
+    private String username, password;
 
     StepCounterService stepCounterService;
     Handler sendHandler;
@@ -79,15 +77,20 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        PopulateUserData();
+
+        RequestUserProfile();
     }
 
     public void initializeApp() {
-        dm = getIntent().getParcelableExtra("DataManager");
-        user = dm.userProfile;
+
+        dm = new DataManager();
+
+        // Save credentials to refresh profile data later
+        username = getIntent().getStringExtra(LoginActivity.TAG_USERNAME);
+        password = getIntent().getStringExtra(LoginActivity.TAG_PASSWORD);
+
 
         /* TODO: Uncomment this after the service no longer crashes app
-
         stepCounterService = new StepCounterService(user);
 
         sendHandler = new Handler();
@@ -156,6 +159,45 @@ public class MainActivity extends AppCompatActivity
                         pic.setImageBitmap(user.Picture);
                     } else {
 
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+
+        queue.add(jsonObjectRequest);
+    }
+
+    public void RequestUserProfile() {
+
+        String url = PROFILE_STRING + "user=" + username + "&password=" + password;
+
+        final RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                System.out.println(jsonObject.toString());
+                try {
+                    if (jsonObject.getInt("success") == 1) {
+
+                        dm.userProfile = new UserProfile(jsonObject);
+                        dm.userProfile.UserName(username);
+                        dm.userProfile.Password(password);
+
+                        user = dm.userProfile;
+                        PopulateUserData();
+
+                    } else {
+                        Toast.makeText(getParent(), "Failed to get profile.", Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
