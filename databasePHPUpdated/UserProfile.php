@@ -6,7 +6,7 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <link href="Profile.css" rel="stylesheet" media="all" />
+        <link href="UserProfile.css" rel="stylesheet" media="all" />
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <title></title>
     </head>
@@ -35,32 +35,40 @@ and open the template in the editor.
 								$url = 'https://abnet.ddns.net/mucoftware/remote/get_user_donationrate.php?user=helpfulguy78&password=helpfulguy78';
 								$jsondata = file_get_contents($url);
 								$obj = json_decode($jsondata,true);
-								$CharityName	= $obj['results'][0]['CharityName'];
-								$Percent = $obj['results'][0]['Percent'];
+								$CharityOne	= $obj['results'][0]['CharityName'];
+								$PercentOne = $obj['results'][0]['Percent'];
+								$CharityTwo	= $obj['results'][1]['CharityName'];
+								$PercentTwo = $obj['results'][1]['Percent'];
+								$CharityThr	= $obj['results'][2]['CharityName'];
+								$PercentThr = $obj['results'][2]['Percent'];
+								$CharityFour = $obj['results'][3]['CharityName'];
+								$PercentFour = $obj['results'][3]['Percent'];
+								$CharityFive = $obj['results'][4]['CharityName'];
+								$PercentFive = $obj['results'][4]['Percent'];
 							?>
 							<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+							<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 							    <script>
 							      	google.charts.load('current', {'packages':['corechart']});
 							      	google.charts.setOnLoadCallback(drawChart);
-							      	var one = "Work";
-							      	var two = "Work";
-							      	var three = "Work";
-							      	var four = "Work";
-							      	var five = "Work";
-							      	var name = '<?php echo $CharityName; ?>';
-							      	var perc = '<?php echo $Percent; ?>';
-							      	var oneH = 20;
-							      	var twoH = 20;
-							      	var threeH = 20;
-							      	var fourH = 20;
-							      	var fiveH = 20;
+							      	var one = <?php echo json_encode($CharityOne); ?>;
+							      	var two = <?php echo json_encode($CharityTwo); ?>;
+							      	var thr = <?php echo json_encode($CharityThr); ?>;
+							      	var four = <?php echo json_encode($CharityFour); ?>;
+							      	var five = <?php echo json_encode($CharityFive); ?>;
+							      	//var perc = Number(<?php echo json_encode($Percent); ?>);
+							      	var oneH = Number(<?php echo json_encode($PercentOne); ?>);
+							      	var twoH = Number(<?php echo json_encode($PercentTwo); ?>);
+							      	var threeH = Number(<?php echo json_encode($PercentThr); ?>);
+							      	var fourH = Number(<?php echo json_encode($PercentFour); ?>);
+							      	var fiveH = Number(<?php echo json_encode($PercentFive); ?>);
 							    	function drawChart() {
 
 							        var data = google.visualization.arrayToDataTable([
 							          ['Task', 'Percent'],
-							          [name,     perc],
-							          [two,      twoH],
-							          [three,  threeH],
+							          [ one,  oneH],
+							          [two,     twoH],
+							          [thr,  threeH],
 							          [four, fourH],
 							          [five,    fiveH]
 							        ]);
@@ -68,7 +76,6 @@ and open the template in the editor.
 							        var options = {
 							        'legend':'none',
 							        'backgroundColor':'transparent',
-							        pieHole :.5,
 							        chartArea:{right: 120,width:'100%',height:'100%'},
 							          colors: ['#064F94', '#054582', '#053B6F', '#04315D', '#03284A']
 							        };
@@ -83,7 +90,7 @@ and open the template in the editor.
 						<div id ="charityList">
 							<?php
 								// $json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_all_quests.php");
-								$json_string = file_get_contents("quest.json");
+								$json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_all_quests.php");
 								$array = json_decode($json_string, true);
 
 								echo '<table>';
@@ -94,8 +101,8 @@ and open the template in the editor.
 								foreach ($array as $key => $jsons) {
 									foreach ($jsons as $key => $value) {
 										echo '<tr>';
-										echo '<td>'.$array["results"][$n]['CharityName'].'</td>';
-										echo '<td>'.$array["results"][$n]['QuestBank'].'</td>';
+										echo '<td>'.$array["results"][$n]['Quantity'].'</td>';
+										echo '<td>'.$array["results"][$n]['QuestName'].'</td>';
 										echo '<td>'.$array["results"][$n]['DropOffLocation'].'</td>';
 										echo '<td>'.$array["results"][$n]['Payment'].'</td>';
 										echo '</tr>';
@@ -111,10 +118,10 @@ and open the template in the editor.
 					<div id="profileUser">
 						<div id="pic">
 							<?php
-								// $url = 'https://abnet.ddns.net/mucoftware/remote/get_user_picture.php?userid=1';
-								// $jsondata = file_get_contents($url);
-								// $obj = json_decode($jsondata,true);
-								// echo '<img class =img-circle src="' . $obj["type"] . ',' . $obj["data"] .'"/>';
+								$url = 'https://abnet.ddns.net/mucoftware/remote/get_user_picture.php?userid=1';
+								$jsondata = file_get_contents($url);
+								$obj = json_decode($jsondata,true);
+								echo '<img class =img-circle src="' . $obj["type"] . ',' . $obj["data"] .'"/>';
 							?>						
 					</div>
 						<div id="coinsCurrent">
@@ -184,8 +191,16 @@ and open the template in the editor.
 								$url = 'https://abnet.ddns.net/mucoftware/remote/get_user.php?user=helpfulguy78&password=helpfulguy78';
 								$jsondata = file_get_contents($url);
 								$obj = json_decode($jsondata,true);
-								echo "<h1>$".$obj["results"][0]['TotalCoins']*.189."</h1>";
+								echo "<h1>$".($obj["results"][0]['TotalCoins']*.189)."</h1>";
 							?>
+							<!-- 
+echo DBManager::getInstance()->construct_dropdown("fSelectCharity1",
+                    "fSelectCharity1",
+                    ["CharityID"],
+                    ["CharityName"],
+                    "SELECT CharityID,CharityName FROM Charity;");
+            echo "<br/>";
+ -->
 						</div>
 					</div>
 				 </div>
