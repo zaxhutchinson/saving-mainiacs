@@ -123,7 +123,8 @@
     <string name="nav_leaderboard">Leaderboard</string>
     <string name="nav_quests">Quests</string>
     <string name="nav_maps">Maps</string>
-    <string name="nav_user_profile">User Settings</string>
+    <string name="nav_user_profile">Settings</string>
     <string name="nav_sign_off">Sign Off</string>
+    <string name="nav_user_submenu">User</string>
 
 </resources>
