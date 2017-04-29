@@ -1,58 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:background="@color/bsbWhite"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="100dp"
     tools:context="com.mainiacs.saving.savingmainiacsapp.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="@dimen/chart_length"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/bsbBlue"
-        android:layout_margin="10dp">
-
-        <ImageView
-            android:id="@+id/userpic"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"/>
-
-        <TextView
-            android:id="@+id/userDayStepsText"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Steps Today"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"/>
+        android:weightSum="2">
 
         <TextView
             android:id="@+id/userDaySteps"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/sm_text_view"
-            android:textColor="#064F94"
-            android:textSize="30sp"/>
+            android:layout_weight="1"
+            android:gravity="end"
+            android:textColor="@color/bsbBlue"
+            android:textSize="@dimen/large_text_size" />
 
         <TextView
-            android:id="@+id/userCoinsText"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Coins"
-            android:textColor="#FFFFFF"
-            android:textSize="30sp"/>
-
-        <TextView
-            android:id="@+id/userCoins"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/sm_text_view"
-            android:textColor="#064F94"
-            android:textSize="30sp"/>
+            android:layout_weight="1"
+            android:gravity="start"
+            android:text="/10000"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_size" />
 
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+    <View
+        android:layout_width="@dimen/chart_length"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+
+    <TextView
+        android:id="@+id/userLevel"
+        android:layout_width="@dimen/chart_length"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textSize="@dimen/small_text_size" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/steps_chart"
+            android:layout_width="@dimen/chart_length"
+            android:layout_height="@dimen/chart_length"
+            android:layout_centerInParent="true" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/userpic"
+            android:layout_width="@dimen/image_length"
+            android:layout_height="@dimen/image_length"
+            android:layout_centerInParent="true"
+            app:civ_border_color="#FF000000"
+            app:civ_border_width="2dp" />
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/userCoinsText"
+        android:layout_width="@dimen/chart_length"
+        android:layout_height="wrap_content"
+        android:text="@string/coins_label"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/text_size" />
+
+    <View
+        android:layout_width="@dimen/chart_length"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+
+    <TextView
+        android:id="@+id/userCoins"
+        android:layout_width="@dimen/chart_length"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textColor="@color/bsbBlue"
+        android:textSize="@dimen/large_text_size" />
+
+</LinearLayout>
+

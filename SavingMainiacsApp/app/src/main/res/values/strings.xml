@@ -117,6 +117,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="coins_label">Coins</string>
+
     <string name="nav_tracker">Tracker</string>
     <string name="nav_leaderboard">Leaderboard</string>
     <string name="nav_quests">Quests</string>
