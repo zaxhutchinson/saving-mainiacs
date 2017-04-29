@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -12,10 +13,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -41,10 +44,15 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static String USER_PICTURE_URL = "https://abnet.ddns.net/mucoftware/remote/get_user_picture.php?userid=";
+    private static String SEND_STEP_URL = "https://abnet.ddns.net/mucoftware/remote/update_user.php?";
+
     private static final int MAX_STEPS = 10000;
 
     DataManager dm;
     UserProfile user;
+
+    StepCounterService stepCounterService;
+    Handler sendHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,16 +74,32 @@ public class MainActivity extends AppCompatActivity
         navigationView.getMenu().getItem(0).setChecked(true);
 
         initializeApp();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PopulateUserData();
     }
 
     public void initializeApp() {
-
         dm = getIntent().getParcelableExtra("DataManager");
         user = dm.userProfile;
 
-        PopulateUserData();
+        /* TODO: Uncomment this after the service no longer crashes app
 
+        stepCounterService = new StepCounterService(user);
+
+        sendHandler = new Handler();
+        sendHandler.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                SendUpdateToDB();
+            }
+        }, 1000);//300000);
+
+        */
     }
 
     void PopulateUserData() {
@@ -148,6 +172,47 @@ public class MainActivity extends AppCompatActivity
         queue.add(jsonObjectRequest);
     }
 
+    void SendUpdateToDB() {
+
+        //user=helpfulguy78&password=helpfulguy78&lat=1&long=1&steps=117
+        String url = SEND_STEP_URL + "user=" + user.UserName() +
+                "&password=" + user.Password() +
+                "&lat=" + Double.toString(user.Latitude()) +
+                "&long=" + Double.toString(user.Longitude()) +
+                "&steps=" + Integer.toString(user.TempSteps());
+
+        final RequestQueue queue = Volley.newRequestQueue(this);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                System.out.println(jsonObject.toString());
+                try {
+                    if (jsonObject.getInt("success") == 1) {
+
+                        //RequestUserProfile(queue);
+                        Toast.makeText(getParent(), Integer.toString(user.TempSteps()), Toast.LENGTH_LONG).show();
+
+                    } else {
+                        //mEmailView.setError("Error logging in.");
+                        //focusView.requestFocus();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+
+        queue.add(jsonObjectRequest);
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -189,13 +254,16 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_quests:
                 break;
             case R.id.nav_maps:
-                Intent intent = new Intent(this, MapsActivity.class);
-                intent.putExtra("DataManager", dm);
-                startActivity(intent);
+                Intent mapActivityIntent = new Intent(this, MapsActivity.class);
+                mapActivityIntent.putExtra("DataManager", dm);
+                startActivity(mapActivityIntent);
                 break;
             case R.id.nav_user_settings:
                 break;
             case R.id.nav_sign_off:
+                Intent loginActivityIntent = new Intent(this, LoginActivity.class);
+                startActivity(loginActivityIntent);
+                finish();
                 break;
             default:
                 break;
