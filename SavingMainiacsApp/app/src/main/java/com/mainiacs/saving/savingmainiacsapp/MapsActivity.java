@@ -19,6 +19,7 @@ import android.support.v4.app.FragmentActivity;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
@@ -135,6 +136,7 @@ public class MapsActivity extends FragmentActivity
                 dm.userProfile.UserName() + "&password=" + dm.userProfile.Password() +
                 "&questid=" + currentQuest.ID();
 
+        Log.i("APP", url);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -156,6 +158,7 @@ public class MapsActivity extends FragmentActivity
                     }
                     else {
 
+                        Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

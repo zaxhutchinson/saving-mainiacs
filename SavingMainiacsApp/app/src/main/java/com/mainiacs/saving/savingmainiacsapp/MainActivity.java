@@ -2,9 +2,12 @@ package com.mainiacs.saving.savingmainiacsapp;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,6 +15,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -35,14 +39,33 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+// Tutorial for navigation drawer: http://www.androidhive.info/2013/11/android-sliding-menu-using-navigation-drawer/
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener
+        , ProfileFragment.OnFragmentInteractionListener
+        , LeaderBoardFragment.OnFragmentInteractionListener
+        , QuestFragment.OnFragmentInteractionListener
+        , SettingsFragment.OnFragmentInteractionListener {
 
     private static String PROFILE_STRING = "https://abnet.ddns.net/mucoftware/remote/get_user.php?";
     private static String USER_PICTURE_URL = "https://abnet.ddns.net/mucoftware/remote/get_user_picture.php?userid=";
     private static String SEND_STEP_URL = "https://abnet.ddns.net/mucoftware/remote/update_user.php?";
 
     private static final int MAX_STEPS = 10000;
+
+    private static final String TAG_HOME = "home";
+    private static final String TAG_QUESTS = "quests";
+    private static final String TAG_LEADERBOARD = "leaderboard";
+    private static final String TAG_SETTINGS = "settings";
+    private static final String[] activityTitles = {"Tracker", "Leaderboard", "Quests", "Settings"};
+
+    private NavigationView navigationView;
+    private DrawerLayout drawer;
+    private String currentTag;
+    private int navItemIndex;
+    private Handler fragmentSwitchHandler;
+    private boolean shouldLoadHomeFragOnBackPress = true;
 
     DataManager dm;
     UserProfile user;
@@ -52,6 +75,10 @@ public class MainActivity extends AppCompatActivity
     StepCounterService stepCounterService;
     Handler sendHandler;
 
+    public void onFragmentInteraction(Uri uri) {
+        return;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,17 +86,18 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Select the first item on list
-        navigationView.getMenu().getItem(0).setChecked(true);
+        fragmentSwitchHandler = new Handler();
+        navItemIndex = 0;
+        currentTag = TAG_HOME;
 
         initializeApp();
     }
@@ -78,6 +106,7 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
+        // Update dataManager object to be used the fragments and map
         RequestUserProfile();
     }
 
@@ -105,81 +134,9 @@ public class MainActivity extends AppCompatActivity
         */
     }
 
-    void PopulateUserData() {
-        TextView daySteps = (TextView) findViewById(R.id.userDaySteps);
-        TextView coins = (TextView) findViewById(R.id.userCoins);
-        TextView level = (TextView) findViewById(R.id.userLevel);
-
-        daySteps.setText(Integer.toString(user.DaySteps()));
-        coins.setText(Integer.toString(user.Coins()));
-        level.setText("Level ?");
-
-        GetUserPicture();
-
-        int steps = user.DaySteps();
-        int zero = MAX_STEPS - steps;
-        PieChart stepChart = (PieChart) findViewById(R.id.steps_chart);
-        stepChart.setOnTouchListener(null);
-        stepChart.setDescription(null);
-        stepChart.setDrawEntryLabels(false);
-        stepChart.getLegend().setEnabled(false);
-
-        List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry((float) steps, 0));
-        entries.add(new PieEntry((float) zero, 1));
-
-        PieDataSet dataSet = new PieDataSet(entries, "Steps");
-        int[] colors = {ContextCompat.getColor(this, R.color.bsbBlue), ContextCompat.getColor(this, R.color.lightGrey)};
-        dataSet.setColors(colors);
-        dataSet.setDrawValues(false);
-
-        PieData data = new PieData(dataSet);
-        stepChart.setData(data);
-        stepChart.invalidate();
-
-    }
-
-    void GetUserPicture() {
-        final RequestQueue queue = Volley.newRequestQueue(this);
-
-        String url = USER_PICTURE_URL + Integer.toString(user.ID());
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject jsonObject) {
-                //System.out.println(jsonObject.toString());
-                try {
-                    if (jsonObject.getInt("success") == 1) {
-
-                        String base64encodedPic = jsonObject.getString("data");
-                        byte[] picbyes = Base64.decode(base64encodedPic, Base64.DEFAULT);
-                        user.Picture = BitmapFactory.decodeByteArray(picbyes, 0, picbyes.length);
-                        ImageView pic = (ImageView) findViewById(R.id.userpic);
-                        pic.setImageBitmap(user.Picture);
-                    } else {
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-
-            }
-        }
-        );
-
-        queue.add(jsonObjectRequest);
-    }
-
     public void RequestUserProfile() {
-
-        String url = PROFILE_STRING + "user=" + username + "&password=" + password;
-
         final RequestQueue queue = Volley.newRequestQueue(this);
+        String url = PROFILE_STRING + "user=" + username + "&password=" + password;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -194,10 +151,12 @@ public class MainActivity extends AppCompatActivity
                         dm.userProfile.Password(password);
 
                         user = dm.userProfile;
-                        PopulateUserData();
+
+                        // Load profile fragment after completing request
+                        loadHomeFragment();
 
                     } else {
-                        Toast.makeText(getParent(), "Failed to get profile.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Failed to get profile.", Toast.LENGTH_LONG).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -260,9 +219,20 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+            return;
         }
+
+        // Load home fragment if user is on another menu
+        if (shouldLoadHomeFragOnBackPress) {
+            if (navItemIndex != 0) {
+                navItemIndex = 0;
+                currentTag = TAG_HOME;
+                loadHomeFragment();
+                return;
+            }
+        }
+
+        super.onBackPressed();
     }
 
     @Override
@@ -285,35 +255,116 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        //Check to see which item was being clicked and perform appropriate action
         switch (id) {
             case R.id.nav_tracker:
+                navItemIndex = 0;
+                currentTag = TAG_HOME;
                 break;
             case R.id.nav_leaderboard:
+                navItemIndex = 1;
+                currentTag = TAG_LEADERBOARD;
                 break;
             case R.id.nav_quests:
+                navItemIndex = 2;
+                currentTag = TAG_QUESTS;
                 break;
             case R.id.nav_maps:
                 Intent mapActivityIntent = new Intent(this, MapsActivity.class);
                 mapActivityIntent.putExtra("DataManager", dm);
                 startActivity(mapActivityIntent);
-                break;
+                drawer.closeDrawers();
+                return true;
             case R.id.nav_user_settings:
+                navItemIndex = 3;
+                currentTag = TAG_SETTINGS;
                 break;
             case R.id.nav_sign_off:
                 Intent loginActivityIntent = new Intent(this, LoginActivity.class);
                 startActivity(loginActivityIntent);
                 finish();
-                break;
+                return true;
             default:
-                break;
-
+                navItemIndex = 0;
+                currentTag = TAG_HOME;
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        item.setChecked(true);
+
+        loadHomeFragment();
+
         return true;
+    }
+
+    private void loadHomeFragment() {
+        // selecting appropriate nav menu item
+        selectNavMenu();
+
+        // set toolbar title
+        setToolbarTitle();
+
+        // if user select the current navigation menu again, don't do anything
+        // just close the navigation drawer
+        if (getSupportFragmentManager().findFragmentByTag(currentTag) != null) {
+            drawer.closeDrawers();
+            return;
+        }
+
+        // Sometimes, when fragment has huge data, screen seems hanging
+        // when switching between navigation menus
+        // So using runnable, the fragment is loaded with cross fade effect
+        // This effect can be seen in GMail app
+        Runnable mPendingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // update the main content by replacing fragments
+                Fragment fragment = getHomeFragment();
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.setCustomAnimations(android.R.anim.fade_in,
+                        android.R.anim.fade_out);
+                fragmentTransaction.replace(R.id.fragment_frame, fragment, currentTag);
+                fragmentTransaction.commitAllowingStateLoss();
+            }
+        };
+
+        // If mPendingRunnable is not null, then add to the message queue
+        if (mPendingRunnable != null) {
+            fragmentSwitchHandler.post(mPendingRunnable);
+        }
+
+        //Closing drawer on item click
+        drawer.closeDrawers();
+
+        // refresh toolbar menu
+        invalidateOptionsMenu();
+    }
+
+    private void setToolbarTitle() {
+        getSupportActionBar().setTitle(activityTitles[navItemIndex]);
+    }
+
+    private void selectNavMenu() {
+        navigationView.getMenu().getItem(navItemIndex).setChecked(true);
+    }
+
+    private Fragment getHomeFragment() {
+        switch (navItemIndex) {
+            case 0:
+                ProfileFragment profileFragment = ProfileFragment.newInstance(dm);
+                return profileFragment;
+            case 1:
+                LeaderBoardFragment leaderBoardFragment = new LeaderBoardFragment();
+                return leaderBoardFragment;
+            case 2:
+                QuestFragment questFragment = new QuestFragment();
+                return questFragment;
+            case 3:
+                SettingsFragment settingsFragment = new SettingsFragment();
+                return settingsFragment;
+            default:
+                return new ProfileFragment();
+        }
     }
 }
