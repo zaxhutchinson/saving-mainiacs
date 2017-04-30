@@ -1,25 +1,19 @@
 package com.mainiacs.saving.savingmainiacsapp;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -28,16 +22,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 // Tutorial for navigation drawer: http://www.androidhive.info/2013/11/android-sliding-menu-using-navigation-drawer/
 
@@ -49,10 +36,7 @@ public class MainActivity extends AppCompatActivity
         , SettingsFragment.OnFragmentInteractionListener {
 
     private static String PROFILE_STRING = "https://abnet.ddns.net/mucoftware/remote/get_user.php?";
-    private static String USER_PICTURE_URL = "https://abnet.ddns.net/mucoftware/remote/get_user_picture.php?userid=";
     private static String SEND_STEP_URL = "https://abnet.ddns.net/mucoftware/remote/update_user.php?";
-
-    private static final int MAX_STEPS = 10000;
 
     private static final String TAG_HOME = "home";
     private static final String TAG_QUESTS = "quests";
