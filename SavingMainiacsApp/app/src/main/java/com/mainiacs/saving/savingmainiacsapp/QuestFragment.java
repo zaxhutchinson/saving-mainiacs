@@ -1,22 +1,16 @@
 package com.mainiacs.saving.savingmainiacsapp;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -39,6 +33,7 @@ public class QuestFragment extends Fragment {
     private static final String URL_PENDING_QUESTS = "  https://abnet.ddns.net/mucoftware/remote/get_user_pending_quests.php?";
     private static final String URL_REJECTED_QUESTS = "https://abnet.ddns.net/mucoftware/remote/get_user_rejected_quests.php?";
     private static final String URL_COMPLETED_QUESTS = "https://abnet.ddns.net/mucoftware/remote/get_user_rewarded_quests.php?";
+    private static final int NUM_QUEST_TABS = 4;
 
     private static final String ARG_USERNAME = "username";
     private static final String ARG_PASSWORD = "password";
@@ -52,6 +47,7 @@ public class QuestFragment extends Fragment {
     private ArrayList<UserQuestInfo> rejectedQuests;
 
     private ViewPager questPager;
+    private TabLayout tabs;
 
     private OnFragmentInteractionListener mListener;
 
@@ -87,21 +83,33 @@ public class QuestFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_quest, container, false);
         questPager = (ViewPager) view.findViewById(R.id.quests_pager);
 
-        TabLayout tabs = (TabLayout) view.findViewById(R.id.quests_tabs);
+        tabs = (TabLayout) view.findViewById(R.id.quests_tabs);
         tabs.setupWithViewPager(questPager);
 
-        getActiveQuests();
+        getAllQuests();
 
         return view;
     }
 
-    private ViewPagerAdapter buildAdapter() {
+    private void populatePage() {
+
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(UserQuestInfoFragment.newInstance(activeQuests), "Active");
         adapter.addFragment(UserQuestInfoFragment.newInstance(pendingQuests), "Pending");
         adapter.addFragment(UserQuestInfoFragment.newInstance(rejectedQuests), "Rejected");
         adapter.addFragment(UserQuestInfoFragment.newInstance(completedQuests), "Completed");
-        return adapter;
+
+        questPager.setAdapter(adapter);
+
+        // Set icons for each tab
+        int[] tabIcons = {R.drawable.quest_active
+                , R.drawable.quest_pending
+                , R.drawable.quest_rejected
+                , R.drawable.quest_completed};
+
+        for (int i = 0; i < NUM_QUEST_TABS; i++) {
+            tabs.getTabAt(i).setIcon(tabIcons[i]);
+        }
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -129,8 +137,13 @@ public class QuestFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
+            return null;
         }
+    }
+
+    private void getAllQuests() {
+        // Start chain of queries to get all quests of different statuses
+        getActiveQuests();
     }
 
     private void getActiveQuests() {
@@ -279,7 +292,7 @@ public class QuestFragment extends Fragment {
                         }
 
                         // Set up viewpager after collecting all the data
-                        questPager.setAdapter(buildAdapter());
+                        populatePage();
 
                     } else {
                         Toast.makeText(getContext(), "Failed to get completed quests.", Toast.LENGTH_LONG).show();

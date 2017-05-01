@@ -302,7 +302,7 @@ public class MainActivity extends AppCompatActivity
 
         // Sometimes, when fragment has huge data, screen seems hanging
         // when switching between navigation menus
-        // So using runnable, the fragment is loaded with cross fade effect
+        // So using runnable, the fragment is loaded with quest_rejected fade effect
         // This effect can be seen in GMail app
         Runnable mPendingRunnable = new Runnable() {
             @Override
