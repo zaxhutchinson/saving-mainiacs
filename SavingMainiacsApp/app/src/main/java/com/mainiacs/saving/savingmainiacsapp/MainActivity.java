@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity
         , ProfileFragment.OnFragmentInteractionListener
         , LeaderBoardFragment.OnFragmentInteractionListener
         , QuestFragment.OnFragmentInteractionListener
-        , SettingsFragment.OnFragmentInteractionListener {
+        , SettingsFragment.OnFragmentInteractionListener
+        , UserQuestInfoFragment.OnListFragmentInteractionListener {
 
     private static String PROFILE_STRING = "https://abnet.ddns.net/mucoftware/remote/get_user.php?";
     private static String SEND_STEP_URL = "https://abnet.ddns.net/mucoftware/remote/update_user.php?";
@@ -60,6 +61,9 @@ public class MainActivity extends AppCompatActivity
     Handler sendHandler;
 
     public void onFragmentInteraction(Uri uri) {
+        return;
+    }
+    public void onListFragmentInteraction(UserQuestInfo info) {
         return;
     }
 
@@ -342,7 +346,7 @@ public class MainActivity extends AppCompatActivity
                 LeaderBoardFragment leaderBoardFragment = new LeaderBoardFragment();
                 return leaderBoardFragment;
             case 2:
-                QuestFragment questFragment = new QuestFragment();
+                QuestFragment questFragment = QuestFragment.newInstance(username, password);
                 return questFragment;
             case 3:
                 SettingsFragment settingsFragment = new SettingsFragment();
