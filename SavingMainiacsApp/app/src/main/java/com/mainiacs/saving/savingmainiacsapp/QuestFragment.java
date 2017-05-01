@@ -98,9 +98,9 @@ public class QuestFragment extends Fragment {
     private ViewPagerAdapter buildAdapter() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(UserQuestInfoFragment.newInstance(activeQuests), "Active");
-        adapter.addFragment(UserQuestInfoFragment.newInstance(activeQuests), "Pending");
-        adapter.addFragment(UserQuestInfoFragment.newInstance(activeQuests), "Rejected");
-        adapter.addFragment(UserQuestInfoFragment.newInstance(activeQuests), "Completed");
+        adapter.addFragment(UserQuestInfoFragment.newInstance(pendingQuests), "Pending");
+        adapter.addFragment(UserQuestInfoFragment.newInstance(rejectedQuests), "Rejected");
+        adapter.addFragment(UserQuestInfoFragment.newInstance(completedQuests), "Completed");
         return adapter;
     }
 
@@ -155,8 +155,6 @@ public class QuestFragment extends Fragment {
 
                             activeQuests.add(new UserQuestInfo(userQuestId, questId, charityId, rewardAmount, date));
                         }
-                        questPager.setAdapter(buildAdapter());
-
                     } else {
                         Toast.makeText(getContext(), "Failed to get active quests.", Toast.LENGTH_LONG).show();
                     }
@@ -173,7 +171,134 @@ public class QuestFragment extends Fragment {
         );
 
         queue.add(jsonObjectRequest);
+        getPendingQuests(queue);
     }
+
+    private void getPendingQuests(RequestQueue queue) {
+        String url = URL_PENDING_QUESTS + "user=" + username + "&password=" + password;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    if (jsonObject.getInt("success") == 1) {
+                        JSONArray questList = jsonObject.getJSONArray("results");
+                        for (int i = 0; i < questList.length(); i++) {
+                            JSONObject quest = questList.getJSONObject(i);
+
+                            int userQuestId = quest.getInt("ActiveID");
+                            int questId = quest.getInt("QuestID");
+                            int charityId = quest.getInt("CharityID");
+                            int rewardAmount = quest.getInt("RewardAmount");
+                            String date = quest.getString("AcceptDate");
+
+                            pendingQuests.add(new UserQuestInfo(userQuestId, questId, charityId, rewardAmount, date));
+                        }
+
+                    } else {
+                        Toast.makeText(getContext(), "Failed to get pending quests.", Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+
+        queue.add(jsonObjectRequest);
+        getRejectedQuests(queue);
+    }
+
+    private void getRejectedQuests(RequestQueue queue) {
+        String url = URL_REJECTED_QUESTS + "user=" + username + "&password=" + password;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    if (jsonObject.getInt("success") == 1) {
+                        JSONArray questList = jsonObject.getJSONArray("results");
+                        for (int i = 0; i < questList.length(); i++) {
+                            JSONObject quest = questList.getJSONObject(i);
+
+                            int userQuestId = quest.getInt("ActiveID");
+                            int questId = quest.getInt("QuestID");
+                            int charityId = quest.getInt("CharityID");
+                            int rewardAmount = quest.getInt("RewardAmount");
+                            String date = quest.getString("AcceptDate");
+
+                            rejectedQuests.add(new UserQuestInfo(userQuestId, questId, charityId, rewardAmount, date));
+                        }
+
+                    } else {
+                        Toast.makeText(getContext(), "Failed to get rejected quests.", Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+
+        queue.add(jsonObjectRequest);
+        getCompletedQuests(queue);
+    }
+
+    private void getCompletedQuests(RequestQueue queue) {
+        String url = URL_COMPLETED_QUESTS + "user=" + username + "&password=" + password;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    if (jsonObject.getInt("success") == 1) {
+                        JSONArray questList = jsonObject.getJSONArray("results");
+                        for (int i = 0; i < questList.length(); i++) {
+                            JSONObject quest = questList.getJSONObject(i);
+
+                            int userQuestId = quest.getInt("ActiveID");
+                            int questId = quest.getInt("QuestID");
+                            int charityId = quest.getInt("CharityID");
+                            int rewardAmount = quest.getInt("RewardAmount");
+                            String date = quest.getString("AcceptDate");
+
+                            completedQuests.add(new UserQuestInfo(userQuestId, questId, charityId, rewardAmount, date));
+                        }
+
+                        // Set up viewpager after collecting all the data
+                        questPager.setAdapter(buildAdapter());
+
+                    } else {
+                        Toast.makeText(getContext(), "Failed to get completed quests.", Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+
+        queue.add(jsonObjectRequest);
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
