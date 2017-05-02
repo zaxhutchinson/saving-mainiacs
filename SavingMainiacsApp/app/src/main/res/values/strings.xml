@@ -119,10 +119,10 @@
 
     <string name="coins_label">Coins</string>
 
-    <string name="nav_tracker">Tracker</string>
+    <string name="nav_tracker">Status</string>
     <string name="nav_leaderboard">Leaderboard</string>
-    <string name="nav_quests">Quests</string>
-    <string name="nav_maps">Maps</string>
+    <string name="nav_quests">My Quests</string>
+    <string name="nav_maps">Quest Finder</string>
     <string name="nav_user_profile">Settings</string>
     <string name="nav_sign_off">Sign Off</string>
     <string name="nav_user_submenu">User</string>

@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG_QUESTS = "quests";
     private static final String TAG_LEADERBOARD = "leaderboard";
     private static final String TAG_SETTINGS = "settings";
-    private static final String[] activityTitles = {"Tracker", "Leaderboard", "Quests", "Settings"};
+    private static final String[] activityTitles = {"Status", "", "My Quests", "Leaderboard", "Settings", ""};
 
     private NavigationView navigationView;
     private DrawerLayout drawer;
@@ -251,25 +251,27 @@ public class MainActivity extends AppCompatActivity
                 navItemIndex = 0;
                 currentTag = TAG_HOME;
                 break;
-            case R.id.nav_leaderboard:
-                navItemIndex = 1;
-                currentTag = TAG_LEADERBOARD;
-                break;
-            case R.id.nav_quests:
-                navItemIndex = 2;
-                currentTag = TAG_QUESTS;
-                break;
             case R.id.nav_maps:
+                navItemIndex = 1;
                 Intent mapActivityIntent = new Intent(this, MapsActivity.class);
                 mapActivityIntent.putExtra("DataManager", dm);
                 startActivity(mapActivityIntent);
                 drawer.closeDrawers();
                 return true;
-            case R.id.nav_user_settings:
+            case R.id.nav_quests:
+                navItemIndex = 2;
+                currentTag = TAG_QUESTS;
+                break;
+            case R.id.nav_leaderboard:
                 navItemIndex = 3;
+                currentTag = TAG_LEADERBOARD;
+                break;
+            case R.id.nav_user_settings:
+                navItemIndex = 4;
                 currentTag = TAG_SETTINGS;
                 break;
             case R.id.nav_sign_off:
+                navItemIndex = 5;
                 Intent loginActivityIntent = new Intent(this, LoginActivity.class);
                 startActivity(loginActivityIntent);
                 finish();
@@ -342,13 +344,13 @@ public class MainActivity extends AppCompatActivity
             case 0:
                 ProfileFragment profileFragment = ProfileFragment.newInstance(dm);
                 return profileFragment;
-            case 1:
-                LeaderBoardFragment leaderBoardFragment = new LeaderBoardFragment();
-                return leaderBoardFragment;
             case 2:
                 QuestFragment questFragment = QuestFragment.newInstance(username, password);
                 return questFragment;
             case 3:
+                LeaderBoardFragment leaderBoardFragment = new LeaderBoardFragment();
+                return leaderBoardFragment;
+            case 4:
                 SettingsFragment settingsFragment = new SettingsFragment();
                 return settingsFragment;
             default:
