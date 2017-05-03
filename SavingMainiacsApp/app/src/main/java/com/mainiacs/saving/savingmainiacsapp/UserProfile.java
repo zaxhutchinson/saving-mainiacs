@@ -50,6 +50,7 @@ public class UserProfile implements Parcelable {
     public double Longitude() { return last_long; }
     public int Coins() { return coins; }
     public int TotalCoins() { return total_coins; }
+    public void ResetTempSteps() { temp_steps = 0;}
 
     public UserProfile() {
 

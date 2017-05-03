@@ -208,6 +208,7 @@ public class MainActivity extends AppCompatActivity
                     try {
                         if (jsonObject.getInt("success") == 1) {
 
+                            user.ResetTempSteps();
                             //RequestUserProfile(queue);
                             Toast.makeText(getApplicationContext(), Integer.toString(user.TempSteps()), Toast.LENGTH_LONG).show();
 
@@ -301,6 +302,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_sign_off:
                 navItemIndex = 5;
+                sendHandler.removeCallbacks(dbSender);
                 Intent loginActivityIntent = new Intent(this, LoginActivity.class);
                 startActivity(loginActivityIntent);
                 finish();
