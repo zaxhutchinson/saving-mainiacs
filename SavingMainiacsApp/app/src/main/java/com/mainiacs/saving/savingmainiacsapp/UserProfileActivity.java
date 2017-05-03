@@ -1,5 +1,6 @@
 package com.mainiacs.saving.savingmainiacsapp;
 
+import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;

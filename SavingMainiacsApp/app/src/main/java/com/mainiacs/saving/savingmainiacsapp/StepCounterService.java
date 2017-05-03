@@ -33,13 +33,18 @@ public class StepCounterService extends IntentService implements SensorEventList
     Sensor countSensor;
     boolean activityRunning;
 
+    public StepCounterService() {
+        super("StepCounterService");
+    }
+
+
 
     public StepCounterService(UserProfile user) {
         super("StepCounterService");
 
         this.user = user;
 
-        sensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        sensorManager = (SensorManager)this.getApplicationContext().getSystemService(this.getApplicationContext().SENSOR_SERVICE);
         countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
         if(countSensor != null) {

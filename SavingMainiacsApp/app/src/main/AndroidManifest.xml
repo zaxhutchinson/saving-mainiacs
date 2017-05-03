@@ -58,7 +58,7 @@
                 android:value="com.mainiacs.saving.savingmainiacsapp.MainActivity" />
         </activity>
         <service
-            android:name="StepCounter"
+            android:name="StepCounterService"
             android:exported="false" />
 
     </application>
