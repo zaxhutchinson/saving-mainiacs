@@ -92,9 +92,6 @@ public class MainActivity extends AppCompatActivity
         initializeApp();
 
         RequestUserProfile();
-
-        SetUpStepSensor();
-
     }
 
     @Override
@@ -143,6 +140,9 @@ public class MainActivity extends AppCompatActivity
 
                         // Load profile fragment after completing request
                         loadHomeFragment();
+
+                        // set up step counter after retrieving user profile 
+                        SetUpStepSensor();
 
                     } else {
                         Toast.makeText(getApplicationContext(), "Failed to get profile.", Toast.LENGTH_LONG).show();

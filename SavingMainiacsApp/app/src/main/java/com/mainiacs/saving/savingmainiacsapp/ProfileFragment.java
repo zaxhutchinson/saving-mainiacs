@@ -123,13 +123,15 @@ public class ProfileFragment extends Fragment {
 
     void PopulateUserData() {
 
-        daySteps.setText(Integer.toString(user.DaySteps()));
-        coins.setText(Integer.toString(user.Coins()));
-        level.setText("Level ?");
+        int steps = user.DaySteps();
+        if (steps > MAX_STEPS) steps = MAX_STEPS;
+
+        daySteps.setText(String.valueOf(steps));
+        coins.setText(String.valueOf(user.Coins()));
+        level.setText("Level 1");
 
         GetUserPicture();
 
-        int steps = user.DaySteps();
         int zero = MAX_STEPS - steps;
         stepChart.setOnTouchListener(null);
         stepChart.setDescription(null);

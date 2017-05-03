@@ -127,4 +127,7 @@
     <string name="nav_sign_off">Sign Off</string>
     <string name="nav_user_submenu">User</string>
 
+    <string name="label_charity">Charity</string>
+    <string name="label_date">Date</string>
+
 </resources>
