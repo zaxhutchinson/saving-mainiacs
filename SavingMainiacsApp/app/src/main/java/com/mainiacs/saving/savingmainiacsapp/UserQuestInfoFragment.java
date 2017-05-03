@@ -3,33 +3,30 @@ package com.mainiacs.saving.savingmainiacsapp;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.mainiacs.saving.savingmainiacsapp.dummy.DummyContent;
-import com.mainiacs.saving.savingmainiacsapp.dummy.DummyContent.DummyItem;
 
 import java.util.ArrayList;
 
 public class UserQuestInfoFragment extends Fragment {
 
     private static final String ARG_QUESTS = "userQuests";
+    private static final String ARG_QUEST_STATUS = "questStatus";
 
     private ArrayList<UserQuestInfo> questList;
+    private int questStatus;
     private OnListFragmentInteractionListener mListener;
 
     public UserQuestInfoFragment() {
     }
 
-    public static UserQuestInfoFragment newInstance(ArrayList<UserQuestInfo> quests) {
+    public static UserQuestInfoFragment newInstance(ArrayList<UserQuestInfo> quests, int questStatus) {
         UserQuestInfoFragment fragment = new UserQuestInfoFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_QUESTS, quests);
+        args.putInt(ARG_QUEST_STATUS, questStatus);
         fragment.setArguments(args);
         return fragment;
     }
@@ -40,6 +37,7 @@ public class UserQuestInfoFragment extends Fragment {
 
         if (getArguments() != null) {
             questList = getArguments().getParcelableArrayList(ARG_QUESTS);
+            questStatus = getArguments().getInt(ARG_QUEST_STATUS);
         }
     }
 
@@ -51,7 +49,10 @@ public class UserQuestInfoFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setAdapter(new UserQuestInfoViewAdapater(questList, mListener));
+
+            // Only show the buttons to leave quest or mark as complete in active quest page
+            boolean showButtons = questStatus == QuestFragment.QUEST_STATUS_ACTIVE;
+            recyclerView.setAdapter(new UserQuestInfoViewAdapter(questList, showButtons, mListener));
         }
         return view;
     }

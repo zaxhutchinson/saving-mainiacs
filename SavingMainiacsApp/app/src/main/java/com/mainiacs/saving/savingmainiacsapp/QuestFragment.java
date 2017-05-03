@@ -29,10 +29,18 @@ import java.util.List;
 
 public class QuestFragment extends Fragment {
 
-    private static final String URL_ACTIVE_QUESTS = "https://abnet.ddns.net/mucoftware/remote/get_user_active_quests.php?";
-    private static final String URL_PENDING_QUESTS = "  https://abnet.ddns.net/mucoftware/remote/get_user_pending_quests.php?";
-    private static final String URL_REJECTED_QUESTS = "https://abnet.ddns.net/mucoftware/remote/get_user_rejected_quests.php?";
-    private static final String URL_COMPLETED_QUESTS = "https://abnet.ddns.net/mucoftware/remote/get_user_rewarded_quests.php?";
+    private static final String URL_GET_ACTIVE_QUESTS = "https://abnet.ddns.net/mucoftware/remote/get_user_active_quests.php?";
+    private static final String URL_GET_PENDING_QUESTS = "  https://abnet.ddns.net/mucoftware/remote/get_user_pending_quests.php?";
+    private static final String URL_GET_REJECTED_QUESTS = "https://abnet.ddns.net/mucoftware/remote/get_user_rejected_quests.php?";
+    private static final String URL_GET_COMPLETED_QUESTS = "https://abnet.ddns.net/mucoftware/remote/get_user_rewarded_quests.php?";
+    private static final String URL_LEAVE_QUEST = "https://abnet.ddns.net/mucoftware/remote/leave_quest.php?";
+    private static final String URL_COMPLETE_QUEST = "https://abnet.ddns.net/mucoftware/remote/complete_quest.php?";
+
+    public static final int QUEST_STATUS_ACTIVE = 0;
+    public static final int QUEST_STATUS_PENDING = 1;
+    public static final int QUEST_STATUS_REJECTED = 2;
+    public static final int QUEST_STATUS_COMPLETED = 3;
+
     private static final int NUM_QUEST_TABS = 4;
 
     private static final String ARG_USERNAME = "username";
@@ -94,10 +102,10 @@ public class QuestFragment extends Fragment {
     private void populatePage() {
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(UserQuestInfoFragment.newInstance(activeQuests), "Active");
-        adapter.addFragment(UserQuestInfoFragment.newInstance(pendingQuests), "Pending");
-        adapter.addFragment(UserQuestInfoFragment.newInstance(rejectedQuests), "Rejected");
-        adapter.addFragment(UserQuestInfoFragment.newInstance(completedQuests), "Completed");
+        adapter.addFragment(UserQuestInfoFragment.newInstance(activeQuests, QUEST_STATUS_ACTIVE), "Active");
+        adapter.addFragment(UserQuestInfoFragment.newInstance(pendingQuests, QUEST_STATUS_PENDING), "Pending");
+        adapter.addFragment(UserQuestInfoFragment.newInstance(rejectedQuests, QUEST_STATUS_REJECTED), "Rejected");
+        adapter.addFragment(UserQuestInfoFragment.newInstance(completedQuests, QUEST_STATUS_COMPLETED), "Completed");
 
         questPager.setAdapter(adapter);
 
@@ -148,7 +156,7 @@ public class QuestFragment extends Fragment {
 
     private void getActiveQuests() {
         final RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = URL_ACTIVE_QUESTS + "user=" + username + "&password=" + password;
+        String url = URL_GET_ACTIVE_QUESTS + "user=" + username + "&password=" + password;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -156,17 +164,21 @@ public class QuestFragment extends Fragment {
             public void onResponse(JSONObject jsonObject) {
                 try {
                     if (jsonObject.getInt("success") == 1) {
+                        activeQuests.clear();
+
                         JSONArray questList = jsonObject.getJSONArray("results");
                         for (int i = 0; i < questList.length(); i++) {
                             JSONObject quest = questList.getJSONObject(i);
 
                             int userQuestId = quest.getInt("ActiveID");
-                            int questId = quest.getInt("QuestID");
-                            int charityId = quest.getInt("CharityID");
                             int rewardAmount = quest.getInt("RewardAmount");
                             String date = quest.getString("AcceptDate");
 
-                            activeQuests.add(new UserQuestInfo(userQuestId, questId, charityId, rewardAmount, date));
+                            String questName = quest.getString("QuestName");
+                            String questDescription = quest.getString("QuestDescription");
+                            String charityName = quest.getString("CharityName");
+
+                            activeQuests.add(new UserQuestInfo(userQuestId, questName, questDescription, charityName, rewardAmount, date));
                         }
                     } else {
                         Toast.makeText(getContext(), "Failed to get active quests.", Toast.LENGTH_LONG).show();
@@ -188,7 +200,7 @@ public class QuestFragment extends Fragment {
     }
 
     private void getPendingQuests(RequestQueue queue) {
-        String url = URL_PENDING_QUESTS + "user=" + username + "&password=" + password;
+        String url = URL_GET_PENDING_QUESTS + "user=" + username + "&password=" + password;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -196,17 +208,21 @@ public class QuestFragment extends Fragment {
             public void onResponse(JSONObject jsonObject) {
                 try {
                     if (jsonObject.getInt("success") == 1) {
+                        pendingQuests.clear();
+
                         JSONArray questList = jsonObject.getJSONArray("results");
                         for (int i = 0; i < questList.length(); i++) {
                             JSONObject quest = questList.getJSONObject(i);
 
                             int userQuestId = quest.getInt("ActiveID");
-                            int questId = quest.getInt("QuestID");
-                            int charityId = quest.getInt("CharityID");
                             int rewardAmount = quest.getInt("RewardAmount");
                             String date = quest.getString("AcceptDate");
 
-                            pendingQuests.add(new UserQuestInfo(userQuestId, questId, charityId, rewardAmount, date));
+                            String questName = quest.getString("QuestName");
+                            String questDescription = quest.getString("QuestDescription");
+                            String charityName = quest.getString("CharityName");
+
+                            pendingQuests.add(new UserQuestInfo(userQuestId, questName, questDescription, charityName, rewardAmount, date));
                         }
 
                     } else {
@@ -229,7 +245,7 @@ public class QuestFragment extends Fragment {
     }
 
     private void getRejectedQuests(RequestQueue queue) {
-        String url = URL_REJECTED_QUESTS + "user=" + username + "&password=" + password;
+        String url = URL_GET_REJECTED_QUESTS + "user=" + username + "&password=" + password;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -237,17 +253,21 @@ public class QuestFragment extends Fragment {
             public void onResponse(JSONObject jsonObject) {
                 try {
                     if (jsonObject.getInt("success") == 1) {
+                        rejectedQuests.clear();
+
                         JSONArray questList = jsonObject.getJSONArray("results");
                         for (int i = 0; i < questList.length(); i++) {
                             JSONObject quest = questList.getJSONObject(i);
 
                             int userQuestId = quest.getInt("ActiveID");
-                            int questId = quest.getInt("QuestID");
-                            int charityId = quest.getInt("CharityID");
                             int rewardAmount = quest.getInt("RewardAmount");
                             String date = quest.getString("AcceptDate");
 
-                            rejectedQuests.add(new UserQuestInfo(userQuestId, questId, charityId, rewardAmount, date));
+                            String questName = quest.getString("QuestName");
+                            String questDescription = quest.getString("QuestDescription");
+                            String charityName = quest.getString("CharityName");
+
+                            rejectedQuests.add(new UserQuestInfo(userQuestId, questName, questDescription, charityName, rewardAmount, date));
                         }
 
                     } else {
@@ -270,7 +290,7 @@ public class QuestFragment extends Fragment {
     }
 
     private void getCompletedQuests(RequestQueue queue) {
-        String url = URL_COMPLETED_QUESTS + "user=" + username + "&password=" + password;
+        String url = URL_GET_COMPLETED_QUESTS + "user=" + username + "&password=" + password;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -278,17 +298,21 @@ public class QuestFragment extends Fragment {
             public void onResponse(JSONObject jsonObject) {
                 try {
                     if (jsonObject.getInt("success") == 1) {
+                        completedQuests.clear();
+
                         JSONArray questList = jsonObject.getJSONArray("results");
                         for (int i = 0; i < questList.length(); i++) {
                             JSONObject quest = questList.getJSONObject(i);
 
                             int userQuestId = quest.getInt("ActiveID");
-                            int questId = quest.getInt("QuestID");
-                            int charityId = quest.getInt("CharityID");
                             int rewardAmount = quest.getInt("RewardAmount");
                             String date = quest.getString("AcceptDate");
 
-                            completedQuests.add(new UserQuestInfo(userQuestId, questId, charityId, rewardAmount, date));
+                            String questName = quest.getString("QuestName");
+                            String questDescription = quest.getString("QuestDescription");
+                            String charityName = quest.getString("CharityName");
+
+                            completedQuests.add(new UserQuestInfo(userQuestId, questName, questDescription, charityName, rewardAmount, date));
                         }
 
                         // Set up viewpager after collecting all the data
@@ -309,6 +333,64 @@ public class QuestFragment extends Fragment {
         }
         );
 
+        queue.add(jsonObjectRequest);
+    }
+
+    private void leaveActiveQuest(int activeQuestId) {
+        final RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url = URL_LEAVE_QUEST + "user=" + username + "&password=" + password + "&activequestid=" + activeQuestId;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    if (jsonObject.getInt("success") == 1) {
+                        // TODO: Refresh list of active quests
+
+                    } else {
+                        Toast.makeText(getContext(), "Failed to leave quest.", Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+        queue.add(jsonObjectRequest);
+    }
+
+    private void completeActiveQuest(int activeQuestId) {
+        final RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url = URL_COMPLETE_QUEST + "user=" + username + "&password=" + password + "&activequestid=" + activeQuestId;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    if (jsonObject.getInt("success") == 1) {
+                        // TODO: Refresh list of active quests
+
+                    } else {
+                        Toast.makeText(getContext(), "Failed to mark quest as complete.", Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
         queue.add(jsonObjectRequest);
     }
 

@@ -11,6 +11,10 @@ public class UserQuestInfo implements Parcelable {
     private int rewardAmount;
     private String date;
 
+    private String questName;
+    private String questDescription;
+    private String charityName;
+
     public UserQuestInfo(int userQuestId, int questId, int charityId, int rewardAmount, String date) {
         this.userQuestId = userQuestId;
         this.questId = questId;
@@ -19,10 +23,19 @@ public class UserQuestInfo implements Parcelable {
         this.date = date;
     }
 
+    public UserQuestInfo(int userQuestId, String questName, String questDescription, String charityName, int rewardAmount, String date) {
+        this.userQuestId = userQuestId;
+        this.questName = questName;
+        this.questDescription = questDescription;
+        this.charityName = charityName;
+        this.rewardAmount = rewardAmount;
+        this.date = date;
+    }
+
     public String toString() {
         return "UserQuestId: " + this.userQuestId
-                + ", QuestId: " + this.questId
-                + ", CharityId: " + this.charityId
+                + ", QuestName: " + this.questName
+                + ", CharityName: " + this.charityName
                 + ", Amount: " + this.rewardAmount
                 + ", Date: " + this.date;
     }
@@ -69,7 +82,6 @@ public class UserQuestInfo implements Parcelable {
         this.userQuestId = userQuestId;
     }
 
-
     public int getQuestId() {
         return questId;
     }
@@ -100,5 +112,29 @@ public class UserQuestInfo implements Parcelable {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getQuestName() {
+        return questName;
+    }
+
+    public void setQuestName(String questName) {
+        this.questName = questName;
+    }
+
+    public String getQuestDescription() {
+        return questDescription;
+    }
+
+    public void setQuestDescription(String questDescription) {
+        this.questDescription = questDescription;
+    }
+
+    public String getCharityName() {
+        return charityName;
+    }
+
+    public void setCharityName(String charityName) {
+        this.charityName = charityName;
     }
 }

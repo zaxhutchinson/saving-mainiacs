@@ -14,4 +14,6 @@
     <dimen name="text_size">25sp</dimen>
     <dimen name="large_text_size">35sp</dimen>
     <dimen name="small_text_size">15sp</dimen>
+
+    <dimen name="button_length">40dp</dimen>
 </resources>

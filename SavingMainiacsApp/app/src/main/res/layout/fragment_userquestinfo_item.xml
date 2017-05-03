@@ -2,35 +2,106 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:background="?android:attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:padding="8dp">
 
-    <TextView
-        android:id="@+id/user_quest_id"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin" />
+        android:orientation="horizontal"
+        android:weightSum="4">
 
-    <TextView
-        android:id="@+id/quest_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin" />
+        <TextView
+            android:id="@+id/user_quest_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:gravity="start" />
 
-    <TextView
-        android:id="@+id/quest_charity_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin" />
+        <TextView
+            android:id="@+id/user_quest_reward"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center" />
 
-    <TextView
-        android:id="@+id/quest_amount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin" />
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/quest_date"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/user_quest_details"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin" />
+        android:layout_margin="@dimen/text_margin"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/quest_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/text_margin" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="15">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="@string/label_charity" />
+
+            <TextView
+                android:id="@+id/quest_charity_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="12"
+                android:gravity="start" />
+
+            <Button
+                android:id="@+id/user_quest_complete"
+                android:layout_width="@dimen/button_length"
+                android:layout_height="@dimen/button_length" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="15">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="@string/label_date" />
+
+            <TextView
+                android:id="@+id/quest_accepted_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="12"
+                android:gravity="start" />
+
+            <Button
+                android:id="@+id/user_quest_delete"
+                android:layout_width="@dimen/button_length"
+                android:layout_height="@dimen/button_length" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 </LinearLayout>

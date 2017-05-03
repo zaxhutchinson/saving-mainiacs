@@ -9,5 +9,4 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context="com.mainiacs.saving.savingmainiacsapp.UserQuestInfoFragment"
-    tools:listitem="@layout/fragment_userquestinfo_item" />
+    tools:context="com.mainiacs.saving.savingmainiacsapp.UserQuestInfoFragment" />
