@@ -53,12 +53,13 @@ public class MainActivity extends AppCompatActivity
     private boolean shouldLoadHomeFragOnBackPress = true;
 
     DataManager dm;
-    UserProfile user;
+    UserProfile user = null;
 
     private String username, password;
 
     StepCounterService stepCounterService;
     Handler sendHandler;
+    Runnable dbSender;
 
     public void onFragmentInteraction(Uri uri) {
         return;
@@ -87,15 +88,28 @@ public class MainActivity extends AppCompatActivity
         navItemIndex = 0;
         currentTag = TAG_HOME;
 
+
         initializeApp();
+
+        RequestUserProfile();
+
+        SetUpStepSensor();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        // Update dataManager object to be used the fragments and map
-        RequestUserProfile();
+
+
     }
 
     public void initializeApp() {
@@ -105,22 +119,9 @@ public class MainActivity extends AppCompatActivity
         // Save credentials to refresh profile data later
         username = getIntent().getStringExtra(LoginActivity.TAG_USERNAME);
         password = getIntent().getStringExtra(LoginActivity.TAG_PASSWORD);
-
-
-        /* TODO: Uncomment this after the service no longer crashes app
-        stepCounterService = new StepCounterService(user);
-
-        sendHandler = new Handler();
-        sendHandler.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                SendUpdateToDB();
-            }
-        }, 1000);//300000);
-
-        */
     }
+
+
 
     public void RequestUserProfile() {
         final RequestQueue queue = Volley.newRequestQueue(this);
@@ -161,45 +162,73 @@ public class MainActivity extends AppCompatActivity
         queue.add(jsonObjectRequest);
     }
 
+    void SetUpStepSensor() {
+        /* TODO: Uncomment this after the service no longer crashes app */
+        stepCounterService = new StepCounterService(user, getApplicationContext());
+
+        if(stepCounterService.stepCounterActive) {
+
+            sendHandler = new Handler();
+//        sendHandler.postDelayed(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                SendUpdateToDB();
+//            }
+//        }, 1000);//300000);
+
+            dbSender = new Runnable() {
+
+                @Override
+                public void run() {
+                    SendUpdateToDB();
+                    sendHandler.postDelayed(this, 5000);
+                }
+            };
+            dbSender.run();
+        }
+    }
+
     void SendUpdateToDB() {
+        if(user != null) {
+            //user=helpfulguy78&password=helpfulguy78&lat=1&long=1&steps=117
+            String url = SEND_STEP_URL + "user=" + user.UserName() +
+                    "&password=" + user.Password() +
+                    "&lat=" + Double.toString(user.Latitude()) +
+                    "&long=" + Double.toString(user.Longitude()) +
+                    "&steps=" + Integer.toString(user.TempSteps());
 
-        //user=helpfulguy78&password=helpfulguy78&lat=1&long=1&steps=117
-        String url = SEND_STEP_URL + "user=" + user.UserName() +
-                "&password=" + user.Password() +
-                "&lat=" + Double.toString(user.Latitude()) +
-                "&long=" + Double.toString(user.Longitude()) +
-                "&steps=" + Integer.toString(user.TempSteps());
+            final RequestQueue queue = Volley.newRequestQueue(this);
 
-        final RequestQueue queue = Volley.newRequestQueue(this);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject jsonObject) {
+                    System.out.println(jsonObject.toString());
+                    try {
+                        if (jsonObject.getInt("success") == 1) {
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject jsonObject) {
-                System.out.println(jsonObject.toString());
-                try {
-                    if (jsonObject.getInt("success") == 1) {
+                            //RequestUserProfile(queue);
+                            Toast.makeText(getApplicationContext(), Integer.toString(user.TempSteps()), Toast.LENGTH_LONG).show();
 
-                        //RequestUserProfile(queue);
-                        Toast.makeText(getParent(), Integer.toString(user.TempSteps()), Toast.LENGTH_LONG).show();
-
-                    } else {
-                        //mEmailView.setError("Error logging in.");
-                        //focusView.requestFocus();
+                        } else {
+                            //mEmailView.setError("Error logging in.");
+                            //focusView.requestFocus();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+
                 }
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
+            );
 
-            }
+            queue.add(jsonObjectRequest);
         }
-        );
-
-        queue.add(jsonObjectRequest);
     }
 
     @Override

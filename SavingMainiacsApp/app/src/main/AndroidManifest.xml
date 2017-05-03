@@ -54,12 +54,8 @@
 
 
         <service
-<<<<<<< HEAD
             android:name="StepCounterService"
-=======
-            android:name=".StepCounter"
->>>>>>> 0d39ad2aa33707bbfa4280e355b6afb67d6b9036
-            android:exported="false" />
+        />
     </application>
 
 </manifest>

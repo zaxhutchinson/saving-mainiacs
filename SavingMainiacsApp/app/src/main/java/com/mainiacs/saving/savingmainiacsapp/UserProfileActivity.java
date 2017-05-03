@@ -54,7 +54,7 @@ public class UserProfileActivity extends AppCompatActivity {
         userProfileMain = (ScrollView)findViewById(R.id.userProfileMain);
         userProfileQuests = (ScrollView)findViewById(R.id.userProfileQuests);
 
-        stepCounterService = new StepCounterService(user);
+        //stepCounterService = new StepCounterService(user, getApplicationContext());
 
         sendHandler = new Handler();
         sendHandler.postDelayed(new Runnable() {

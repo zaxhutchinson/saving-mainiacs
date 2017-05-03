@@ -3,6 +3,7 @@ package com.mainiacs.saving.savingmainiacsapp;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -31,26 +32,34 @@ public class StepCounterService extends IntentService implements SensorEventList
     UserProfile user;
     SensorManager sensorManager;
     Sensor countSensor;
-    boolean activityRunning;
+    public boolean stepCounterActive;
 
     public StepCounterService() {
         super("StepCounterService");
     }
 
-
-
-    public StepCounterService(UserProfile user) {
+    public StepCounterService(UserProfile user, Context mContext) {
         super("StepCounterService");
 
-        this.user = user;
+        PackageManager pm = mContext.getPackageManager();
+        if(!pm.hasSystemFeature(pm.FEATURE_SENSOR_STEP_COUNTER)) {
+            Toast.makeText(mContext, "Count sensor not available!", Toast.LENGTH_LONG).show();
+            stepCounterActive = false;
+        }
+        else {
 
-        sensorManager = (SensorManager)this.getApplicationContext().getSystemService(this.getApplicationContext().SENSOR_SERVICE);
-        countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+            this.user = user;
 
-        if(countSensor != null) {
-            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
-        } else {
-            Toast.makeText(this, "Count sensor not available!", Toast.LENGTH_LONG).show();
+            sensorManager = (SensorManager) mContext.getSystemService(mContext.SENSOR_SERVICE);
+            countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
+            if (countSensor != null) {
+                sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
+            } else {
+                Toast.makeText(mContext, "Failed to create countSensor.", Toast.LENGTH_LONG).show();
+            }
+
+            stepCounterActive = true;
         }
     }
 
@@ -61,9 +70,7 @@ public class StepCounterService extends IntentService implements SensorEventList
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if(activityRunning) {
-            user.TempSteps((int)event.values[0]);
-        }
+        user.TempSteps((int)event.values[0]);
     }
 
     @Override
