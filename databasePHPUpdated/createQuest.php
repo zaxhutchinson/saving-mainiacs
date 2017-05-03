@@ -9,12 +9,6 @@
     <div id ="banner">
     	<h1><strong><span style="color: #fff;">Bangor </span></strong><span style="color: #939598;">Community</span></h1>
     	<div class = "bannerRight">
-    		<?php
-				// $url = 'charity.json';
-				// $jsondata = file_get_contents($url);
-				// $obj = json_decode($jsondata,true);
-				// echo "<h3>Welcome, ".$obj["results"][3]['CharityName']."!</h3>";
-			?>
 			<!-- <form action="index.php" align ="center">
 				<input type="submit" name="logout" value="Logout">
 			</form> -->
@@ -25,19 +19,15 @@
 			<main>
 				<div id ="bod">
 					<div id="createForm">
-						<form action="https://abnet.ddns.net/mucoftware/remote/insert_quest.php?charity=<?php echo $_GET['charity'];?>&password=<?php echo $_GET['password'];?>&questname=<?php echo $_GET['questname'];?>&desc=<?php echo $_GET['desc'];?>&address=<?php echo $_GET['address'];?>" method="GET">
+ 						<form action ="https://abnet.ddns.net/mucoftware/remote/insert_quest.php?charity=<?php echo $_GET['charity'];?>&password=<?php echo $_GET['password'];?>&questname=<?php echo $_GET['questname'];?>&desc=<?php echo $_GET['desc'];?>&address=<?php echo $_GET['address'];?>&payment=<?php echo $_GET['payment'];?>"method="GET">
 							<h1>Create a Quest</h1>
 							<input type="text" name="charity" placeholder="Chairty...." required><br>
 							<input type="password" name="password" placeholder="Password...."required><br>
 							<input type="text" name="questname" placeholder="Quest Name...."required><br>
 							<input type="textarea" name="desc" placeholder="Description...."required><br>
 							<input type="text" name="address" placeholder="Address...."required><br>
+							<input type="text" name="payment" placeholder="Payout...."required><br>
 							<input type="submit" name="loginChar" value="Login"><br>
-							<!-- Charity: <input type="text" name="charity"><br>
-							Password: <input type="password" name="password"><br>
-							Quest Name: <input type="text" name="questname"><br>
-							Description: <input type="text" name="desc"><br>
-							Address: <input type="text" name="address"><br> -->
 						</form>
 					</div>
 				</div>

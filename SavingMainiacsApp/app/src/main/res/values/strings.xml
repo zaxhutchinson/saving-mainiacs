@@ -2,7 +2,9 @@
     <string name="app_name">SavingMainiacsApp</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_login">Saving Mainiacs Login</string>
-    <string name="title_activity_main">Saving Mainiacs Main Menu</string>
+    <string name="title_activity_main">Saving Mainiacs</string>
+    <string name="title_app">Bangor Community</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Username</string>
     <string name="prompt_password">Password</string>
@@ -111,4 +113,18 @@
 
     <string name="user_profile_main">Main Profile</string>
     <string name="user_profile_quest">Active Quests</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="coins_label">Coins</string>
+
+    <string name="nav_tracker">Status</string>
+    <string name="nav_leaderboard">Leaderboard</string>
+    <string name="nav_quests">My Quests</string>
+    <string name="nav_maps">Quest Finder</string>
+    <string name="nav_user_profile">Settings</string>
+    <string name="nav_sign_off">Sign Off</string>
+    <string name="nav_user_submenu">User</string>
+
 </resources>

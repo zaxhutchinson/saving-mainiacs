@@ -33,8 +33,9 @@ import com.android.volley.toolbox.Volley;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    private static String LOGIN_STRING="https://abnet.ddns.net/mucoftware/remote/login.php?";
-    private static String PROFILE_STRING="https://abnet.ddns.net/mucoftware/remote/get_user.php?";
+    private static String LOGIN_STRING = "https://abnet.ddns.net/mucoftware/remote/login.php?";
+    public static final String TAG_USERNAME = "UserName";
+    public static final String TAG_PASSWORD = "Password";
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -42,17 +43,10 @@ public class LoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
 
-    private String mUsername;
-    private String mPassword;
-
-    private DataManager dm;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        dm = new DataManager();
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -194,15 +188,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void login(String username, String password) {
+    public void login(final String username, final String password) {
 
         final View focusView = mEmailView;
-
         String url = LOGIN_STRING + "user=" + username + "&password=" + password;
-
-        // assign to global variables to use in RequestUserProfile
-        mUsername = username;
-        mPassword = password;
 
         final RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -212,10 +201,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(JSONObject jsonObject) {
                 System.out.println(jsonObject.toString());
                 try {
-                    if(jsonObject.getInt("success")==1) {
-                        RequestUserProfile(queue);
-                    }
-                    else {
+                    if (jsonObject.getInt("success") == 1) {
+                        LoadMainMenu(username, password);
+                    } else {
                         mEmailView.setError("Error logging in.");
                         focusView.requestFocus();
                     }
@@ -234,47 +222,10 @@ public class LoginActivity extends AppCompatActivity {
         queue.add(jsonObjectRequest);
     }
 
-    public void RequestUserProfile(RequestQueue queue) {
-
-        final View focusView = mEmailView;
-        String url = PROFILE_STRING + "user=" + mUsername + "&password=" + mPassword;
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject jsonObject) {
-                System.out.println(jsonObject.toString());
-                try {
-                    if(jsonObject.getInt("success")==1) {
-
-                        dm.userProfile = new UserProfile(jsonObject);
-                        dm.userProfile.UserName(mUsername);
-                        dm.userProfile.Password(mPassword);
-                        LoadMainMenu();
-                    }
-                    else {
-                        mEmailView.setError("Error logging in.");
-                        focusView.requestFocus();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-
-            }
-        }
-        );
-
-        queue.add(jsonObjectRequest);
-    }
-
-    public void LoadMainMenu() {
-        System.out.println("HERE\n");
+    public void LoadMainMenu(String username, String password) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("DataManager",dm);
+        intent.putExtra(TAG_USERNAME, username);
+        intent.putExtra(TAG_PASSWORD, password);
         startActivity(intent);
         finish();
     }
