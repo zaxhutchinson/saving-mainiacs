@@ -302,7 +302,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_sign_off:
                 navItemIndex = 5;
-                //sendHandler.removeCallbacks(dbSender);
+                if(dbSender != null) {
+                    sendHandler.removeCallbacks(dbSender);
+                }
                 Intent loginActivityIntent = new Intent(this, LoginActivity.class);
                 startActivity(loginActivityIntent);
                 finish();
