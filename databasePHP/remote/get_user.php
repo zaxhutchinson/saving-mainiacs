@@ -31,6 +31,10 @@ if ( isset_input_list($lInput) ) {
     
     $lResult = $db->select_table(["Accounts", "Volunteers"], $lFields, ["Accounts.UserID", "Accounts.UserID"], ["Volunteers.UserID", $lUserID]);  
     
+    //$lResult = $db->query("SET @rank=0;");
+    //$lResult = $db->query("SELECT * (FROM SELECT @rank:=@rank+1 AS Rank,VIEW_PROFILES_SUM.* FROM VIEW_PROFILES_SUM) AS Temp WHERE Temp.UserID =" . $lUserID . ";");
+        
+    
     if($lVerify){
         build_json_response($lResult,$lFieldsNames);
     } else {
