@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG_SETTINGS = "settings";
     private static final String[] ACTIVITY_TITLES = {"Status", "", "My Quests", "Leaderboard", "Settings", ""};
 
+    private static final int QUEST_FINDER_REQUEST = 1;
+
     public static final int TYPE_COMPLETE_QUEST = 0;
     public static final int TYPE_LEAVE_QUEST = 1;
 
@@ -331,6 +333,19 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == QUEST_FINDER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                // Return back to profile page
+                navItemIndex = 0;
+                currentTag = TAG_HOME;
+                navigationView.setCheckedItem(R.id.nav_tracker);
+                loadHomeFragment();
+            }
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -383,7 +398,7 @@ public class MainActivity extends AppCompatActivity
                 navItemIndex = 1;
                 Intent mapActivityIntent = new Intent(this, MapsActivity.class);
                 mapActivityIntent.putExtra("DataManager", dm);
-                startActivity(mapActivityIntent);
+                startActivityForResult(mapActivityIntent, QUEST_FINDER_REQUEST);
                 drawer.closeDrawers();
                 return true;
             case R.id.nav_quests:

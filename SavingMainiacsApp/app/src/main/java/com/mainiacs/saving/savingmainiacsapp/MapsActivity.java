@@ -8,7 +8,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -19,7 +21,9 @@ import android.support.v4.app.FragmentActivity;
 
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
@@ -57,11 +61,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MapsActivity extends FragmentActivity
+public class MapsActivity extends AppCompatActivity
         implements OnMapReadyCallback,
-            GoogleApiClient.ConnectionCallbacks,
-            GoogleApiClient.OnConnectionFailedListener,
-            GoogleMap.OnMarkerClickListener {
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        GoogleMap.OnMarkerClickListener {
 
 
     private static String ALL_CHARITIES_URL = "https://abnet.ddns.net/mucoftware/remote/get_charity_list.php";
@@ -99,7 +103,6 @@ public class MapsActivity extends FragmentActivity
         questMap = new HashMap<Marker, Quest>();
 
 
-
         googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addConnectionCallbacks(this)
@@ -115,18 +118,44 @@ public class MapsActivity extends FragmentActivity
         mf.getMapAsync(this);
 
 
-        charityView = (ScrollView)findViewById(R.id.charityView);
-        questView = (ScrollView)findViewById(R.id.questView);
+        charityView = (ScrollView) findViewById(R.id.charityView);
+        questView = (ScrollView) findViewById(R.id.questView);
 
         charityView.setVisibility(View.GONE);
         questView.setVisibility(View.GONE);
 
-        acceptQuestButton = (Button)findViewById(R.id.acceptQuestBtn);
+        acceptQuestButton = (Button) findViewById(R.id.acceptQuestBtn);
         acceptQuestButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 acceptQuest(view);
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_OK, returnIntent);
+
+        super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            Intent returnIntent = new Intent();
+            setResult(RESULT_OK, returnIntent);
+            finish();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     private void acceptQuest(View view) {
@@ -142,7 +171,7 @@ public class MapsActivity extends FragmentActivity
             @Override
             public void onResponse(JSONObject jsonObject) {
                 try {
-                    if(jsonObject.getInt("success")==1) {
+                    if (jsonObject.getInt("success") == 1) {
 
                         Context context = getApplicationContext();
                         CharSequence msg = jsonObject.getString("message");
@@ -155,8 +184,7 @@ public class MapsActivity extends FragmentActivity
                         ClearQuestDisplay();
                         DisplayCharityInfo();
 
-                    }
-                    else {
+                    } else {
 
                         Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT).show();
                     }
@@ -316,7 +344,7 @@ public class MapsActivity extends FragmentActivity
 
         String[] markerTitle = marker.getTitle().split("\n");
 
-        if(markerTitle[0].equals("Charity")) {
+        if (markerTitle[0].equals("Charity")) {
 
             currentCharity = charityMap.get(marker);
 
@@ -324,8 +352,7 @@ public class MapsActivity extends FragmentActivity
 
             ClearQuestDisplay();
 
-        }
-        else if(markerTitle[0].equals("Quest")) {
+        } else if (markerTitle[0].equals("Quest")) {
 
             currentQuest = questMap.get(marker);
 
@@ -359,10 +386,10 @@ public class MapsActivity extends FragmentActivity
     }
 
     void PopulateCharityInfo(Charity charity) {
-        TextView charityName = (TextView)findViewById(R.id.charityName);
-        TextView charityAddr1 = (TextView)findViewById(R.id.charityAddress1);
-        TextView charityAddr2 = (TextView)findViewById(R.id.charityAddress2);
-        TextView charityPhone = (TextView)findViewById(R.id.charityPhone);
+        TextView charityName = (TextView) findViewById(R.id.charityName);
+        TextView charityAddr1 = (TextView) findViewById(R.id.charityAddress1);
+        TextView charityAddr2 = (TextView) findViewById(R.id.charityAddress2);
+        TextView charityPhone = (TextView) findViewById(R.id.charityPhone);
 
         charityName.setText(charity.Name());
         charityAddr1.setText(charity.Address1());
@@ -371,11 +398,11 @@ public class MapsActivity extends FragmentActivity
     }
 
     void PopulateQuestInfo(Quest quest) {
-        TextView questName = (TextView)findViewById(R.id.questName);
-        TextView questDesc = (TextView)findViewById(R.id.questDesc);
-        TextView questLocation = (TextView)findViewById(R.id.questLocation);
-        TextView questQuantity = (TextView)findViewById(R.id.questQuantity);
-        TextView questPayment = (TextView)findViewById(R.id.questPayment);
+        TextView questName = (TextView) findViewById(R.id.questName);
+        TextView questDesc = (TextView) findViewById(R.id.questDesc);
+        TextView questLocation = (TextView) findViewById(R.id.questLocation);
+        TextView questQuantity = (TextView) findViewById(R.id.questQuantity);
+        TextView questPayment = (TextView) findViewById(R.id.questPayment);
 
         questName.setText(quest.Name());
         questDesc.setText(quest.Description());
@@ -386,12 +413,12 @@ public class MapsActivity extends FragmentActivity
 
     void DisplayQuests(Charity charity) {
         //System.out.println(Integer.toString(charity.GetAllQuests().size()));
-        for(Quest quest : charity.GetAllQuests()) {
+        for (Quest quest : charity.GetAllQuests()) {
             Marker m = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(quest.Latitude(), quest.Longitude()))
-                    .title("Quest\n"+quest.Name())
+                    .title("Quest\n" + quest.Name())
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-            questMap.put(m,quest);
+            questMap.put(m, quest);
         }
     }
 
@@ -405,16 +432,15 @@ public class MapsActivity extends FragmentActivity
             public void onResponse(JSONObject jsonObject) {
                 //System.out.println(jsonObject.toString());
                 try {
-                    if(jsonObject.getInt("success")==1) {
+                    if (jsonObject.getInt("success") == 1) {
 
                         JSONArray charities = jsonObject.getJSONArray("results");
-                        for(int i = 0; i < charities.length(); i++) {
+                        for (int i = 0; i < charities.length(); i++) {
                             dm.charities.add(new Charity(charities.getJSONObject(i)));
                         }
                         displayCharityMarkers();
 
-                    }
-                    else {
+                    } else {
 
                     }
                 } catch (JSONException e) {
@@ -445,25 +471,24 @@ public class MapsActivity extends FragmentActivity
             public void onResponse(JSONObject jsonObject) {
                 //System.out.println(jsonObject.toString());
                 try {
-                    if(jsonObject.getInt("success")==1) {
+                    if (jsonObject.getInt("success") == 1) {
 
                         JSONArray quests = jsonObject.getJSONArray("results");
 
                         charity.GetAllQuests().clear();
 
-                        for(int i = 0; i < quests.length(); i++) {
+                        for (int i = 0; i < quests.length(); i++) {
                             charity.AddQuest(new Quest(quests.getJSONObject(i)));
                         }
 
                         DisplayQuests(charity);
-                    }
-                    else {
+                    } else {
 
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-        }
+            }
         }, new Response.ErrorListener() {
 
             @Override
