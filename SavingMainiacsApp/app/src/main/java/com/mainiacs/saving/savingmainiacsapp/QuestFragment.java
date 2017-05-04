@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,8 @@ public class QuestFragment extends Fragment {
     private TabLayout tabs;
 
     private OnFragmentInteractionListener mListener;
+    private UserQuestInfoFragment activeFragmentRef;
+    private UserQuestInfoFragment pendingFragmentRef;
 
     public QuestFragment() {
         // Required empty public constructor
@@ -97,11 +100,25 @@ public class QuestFragment extends Fragment {
         return view;
     }
 
+    public void refreshData(int position, int type) {
+        if (activeFragmentRef != null && pendingFragmentRef != null) {
+            Log.e("REFRESH", "refreshData");
+            activeFragmentRef.removeActiveQuest(position);
+
+            // Reload pending quest list if the quest was marked as completed
+            if (type == MainActivity.TYPE_COMPLETE_QUEST) {
+                final RequestQueue queue = Volley.newRequestQueue(getContext());
+                getPendingQuests(queue, false);
+                pendingFragmentRef.updateList(pendingQuests);
+            }
+        }
+    }
+
     private void populatePage() {
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(UserQuestInfoFragment.newInstance(activeQuests, QUEST_STATUS_ACTIVE), "Active");
-        adapter.addFragment(UserQuestInfoFragment.newInstance(pendingQuests, QUEST_STATUS_PENDING), "Pending");
+        adapter.addFragment(activeFragmentRef = UserQuestInfoFragment.newInstance(activeQuests, QUEST_STATUS_ACTIVE), "Active");
+        adapter.addFragment(pendingFragmentRef = UserQuestInfoFragment.newInstance(pendingQuests, QUEST_STATUS_PENDING), "Pending");
         adapter.addFragment(UserQuestInfoFragment.newInstance(rejectedQuests, QUEST_STATUS_REJECTED), "Rejected");
         adapter.addFragment(UserQuestInfoFragment.newInstance(completedQuests, QUEST_STATUS_COMPLETED), "Completed");
 
@@ -149,11 +166,11 @@ public class QuestFragment extends Fragment {
 
     private void getAllQuests() {
         // Start chain of queries to get all quests of different statuses
-        getActiveQuests();
+        final RequestQueue queue = Volley.newRequestQueue(getContext());
+        getActiveQuests(queue, true);
     }
 
-    private void getActiveQuests() {
-        final RequestQueue queue = Volley.newRequestQueue(getContext());
+    private void getActiveQuests(final RequestQueue queue, boolean nextQuery) {
         String url = URL_GET_ACTIVE_QUESTS + "user=" + username + "&password=" + password;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -194,10 +211,10 @@ public class QuestFragment extends Fragment {
         );
 
         queue.add(jsonObjectRequest);
-        getPendingQuests(queue);
+        if (nextQuery) getPendingQuests(queue, true);
     }
 
-    private void getPendingQuests(RequestQueue queue) {
+    private void getPendingQuests(RequestQueue queue, boolean nextQuery) {
         String url = URL_GET_PENDING_QUESTS + "user=" + username + "&password=" + password;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -239,10 +256,10 @@ public class QuestFragment extends Fragment {
         );
 
         queue.add(jsonObjectRequest);
-        getRejectedQuests(queue);
+        if (nextQuery) getRejectedQuests(queue, true);
     }
 
-    private void getRejectedQuests(RequestQueue queue) {
+    private void getRejectedQuests(RequestQueue queue, boolean nextQuery) {
         String url = URL_GET_REJECTED_QUESTS + "user=" + username + "&password=" + password;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -284,7 +301,7 @@ public class QuestFragment extends Fragment {
         );
 
         queue.add(jsonObjectRequest);
-        getCompletedQuests(queue);
+        if (nextQuery) getCompletedQuests(queue);
     }
 
     private void getCompletedQuests(RequestQueue queue) {

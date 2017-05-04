@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,9 @@ public class UserQuestInfoFragment extends Fragment {
     private ArrayList<UserQuestInfo> questList;
     private int questStatus;
     private OnActiveQuestFragmentInteractionListener mListener;
+
+    private RecyclerView recyclerView;
+    private UserQuestInfoViewAdapter adapter;
 
     public UserQuestInfoFragment() {
     }
@@ -48,15 +52,32 @@ public class UserQuestInfoFragment extends Fragment {
 
         // Set the adapter
         if (view instanceof RecyclerView) {
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
 
             // Only show the buttons to leave quest or mark as complete in active quest page
             boolean showButtons = questStatus == QuestFragment.QUEST_STATUS_ACTIVE;
-            recyclerView.setAdapter(new UserQuestInfoViewAdapter(questList, showButtons, mListener));
+
+            adapter = new UserQuestInfoViewAdapter(questList, showButtons, mListener);
+            recyclerView.setAdapter(adapter);
         }
         return view;
     }
 
+    public void removeActiveQuest(int position) {
+        Log.e("REFRESH", "removeActiveQuest");
+        if (questList != null) questList.remove(position);
+        recyclerView.removeViewAt(position);
+        adapter.notifyItemRemoved(position);
+        adapter.notifyItemRangeChanged(position, questList.size());
+
+        adapter.notifyDataSetChanged();
+    }
+
+    public void updateList(ArrayList<UserQuestInfo> newQuestList) {
+        Log.e("REFRESH", "updateList");
+        questList = newQuestList;
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -76,7 +97,7 @@ public class UserQuestInfoFragment extends Fragment {
     }
 
     public interface OnActiveQuestFragmentInteractionListener {
-        void onCompleteQuest(int activeQuestId);
-        void onLeaveActiveQuest(int activeQuestId);
+        void onCompleteQuest(int activeQuestId, int position);
+        void onLeaveActiveQuest(int activeQuestId, int position);
     }
 }

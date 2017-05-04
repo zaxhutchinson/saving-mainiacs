@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -47,8 +48,13 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG_QUESTS = "quests";
     private static final String TAG_LEADERBOARD = "leaderboard";
     private static final String TAG_SETTINGS = "settings";
-    private static final String[] activityTitles = {"Status", "", "My Quests", "Leaderboard", "Settings", ""};
+    private static final String[] ACTIVITY_TITLES = {"Status", "", "My Quests", "Leaderboard", "Settings", ""};
 
+    public static final int TYPE_COMPLETE_QUEST = 0;
+    public static final int TYPE_LEAVE_QUEST = 1;
+
+
+    private QuestFragment questFragmentRef;
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private String currentTag;
@@ -69,7 +75,7 @@ public class MainActivity extends AppCompatActivity
         return;
     }
 
-    public void onCompleteQuest(final int activeQuestId) {
+    public void onCompleteQuest(final int activeQuestId, final int position) {
         // TODO: show confirm dialog and refresh page
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
@@ -78,7 +84,7 @@ public class MainActivity extends AppCompatActivity
                 .setPositiveButton(getString(R.string.action_complete), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        completeActiveQuest(activeQuestId);
+                        completeActiveQuest(activeQuestId, position);
                         Toast.makeText(getApplicationContext(), "Complete ActiveQuestId: " + activeQuestId, Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                     }
@@ -93,7 +99,7 @@ public class MainActivity extends AppCompatActivity
         dialog.show();
     }
 
-    public void onLeaveActiveQuest(final int activeQuestId) {
+    public void onLeaveActiveQuest(final int activeQuestId, final int position) {
         // TODO: show confirm dialog and refresh page
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
@@ -102,7 +108,7 @@ public class MainActivity extends AppCompatActivity
                 .setPositiveButton(getString(R.string.action_leave), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        leaveActiveQuest(activeQuestId);
+                        leaveActiveQuest(activeQuestId, position);
                         Toast.makeText(getApplicationContext(), "Leave ActiveQuestId: " + activeQuestId, Toast.LENGTH_LONG).show();
                         dialog.dismiss();
                     }
@@ -274,7 +280,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void leaveActiveQuest(int activeQuestId) {
+    private void leaveActiveQuest(int activeQuestId, final int position) {
         final RequestQueue queue = Volley.newRequestQueue(this);
         String url = URL_LEAVE_QUEST + "user=" + username + "&password=" + password + "&activequestid=" + activeQuestId;
 
@@ -284,7 +290,9 @@ public class MainActivity extends AppCompatActivity
             public void onResponse(JSONObject jsonObject) {
                 try {
                     if (jsonObject.getInt("success") == 1) {
-                        loadHomeFragment();
+
+                        Log.e("REFRESH", "leaveActiveQuest");
+                        questFragmentRef.refreshData(position, TYPE_LEAVE_QUEST);
                     } else {
                         Toast.makeText(getApplicationContext(), "Failed to leave quest.", Toast.LENGTH_LONG).show();
                     }
@@ -302,7 +310,7 @@ public class MainActivity extends AppCompatActivity
         queue.add(jsonObjectRequest);
     }
 
-    private void completeActiveQuest(int activeQuestId) {
+    private void completeActiveQuest(int activeQuestId, final int position) {
         final RequestQueue queue = Volley.newRequestQueue(this);
         String url = URL_COMPLETE_QUEST + "user=" + username + "&password=" + password + "&activequestid=" + activeQuestId;
 
@@ -312,7 +320,9 @@ public class MainActivity extends AppCompatActivity
             public void onResponse(JSONObject jsonObject) {
                 try {
                     if (jsonObject.getInt("success") == 1) {
-                        loadHomeFragment();
+
+                        Log.e("REFRESH", "completeActiveQuest");
+                        questFragmentRef.refreshData(position, TYPE_COMPLETE_QUEST);
                     } else {
                         Toast.makeText(getApplicationContext(), "Failed to mark quest as complete.", Toast.LENGTH_LONG).show();
                     }
@@ -460,7 +470,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setToolbarTitle() {
-        getSupportActionBar().setTitle(activityTitles[navItemIndex]);
+        getSupportActionBar().setTitle(ACTIVITY_TITLES[navItemIndex]);
     }
 
     private void selectNavMenu() {
@@ -474,6 +484,7 @@ public class MainActivity extends AppCompatActivity
                 return profileFragment;
             case 2:
                 QuestFragment questFragment = QuestFragment.newInstance(username, password);
+                questFragmentRef = questFragment;
                 return questFragment;
             case 3:
                 LeaderBoardFragment leaderBoardFragment = new LeaderBoardFragment();

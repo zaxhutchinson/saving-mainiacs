@@ -31,7 +31,7 @@ public class UserQuestInfoViewAdapter extends RecyclerView.Adapter<UserQuestInfo
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.questInfo = questList.get(position);
 
         holder.questName.setText(questList.get(position).getQuestName());
@@ -57,14 +57,14 @@ public class UserQuestInfoViewAdapter extends RecyclerView.Adapter<UserQuestInfo
             holder.leaveQuestButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onLeaveActiveQuest(holder.questInfo.getActiveQuestId());
+                    mListener.onLeaveActiveQuest(holder.questInfo.getActiveQuestId(), position);
                 }
             });
 
             holder.completeQuestButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onCompleteQuest(holder.questInfo.getActiveQuestId());
+                    mListener.onCompleteQuest(holder.questInfo.getActiveQuestId(), position);
                 }
             });
 
