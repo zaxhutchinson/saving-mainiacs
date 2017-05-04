@@ -41,7 +41,8 @@ public class StepCounterService extends IntentService implements SensorEventList
     public StepCounterService(UserProfile user, Context mContext) {
         super("StepCounterService");
 
-        user = null;
+//        this.user = user;
+        this.user = null;
 
         PackageManager pm = mContext.getPackageManager();
         if(!pm.hasSystemFeature(pm.FEATURE_SENSOR_STEP_COUNTER)) {
