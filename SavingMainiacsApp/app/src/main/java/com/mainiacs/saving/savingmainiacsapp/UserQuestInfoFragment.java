@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,10 @@ public class UserQuestInfoFragment extends Fragment {
 
     private ArrayList<UserQuestInfo> questList;
     private int questStatus;
-    private OnListFragmentInteractionListener mListener;
+    private OnActiveQuestFragmentInteractionListener mListener;
+
+    private RecyclerView recyclerView;
+    private UserQuestInfoViewAdapter adapter;
 
     public UserQuestInfoFragment() {
     }
@@ -48,24 +52,41 @@ public class UserQuestInfoFragment extends Fragment {
 
         // Set the adapter
         if (view instanceof RecyclerView) {
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
 
             // Only show the buttons to leave quest or mark as complete in active quest page
             boolean showButtons = questStatus == QuestFragment.QUEST_STATUS_ACTIVE;
-            recyclerView.setAdapter(new UserQuestInfoViewAdapter(questList, showButtons, mListener));
+
+            adapter = new UserQuestInfoViewAdapter(questList, showButtons, mListener);
+            recyclerView.setAdapter(adapter);
         }
         return view;
     }
 
+    public void removeActiveQuest(int position) {
+        if (questList != null) questList.remove(position);
+        recyclerView.removeViewAt(position);
+        adapter.notifyItemRemoved(position);
+        adapter.notifyItemRangeChanged(position, questList.size());
+
+        adapter.notifyDataSetChanged();
+    }
+
+    public void updateList(ArrayList<UserQuestInfo> newQuestList) {
+        if (adapter != null) {
+            questList = newQuestList;
+            adapter.notifyDataSetChanged();
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnActiveQuestFragmentInteractionListener) {
+            mListener = (OnActiveQuestFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+                    + " must implement OnActiveQuestFragmentInteractionListener");
         }
     }
 
@@ -75,18 +96,8 @@ public class UserQuestInfoFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(UserQuestInfo info);
+    public interface OnActiveQuestFragmentInteractionListener {
+        void onCompleteQuest(int activeQuestId, int position);
+        void onLeaveActiveQuest(int activeQuestId, int position);
     }
 }

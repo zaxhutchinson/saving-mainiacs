@@ -12,6 +12,15 @@ main
 {
 	  	background-color: #939598;
 }
+html {
+    display: table;
+    margin: auto;
+}
+
+body {
+    display: table-cell;
+    vertical-align: middle;
+}
 form
 {
 	color: black;
@@ -200,7 +209,7 @@ table
 	border-radius: 2px;
 	border-color: #fff;
 	width: 100%;
-	overflow-y:hidden;
+	overflow-y:scroll;
 	height: 90%;
 	display: block;
 }

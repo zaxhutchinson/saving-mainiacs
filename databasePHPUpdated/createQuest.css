@@ -5,6 +5,15 @@ form
 	text-align: center;
 	padding-top: 3%;
 }
+html {
+    display: table;
+    margin: auto;
+}
+
+body {
+    display: table-cell;
+    vertical-align: middle;
+}
 form h2 
 {
 	font-size: 1.5em;

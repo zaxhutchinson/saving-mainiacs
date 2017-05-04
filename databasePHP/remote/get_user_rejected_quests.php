@@ -26,9 +26,16 @@ if ( isset_input_list($lInput) ) {
  
     $lUserID = $db->get_id_by_username($lUserName);
     $lVerify = $db->verify_user_credentials($lUserName, $lPassword);
-    $lFields = ["ActiveID","QuestID","UserID","CharityID","RewardAmount","Completed","Rejected","Rewarded","RejectedComment","AcceptDate","CompletedDate","RejectedDate","RewardedDate"];
+    //$lFields = ["ActiveID","QuestID","UserID","CharityID","RewardAmount","Completed","Rejected","Rewarded","RejectedComment","AcceptDate","CompletedDate","RejectedDate","RewardedDate"];
 
-    $lResult = $db->select_table(["ActiveQuests"], $lFields, ["UserID","Rejected"], [$lUserID,"1"]);  
+    //$lResult = $db->select_table(["ActiveQuests"], $lFields, ["UserID","Rejected"], [$lUserID,"1"]);  
+    
+    $lFields = ["ActiveID","CharityName", "QuestType.QuestID","QuestName","QuestDescription", "UserID","QuestType.CharityID","RewardAmount","Completed","Rejected","Rewarded","RejectedComment","AcceptDate","CompletedDate","RejectedDate","RewardedDate"];
+    $lFieldNames = ["ActiveID","CharityName","QuestID","QuestName","QuestDescription","UserID","CharityID","RewardAmount","Completed","Rejected","Rewarded","RejectedComment","AcceptDate","CompletedDate","RejectedDate","RewardedDate"];
+    
+    $lResult = $db->select_table(["Charity","QuestType", "ActiveQuests"], $lFields, ["QuestType.CharityID","QuestType.QuestID", "UserID","Rejected"], ["Charity.CharityID","ActiveQuests.QuestID", $lUserID,"1"]);  
+    
+        
     
     if($lVerify){
         build_json_response($lResult,$lFields);

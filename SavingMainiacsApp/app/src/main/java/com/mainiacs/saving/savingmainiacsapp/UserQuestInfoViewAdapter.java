@@ -5,21 +5,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.mainiacs.saving.savingmainiacsapp.UserQuestInfoFragment.OnListFragmentInteractionListener;
 
 import java.util.List;
 
 public class UserQuestInfoViewAdapter extends RecyclerView.Adapter<UserQuestInfoViewAdapter.ViewHolder> {
 
     private final List<UserQuestInfo> questList;
-    private final OnListFragmentInteractionListener mListener;
+    private final UserQuestInfoFragment.OnActiveQuestFragmentInteractionListener mListener;
 
     private final boolean showButtons;
 
-    public UserQuestInfoViewAdapter(List<UserQuestInfo> items, boolean showButtonsFlag, OnListFragmentInteractionListener listener) {
+    public UserQuestInfoViewAdapter(List<UserQuestInfo> items, boolean showButtonsFlag, UserQuestInfoFragment.OnActiveQuestFragmentInteractionListener listener) {
         questList = items;
         mListener = listener;
         showButtons = showButtonsFlag;
@@ -33,7 +32,7 @@ public class UserQuestInfoViewAdapter extends RecyclerView.Adapter<UserQuestInfo
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.questInfo = questList.get(position);
 
         holder.questName.setText(questList.get(position).getQuestName());
@@ -41,7 +40,7 @@ public class UserQuestInfoViewAdapter extends RecyclerView.Adapter<UserQuestInfo
         holder.questDescription.setText(questList.get(position).getQuestDescription());
         holder.questCharityName.setText(questList.get(position).getCharityName());
         holder.questDate.setText(questList.get(position).getDate());
-        
+
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,12 +50,6 @@ public class UserQuestInfoViewAdapter extends RecyclerView.Adapter<UserQuestInfo
                 } else {
                     holder.questDetailsContainer.setVisibility(View.VISIBLE);
                 }
-
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.questInfo);
-                }
             }
         });
 
@@ -65,14 +58,14 @@ public class UserQuestInfoViewAdapter extends RecyclerView.Adapter<UserQuestInfo
             holder.leaveQuestButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: leave quest and refresh list
+                    mListener.onLeaveActiveQuest(holder.questInfo.getActiveQuestId(), position);
                 }
             });
 
             holder.completeQuestButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: mark quest as complete and refresh list
+                    mListener.onCompleteQuest(holder.questInfo.getActiveQuestId(), position);
                 }
             });
 
@@ -95,8 +88,8 @@ public class UserQuestInfoViewAdapter extends RecyclerView.Adapter<UserQuestInfo
         public final TextView questDescription;
         public final TextView questCharityName;
         public final TextView questDate;
-        public final Button leaveQuestButton;
-        public final Button completeQuestButton;
+        public final ImageButton leaveQuestButton;
+        public final ImageButton completeQuestButton;
         public UserQuestInfo questInfo;
 
         public ViewHolder(View view) {
@@ -108,8 +101,8 @@ public class UserQuestInfoViewAdapter extends RecyclerView.Adapter<UserQuestInfo
             questDescription = (TextView) view.findViewById(R.id.quest_description);
             questCharityName = (TextView) view.findViewById(R.id.quest_charity_name);
             questDate = (TextView) view.findViewById(R.id.quest_accepted_date);
-            leaveQuestButton = (Button) view.findViewById(R.id.user_quest_delete);
-            completeQuestButton = (Button) view.findViewById(R.id.user_quest_complete);
+            leaveQuestButton = (ImageButton) view.findViewById(R.id.user_quest_delete);
+            completeQuestButton = (ImageButton) view.findViewById(R.id.user_quest_complete);
         }
 
         @Override

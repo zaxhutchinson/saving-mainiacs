@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,13 +34,12 @@ public class QuestFragment extends Fragment {
     private static final String URL_GET_PENDING_QUESTS = "  https://abnet.ddns.net/mucoftware/remote/get_user_pending_quests.php?";
     private static final String URL_GET_REJECTED_QUESTS = "https://abnet.ddns.net/mucoftware/remote/get_user_rejected_quests.php?";
     private static final String URL_GET_COMPLETED_QUESTS = "https://abnet.ddns.net/mucoftware/remote/get_user_rewarded_quests.php?";
-    private static final String URL_LEAVE_QUEST = "https://abnet.ddns.net/mucoftware/remote/leave_quest.php?";
-    private static final String URL_COMPLETE_QUEST = "https://abnet.ddns.net/mucoftware/remote/complete_quest.php?";
 
     public static final int QUEST_STATUS_ACTIVE = 0;
     public static final int QUEST_STATUS_PENDING = 1;
     public static final int QUEST_STATUS_REJECTED = 2;
     public static final int QUEST_STATUS_COMPLETED = 3;
+    private boolean[] query_done = new boolean[4];
 
     private static final int NUM_QUEST_TABS = 4;
 
@@ -54,10 +54,10 @@ public class QuestFragment extends Fragment {
     private ArrayList<UserQuestInfo> completedQuests;
     private ArrayList<UserQuestInfo> rejectedQuests;
 
-    private ViewPager questPager;
-    private TabLayout tabs;
+    private ViewPagerAdapter adapter;
 
-    private OnFragmentInteractionListener mListener;
+    private UserQuestInfoFragment activeFragmentRef;
+    private UserQuestInfoFragment pendingFragmentRef;
 
     public QuestFragment() {
         // Required empty public constructor
@@ -89,21 +89,14 @@ public class QuestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_quest, container, false);
-        questPager = (ViewPager) view.findViewById(R.id.quests_pager);
+        ViewPager questPager = (ViewPager) view.findViewById(R.id.quests_pager);
 
-        tabs = (TabLayout) view.findViewById(R.id.quests_tabs);
+        TabLayout tabs = (TabLayout) view.findViewById(R.id.quests_tabs);
         tabs.setupWithViewPager(questPager);
 
-        getAllQuests();
-
-        return view;
-    }
-
-    private void populatePage() {
-
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(UserQuestInfoFragment.newInstance(activeQuests, QUEST_STATUS_ACTIVE), "Active");
-        adapter.addFragment(UserQuestInfoFragment.newInstance(pendingQuests, QUEST_STATUS_PENDING), "Pending");
+        adapter = new ViewPagerAdapter(getChildFragmentManager());
+        adapter.addFragment(activeFragmentRef = UserQuestInfoFragment.newInstance(activeQuests, QUEST_STATUS_ACTIVE), "Active");
+        adapter.addFragment(pendingFragmentRef = UserQuestInfoFragment.newInstance(pendingQuests, QUEST_STATUS_PENDING), "Pending");
         adapter.addFragment(UserQuestInfoFragment.newInstance(rejectedQuests, QUEST_STATUS_REJECTED), "Rejected");
         adapter.addFragment(UserQuestInfoFragment.newInstance(completedQuests, QUEST_STATUS_COMPLETED), "Completed");
 
@@ -118,10 +111,27 @@ public class QuestFragment extends Fragment {
         for (int i = 0; i < NUM_QUEST_TABS; i++) {
             tabs.getTabAt(i).setIcon(tabIcons[i]);
         }
+
+        getAllQuests();
+
+        return view;
+    }
+
+    public void refreshData(int position, int type) {
+        if (activeFragmentRef != null && pendingFragmentRef != null) {
+            activeFragmentRef.removeActiveQuest(position);
+
+            // Reload pending quest list if the quest was marked as completed
+            if (type == MainActivity.TYPE_COMPLETE_QUEST) {
+                final RequestQueue queue = Volley.newRequestQueue(getContext());
+                getPendingQuests(queue, false);
+                pendingFragmentRef.updateList(pendingQuests);
+            }
+        }
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
+        public final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
         public ViewPagerAdapter(FragmentManager manager) {
@@ -151,11 +161,11 @@ public class QuestFragment extends Fragment {
 
     private void getAllQuests() {
         // Start chain of queries to get all quests of different statuses
-        getActiveQuests();
+        final RequestQueue queue = Volley.newRequestQueue(getContext());
+        getActiveQuests(queue, true);
     }
 
-    private void getActiveQuests() {
-        final RequestQueue queue = Volley.newRequestQueue(getContext());
+    private void getActiveQuests(final RequestQueue queue, boolean nextQuery) {
         String url = URL_GET_ACTIVE_QUESTS + "user=" + username + "&password=" + password;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -180,6 +190,9 @@ public class QuestFragment extends Fragment {
 
                             activeQuests.add(new UserQuestInfo(userQuestId, questName, questDescription, charityName, rewardAmount, date));
                         }
+
+                        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_ACTIVE)).updateList(activeQuests);
+
                     } else {
                         Toast.makeText(getContext(), "Failed to get active quests.", Toast.LENGTH_LONG).show();
                     }
@@ -196,10 +209,10 @@ public class QuestFragment extends Fragment {
         );
 
         queue.add(jsonObjectRequest);
-        getPendingQuests(queue);
+        if (nextQuery) getPendingQuests(queue, true);
     }
 
-    private void getPendingQuests(RequestQueue queue) {
+    private void getPendingQuests(RequestQueue queue, boolean nextQuery) {
         String url = URL_GET_PENDING_QUESTS + "user=" + username + "&password=" + password;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -225,6 +238,8 @@ public class QuestFragment extends Fragment {
                             pendingQuests.add(new UserQuestInfo(userQuestId, questName, questDescription, charityName, rewardAmount, date));
                         }
 
+                        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_PENDING)).updateList(pendingQuests);
+
                     } else {
                         Toast.makeText(getContext(), "Failed to get pending quests.", Toast.LENGTH_LONG).show();
                     }
@@ -241,10 +256,10 @@ public class QuestFragment extends Fragment {
         );
 
         queue.add(jsonObjectRequest);
-        getRejectedQuests(queue);
+        if (nextQuery) getRejectedQuests(queue, true);
     }
 
-    private void getRejectedQuests(RequestQueue queue) {
+    private void getRejectedQuests(RequestQueue queue, boolean nextQuery) {
         String url = URL_GET_REJECTED_QUESTS + "user=" + username + "&password=" + password;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -270,6 +285,8 @@ public class QuestFragment extends Fragment {
                             rejectedQuests.add(new UserQuestInfo(userQuestId, questName, questDescription, charityName, rewardAmount, date));
                         }
 
+                        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_REJECTED)).updateList(rejectedQuests);
+
                     } else {
                         Toast.makeText(getContext(), "Failed to get rejected quests.", Toast.LENGTH_LONG).show();
                     }
@@ -286,7 +303,7 @@ public class QuestFragment extends Fragment {
         );
 
         queue.add(jsonObjectRequest);
-        getCompletedQuests(queue);
+        if (nextQuery) getCompletedQuests(queue);
     }
 
     private void getCompletedQuests(RequestQueue queue) {
@@ -315,8 +332,7 @@ public class QuestFragment extends Fragment {
                             completedQuests.add(new UserQuestInfo(userQuestId, questName, questDescription, charityName, rewardAmount, date));
                         }
 
-                        // Set up viewpager after collecting all the data
-                        populatePage();
+                        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_COMPLETED)).updateList(completedQuests);
 
                     } else {
                         Toast.makeText(getContext(), "Failed to get completed quests.", Toast.LENGTH_LONG).show();
@@ -334,103 +350,5 @@ public class QuestFragment extends Fragment {
         );
 
         queue.add(jsonObjectRequest);
-    }
-
-    private void leaveActiveQuest(int activeQuestId) {
-        final RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = URL_LEAVE_QUEST + "user=" + username + "&password=" + password + "&activequestid=" + activeQuestId;
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject jsonObject) {
-                try {
-                    if (jsonObject.getInt("success") == 1) {
-                        // TODO: Refresh list of active quests
-
-                    } else {
-                        Toast.makeText(getContext(), "Failed to leave quest.", Toast.LENGTH_LONG).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-
-            }
-        }
-        );
-        queue.add(jsonObjectRequest);
-    }
-
-    private void completeActiveQuest(int activeQuestId) {
-        final RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = URL_COMPLETE_QUEST + "user=" + username + "&password=" + password + "&activequestid=" + activeQuestId;
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject jsonObject) {
-                try {
-                    if (jsonObject.getInt("success") == 1) {
-                        // TODO: Refresh list of active quests
-
-                    } else {
-                        Toast.makeText(getContext(), "Failed to mark quest as complete.", Toast.LENGTH_LONG).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-
-            }
-        }
-        );
-        queue.add(jsonObjectRequest);
-    }
-
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

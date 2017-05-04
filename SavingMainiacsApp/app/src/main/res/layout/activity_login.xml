@@ -5,9 +5,9 @@
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
     tools:context="com.mainiacs.saving.savingmainiacsapp.LoginActivity">
 
     <!-- Login progress -->
@@ -17,9 +17,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:progressTint="@color/bsbBlue"
         android:visibility="gone" />
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        android:layout_marginBottom="0dp"
+        android:adjustViewBounds="false"
+
+        android:cropToPadding="false"
+        android:paddingTop="0dp"
+        android:scaleType="fitStart"
+        android:src="@drawable/login_image"
+        android:textAlignment="center" />
+
     <ScrollView
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,18 +45,38 @@
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:weightSum="1">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:textAlignment="center"
-                android:textColor="#064F94"
-                android:textSize="40dp"
-                android:text="Saving Mainiacs"
-                android:fontFamily="monospace"
-                android:textStyle="bold"/>
+                android:layout_height="50dp"
+                android:gravity="center|center_vertical"
+                android:layout_weight="0.05">
+
+                <com.mainiacs.saving.savingmainiacsapp.FontTextView
+                    android:id="@+id/tvTimer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:gravity="center|center_vertical"
+                    android:text="Bangor "
+                    android:textColor="@color/bsbBlue"
+                    android:textSize="40sp"
+                    android:textStyle="bold" />
+
+                <com.mainiacs.saving.savingmainiacsapp.FontTextView
+                    android:id="@+id/tvTimer2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:gravity="center|center_vertical"
+                    android:text="Community"
+                    android:textAlignment="center"
+                    android:textColor="@color/bsbGrey"
+                    android:textSize="30sp" />
+            </LinearLayout>
+
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -89,12 +125,6 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="30dp"/>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textAlignment="center"
-                android:src="@drawable/logo"
-                android:layout_marginBottom="40dp"/>
 
         </LinearLayout>
     </ScrollView>
