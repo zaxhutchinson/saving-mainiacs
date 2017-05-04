@@ -32,14 +32,15 @@
 <head>
 <title>Bangor Marathon Savings</title>
 <meta charset="utf-8">
-<link rel="stylesheet" href="loginNew.css">
+<link rel="stylesheet" href="index.css">
 </head>  
-<div id ="mainPic">
-	
-</div>
+
 <div id="wrapper">
 	<body>
 		<main>
+		<div id ="mainPic">
+	
+		</div>
 			<div id="loginMain">
 				<div id="loginLeft">
 					<h1><strong><span style="color:#064F94;">Bangor </span></strong>Community</h1>

@@ -9,10 +9,10 @@
     	<h1><strong><span style="color: #fff;">Bangor </span></strong><span style="color: #939598;">Community</span></h1>
     	<div class = "bannerRight">
     		<?php
-				$url = 'charity.json';
+				$url = 'https://abnet.ddns.net/mucoftware/remote/get_charity_list.php';
 				$jsondata = file_get_contents($url);
 				$obj = json_decode($jsondata,true);
-				echo "<h3>Welcome, ".$obj["results"][0]['CharityName']."!</h3>";
+				echo "<h3>Welcome, ".$obj["results"][10]['CharityName']."!</h3>";
 			?>
 			<form action="index.php" align ="center">
 				<input type="submit" name="logout" value="Logout">
@@ -27,7 +27,7 @@
 						<div id="image">
 							<div id="pic">
 								<?php
-									$url = 'https://abnet.ddns.net/mucoftware/remote/get_charity_picture.php?charityid=1';
+									$url = 'https://abnet.ddns.net/mucoftware/remote/get_charity_picture.php?charityid=10';
 									$jsondata = file_get_contents($url);
 									$obj = json_decode($jsondata,true);
 									echo '<img class =img-circle src="' . $obj["type"] . ',' . $obj["data"] .'"/>';
@@ -37,20 +37,29 @@
 								<h2>Coins Allocated: </h2>
 								<h4>Since 1/2/2012</h4>
 									<?php
-										$url = 'charity.json';
+										$url = 'https://abnet.ddns.net/mucoftware/remote/get_charity_list.php';
 										$jsondata = file_get_contents($url);
 										$obj = json_decode($jsondata,true);
-										echo "<h1>".$obj["results"][9]['QuestBank']."</h1>";
+										echo "<h1>".$obj["results"][10]['QuestBank']."</h1>";
 									?>
 							</div>
 						</div>
 						<div id ="map">
+							<?php
+								$url = 'https://abnet.ddns.net/mucoftware/remote/get_charity_list.php';
+								$jsondata = file_get_contents($url);
+								$obj = json_decode($jsondata,true);
+								$lat = $obj["results"][10]['Latitude'];
+								$long = $obj["results"][10]['Longitude'];
+							?>
 							<script>
 								function myMap() {
-									var myLatLng = {lat: 44.8228715, lng: -68.735961};
+								var la = Number(<?php echo json_encode($lat); ?>);
+								var lo = Number(<?php echo json_encode($long); ?>);
+									var myLatLng = {lat: la, lng: lo};
 								  var mapCanvas = document.getElementById("map");
 								  var mapOptions = {
-									center: new google.maps.LatLng(44.8228715, -68.735961), zoom: 12
+									center: new google.maps.LatLng(la, lo), zoom: 12
 								  };
 								  var map = new google.maps.Map(mapCanvas, mapOptions);
 								  var marker = new google.maps.Marker({
@@ -70,9 +79,9 @@
 						<div id="charQTable">
 						<?php
 							// $json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_all_quests.php");
-							$json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_quests.php?charityid=1");
+							$json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_quests.php?charityid=10");
 							$array = json_decode($json_string, true);
-							if($array["Success"]==1){
+							if($array["success"]==1){
 							echo '<h1>Active Quests</h1>';
 							echo '<table>';
 							echo '<tr><th>Quantity</th><th>Name</th><th>Drop Off Location</th><th>Coin Payment</th></tr>';
@@ -114,35 +123,10 @@
 						</div>
 						<div id="charQTable2">
 						<?php
-							// echo '<h1>Inactive Quests</h1>';
-							// echo '<table>';
-							// echo '<tr><th>Quantity</th><th>Name</th><th>Drop Off Location</th><th>Coin Payment</th></tr>';
-							// for($id =0;$id<14;$id++)
-							// {
-							// 	$json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_quests.php?charityid=".$id."");
-							// 	$array = json_decode($json_string, true);
-							// 	$n = 0;
-
-							// 	foreach ($array as $key => $jsons) {
-							// 		foreach ($jsons as $key => $value) {
-							// 			echo '<tr>';
-							// 			echo '<td>'.$array["results"][$n]['Quantity'].'</td>';
-							// 			echo '<td>'.$array["results"][$n]['QuestName'].'</td>';
-							// 			echo '<td>'.$array["results"][$n]['DropOffLocation'].'</td>';
-							// 			echo '<td>'.$array["results"][$n]['Payment'].'</td>';
-							// 			echo '</tr>';
-
-							// 		$n++;
-							// 	} 
-							// 	}
-
-							// }
-							// echo '</table>';
-						// $json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_all_quests.php");
-							$json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_quests.php?charityid=1");
+							$json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_all_quests.php");
 							$array = json_decode($json_string, true);
-							if($array["Success"]==1){
-								echo '<h1>Active Quests</h1>';
+							if($array["success"]==1){
+								echo '<h1>All Quests</h1>';
 								echo '<table>';
 								echo '<tr><th>Quantity</th><th>Name</th><th>Drop Off Location</th><th>Coin Payment</th></tr>';
 
@@ -150,13 +134,15 @@
 
 								foreach ($array as $key => $jsons) {
 									foreach ($jsons as $key => $value) {
+									if($array['results'][$n]['CharityID']!=10)
+									{
 										echo '<tr>';
 										echo '<td>'.$array["results"][$n]['Quantity'].'</td>';
 										echo '<td>'.$array["results"][$n]['QuestName'].'</td>';
 										echo '<td>'.$array["results"][$n]['DropOffLocation'].'</td>';
 										echo '<td>'.$array["results"][$n]['Payment'].'</td>';
 										echo '</tr>';
-
+									}
 									$n++;
 								} 
 								}
@@ -190,10 +176,23 @@
 							<br>
 							<br>
 								<?php
-									$url = 'https://abnet.ddns.net/mucoftware/remote/get_user.php?user=helpfulguy78&password=helpfulguy78';
+									$url = 'https://abnet.ddns.net/mucoftware/remote/get_charity_rank.php';
 									$jsondata = file_get_contents($url);
-									$obj = json_decode($jsondata,true);
-									echo "<h1>".$obj["results"][0]['Coins']."</h1>";
+									$array = json_decode($jsondata,true);
+									// echo "<h1>".$obj["results"][0]['Coins']."</h1>";
+									$n = 0;
+
+									foreach ($array as $key => $jsons) {
+										foreach ($jsons as $key => $value) {
+											$tmp = $array['results'][$n]['CharityID'];
+											$k = $n;
+											if($tmp==10)
+											{
+												echo "<h1>".$array["results"][$k]['SUMQuantity']."</h1>";
+											}
+										$n++;
+									} 
+									}
 								?>
 						</div>
 						<div id="mid">
@@ -208,19 +207,34 @@
 								<?php
 									$urlRank = "https://abnet.ddns.net/mucoftware/remote/get_charity_rank.php";
 									$jsonRank = file_get_contents($urlRank);
-									$objRank = json_decode($jsonRank,true);
+									$array = json_decode($jsonRank,true);
+									$charID =10;
 									$n = 0;
 
 									foreach ($array as $key => $jsons) {
 										foreach ($jsons as $key => $value) {
-											if(1==$objRank['results'][$n]['CharityID'])
+											if($array['results'][$n]['CharityID']==10)
 											{
-												echo "<h1>".$objRank["results"][0]['Rank']."</h1>";
+												echo "<h1>".$array["results"][$n]['Rank']."</h1>";
 											}
 										$n++;
 									} 
 									}
+									echo "<h1> /".$n."</h1>";
 								?>
+						</div>
+					</div>
+				</div>
+				<div id ="selector">
+					<div id="selectorSpace">
+						<div id="createQ" align="center">
+						<h1>Create A Quest</h1>
+							<form action="createQuest.php">
+								<input type ="submit" name="Create">
+							</form>
+						</div>
+						<div id="acceptQ">
+						
 						</div>
 					</div>
 				</div>

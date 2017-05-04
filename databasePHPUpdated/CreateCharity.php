@@ -25,11 +25,11 @@ and open the template in the editor.
 				<form action="https://abnet.ddns.net/mucoftware/remote/insert_charity.php?user=<?php echo $_GET['user'];?>&password=<?php echo $_GET['userpassword'];?>&fullname=<?php echo $_GET['fullname'];?>&email=<?php echo $_GET['email'];?>" method="GET">
  -->
 					<h2>CREATE A CHARITY</h2>
-					<input type="text" name="charityname" placeholder="Username...."><br>
-					<input type="password" name="address" placeholder="Address...."><br>
+					<input type="text" name="charityname" placeholder="Charity Name...."><br>
+					<input type="text" name="address" placeholder="Address...."><br>
 					<input type="text" name="description" placeholder="Description...."><br>
 					<input type="tel" name="phone" placeholder="Phone Number...."><br>
-					<input type="text" name="charitylogin" placeholder="Charity Login...."><br>
+					<input type="text" name="charitylogin" placeholder="Username...."><br>
 					<input type="password" name="password" placeholder="Password...."><br>
 					<input type="email" name="email" placeholder="Email...."><br>
 					<input type="submit" name="login" value="Create"><br>

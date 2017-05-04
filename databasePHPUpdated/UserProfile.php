@@ -12,17 +12,22 @@ and open the template in the editor.
     </head>
     <div id ="banner">
     	<h1><strong><span style="color: #fff;">Bangor </span></strong><span style="color: #939598;">Community</span></h1>
-    	<div class = "bannerRight">
+    	<div class = "bannerRight" style="background-color: none;">
     		<?php
-				$url = 'https://abnet.ddns.net/mucoftware/remote/get_user.php?user=helpfulguy78&password=helpfulguy78';
+    			$user = "helpfulguy78";
+				$pass = "helpfulguy78";
+				$url = 'https://abnet.ddns.net/mucoftware/remote/get_user.php?user='.$user.'&password='.$pass.'';
 				$jsondata = file_get_contents($url);
 				$obj = json_decode($jsondata,true);
-				echo "<h3>Welcome, ".$obj["results"][0]['UserName']."!</h3>";
+				echo "<h3>Welcome, </h3>";
+				echo "<h3>".$obj["results"][0]['UserName']."!</h3>";
 			?>
-			<form action="index.php">
-			<input type="submit" name="logout" value="Logout">
-			</form>
     		<!-- <h3>Hello </h3> -->
+    	</div>
+    	<div id="logout" align="center">
+    		<form action="index.php">
+				<input type="submit" name="logout" value="Logout">
+			</form>
     	</div>
     </div>
     <div id="contain">
@@ -32,7 +37,9 @@ and open the template in the editor.
 					<div id="donationLeftUser">
 						<div id ="chart">
 							<?php
-								$url = 'https://abnet.ddns.net/mucoftware/remote/get_user_donationrate.php?user=helpfulguy78&password=helpfulguy78';
+								$user = "helpfulguy78";
+								$pass = "helpfulguy78";
+								$url = 'https://abnet.ddns.net/mucoftware/remote/get_user_donationrate.php?user='.$user.'&password='.$pass.'';
 								$jsondata = file_get_contents($url);
 								$obj = json_decode($jsondata,true);
 								$CharityOne	= $obj['results'][0]['CharityName'];
@@ -87,24 +94,41 @@ and open the template in the editor.
 							  </script>
 							  <div id="piechart" style="width: 500px; height: 75%;"></div>
 						</div>
-						<div id ="charityList">
+						<div id="usedChar">
 							<?php
-								// $json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_all_quests.php");
-								$json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_all_quests.php");
+								$user = "helpfulguy78";
+								$pass = "helpfulguy78";
+								$json_string = file_get_contents('https://abnet.ddns.net/mucoftware/remote/get_user_donationrate.php?user='.$user.'&password='.$pass.'');
+								$array = json_decode($json_string, true);
+								echo "<h3>Donation Rates:</h3>";
+								$n = 0;
+								foreach ($array as $key => $jsons) {
+									foreach ($jsons as $key => $value) {
+										echo '<h5>'.$array["results"][$n]['CharityName'].': '.$array["results"][$n]['Percent'].'%</h5>';
+									$n++;
+								} 
+								}
+							?>
+						</div>
+						<div id ="charityList">
+						<h1>Active Quests:</h1>
+							<?php
+								$user = "helpfulguy78";
+								$pass = "helpfulguy78";
+								$json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_user_active_quests.php?user=".$user."&password=".$pass."");
 								$array = json_decode($json_string, true);
 
 								echo '<table>';
-								echo '<tr><th>Quantity</th><th>Name</th><th>Drop Off Location</th><th>Coin Payment</th></tr>';
+								echo '<tr><th>Reward Amount</th><th>Accepted (Date)</th></tr>';
 
 								$n = 0;
 
 								foreach ($array as $key => $jsons) {
 									foreach ($jsons as $key => $value) {
 										echo '<tr>';
-										echo '<td>'.$array["results"][$n]['Quantity'].'</td>';
-										echo '<td>'.$array["results"][$n]['QuestName'].'</td>';
-										echo '<td>'.$array["results"][$n]['DropOffLocation'].'</td>';
-										echo '<td>'.$array["results"][$n]['Payment'].'</td>';
+										echo '<td>'.$array["results"][$n]['RewardAmount'].'</td>';
+										echo '<td>'.$array["results"][$n]['AcceptDate'].'</td>';
+										echo '<td>'.$array["results"][$n]['ActiveID'].'</td>';
 										echo '</tr>';
 
 									$n++;
@@ -122,34 +146,56 @@ and open the template in the editor.
 								$jsondata = file_get_contents($url);
 								$obj = json_decode($jsondata,true);
 								echo '<img class =img-circle src="' . $obj["type"] . ',' . $obj["data"] .'"/>';
-							?>						
-					</div>
+// 							?>						
+						</div>
 						<div id="coinsCurrent">
-							<div class ="coins">
-							<h2>Coins: </h2>
+							<div class="userRank">
+							<h2>Rank: </h2>
 							<h4>Since 1/2/2012</h4>
 							<br>
-							<br>
-							<br>
-								<?php
-									$url = 'https://abnet.ddns.net/mucoftware/remote/get_user.php?user=helpfulguy78&password=helpfulguy78';
-									$jsondata = file_get_contents($url);
-									$obj = json_decode($jsondata,true);
-									echo "<h1>".$obj["results"][0]['Coins']."</h1>";
-								?>
+							<?php
+								$user = "helpfulguy78";
+								$url = 'https://abnet.ddns.net/mucoftware/remote/get_user_rank.php';
+								$jsondata = file_get_contents($url);
+								$array = json_decode($jsondata, true);
+								$n = 0;
+
+								foreach ($array as $key => $jsons) {
+									foreach ($jsons as $key => $value) {
+									if($array["results"][$n]["UserName"]==$user)
+										echo '<h1>'.$array["results"][$n]['Rank'].'</h1>';
+									$n++;
+								} 
+								}
+								
+							?>
 							</div>
-						<div class ="steps">
-							<h2>Steps: </h2>
-							<h4>Since 1/2/2012</h4>
-							<br>
-							<br>
-							<br>
-								<?php
-									$url = 'https://abnet.ddns.net/mucoftware/remote/get_user.php?user=helpfulguy78&password=helpfulguy78';
-									$jsondata = file_get_contents($url);
-									$obj = json_decode($jsondata,true);
-									echo "<h1>".$obj["results"][0]['DaySteps']."</h1>";
-								?>
+							<div class ="coins">
+								<h2>Coins Today: </h2>
+								<h4>Since 1/2/2012</h4>
+								<br>
+									<?php
+										$user = "helpfulguy78";
+										$pass = "helpfulguy78";
+										$url = 'https://abnet.ddns.net/mucoftware/remote/get_user.php?user='.$user.'&password='.$pass.'';
+										$jsondata = file_get_contents($url);
+										$obj = json_decode($jsondata,true);
+										echo "<h1>".$obj["results"][0]['Coins']."</h1>";
+									?>
+							</div>
+							<div class ="steps">
+								<h2>Steps Today: </h2>
+								<h4>Since 1/2/2012</h4>
+								<br>
+
+									<?php
+										$user = "helpfulguy78";
+										$pass = "helpfulguy78";
+										$url = 'https://abnet.ddns.net/mucoftware/remote/get_user.php?user='.$user.'&password='.$pass.'';
+										$jsondata = file_get_contents($url);
+										$obj = json_decode($jsondata,true);
+										echo "<h1>".$obj["results"][0]['DaySteps']."</h1>";
+									?>
 						</div>
 						</div>
 					</div>
@@ -159,10 +205,10 @@ and open the template in the editor.
 						<h2>Total Coins Earned: </h2>
 						<h4>Since 1/2/2012</h4>
 						<br>
-						<br>
-						<br>
 							<?php
-								$url = 'https://abnet.ddns.net/mucoftware/remote/get_user.php?user=helpfulguy78&password=helpfulguy78';
+								$user = "helpfulguy78";
+								$pass = "helpfulguy78";
+								$url = 'https://abnet.ddns.net/mucoftware/remote/get_user.php?user='.$user.'&password='.$pass.'';
 								$jsondata = file_get_contents($url);
 								$obj = json_decode($jsondata,true);
 								echo "<h1>".$obj["results"][0]['TotalCoins']."</h1>";
@@ -185,25 +231,200 @@ and open the template in the editor.
 						<h2>Total Donations: </h2>
 						<h4>Since 1/2/2012</h4>
 						<br>
-						<br>
-						<br>
 							<?php
-								$url = 'https://abnet.ddns.net/mucoftware/remote/get_user.php?user=helpfulguy78&password=helpfulguy78';
+								$user = "helpfulguy78";
+								$pass = "helpfulguy78";
+								$url = 'https://abnet.ddns.net/mucoftware/remote/get_user.php?user='.$user.'&password='.$pass.'';
 								$jsondata = file_get_contents($url);
 								$obj = json_decode($jsondata,true);
 								echo "<h1>$".($obj["results"][0]['TotalCoins']*.189)."</h1>";
 							?>
-							<!-- 
-echo DBManager::getInstance()->construct_dropdown("fSelectCharity1",
-                    "fSelectCharity1",
-                    ["CharityID"],
-                    ["CharityName"],
-                    "SELECT CharityID,CharityName FROM Charity;");
-            echo "<br/>";
- -->
+							
 						</div>
 					</div>
 				 </div>
+				 <div id = "selector">
+					<div id= "selectorSpace">
+					<div id="selectionArea">
+						<div id="percent" align="center">
+						<!---DONATOIN PERCENTAGES---------------------------------->
+						<h1>Donation Percentages</h1>
+							<form action="https://abnet.ddns.net/mucoftware/remote/update_user_donations.php?user=<?php echo $_GET['user'];?>&password=<?php echo $_GET['password'];?>&c1=<?php echo $_GET['c1'];?>&c2=<?php echo $_GET['c2'];?>&c3=3&c4=4&c5=5&p1=<?php echo $_GET['p1'];?>&p2=<?php echo $_GET['p2'];?>&p3=10&p4=15&p5=15" method="GET">
+							<input type="hidden"value="helpfulguy78"name="user"> 
+							<input type="hidden"value="helpfulguy78"name="password"> 
+								<?php
+									$json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_charity_list.php");
+									$array = json_decode($json_string, true);
+									echo "<select name ='c1'>";
+									$n = 0;
+									foreach ($array as $key => $jsons) {
+										foreach ($jsons as $key => $value) {
+											//echo "<option>".$array["results"][$n]['CharityName'].'</option>';
+											echo '<option value="'.$array["results"][$n]['CharityID'].'">'.$array["results"][$n]['CharityName'].'</option>';
+											//echo "<option>".$var."</option>";
+										$n++;
+									} 
+									}
+									echo "</select>";									
+									echo "<select name ='c2'>";
+									$n = 0;
+									foreach ($array as $key => $jsons) {
+										foreach ($jsons as $key => $value) {
+											echo '<option value="'.$array["results"][$n]['CharityID'].'">'.$array["results"][$n]['CharityName'].'</option>';
+											//echo "<option>".$var."</option>";
+										$n++;
+									} 
+									}
+									echo "</select>";
+									
+									echo "<select name ='c3'>";
+									$n = 0;
+									foreach ($array as $key => $jsons) {
+										foreach ($jsons as $key => $value) {
+											echo '<option value="'.$array["results"][$n]['CharityID'].'">'.$array["results"][$n]['CharityName'].'</option>';
+											//echo "<option>".$var."</option>";
+										$n++;
+									} 
+									}
+									echo "</select>";									
+									echo "<select name ='c4'>";
+									$n = 0;
+									foreach ($array as $key => $jsons) {
+										foreach ($jsons as $key => $value) {
+											echo '<option value="'.$array["results"][$n]['CharityID'].'">'.$array["results"][$n]['CharityName'].'</option>';
+											//echo "<option>".$var."</option>";
+										$n++;
+									} 
+									}
+									echo "</select>";
+									
+									echo "<select name ='c5'>";
+									$n = 0;
+									foreach ($array as $key => $jsons) {
+										foreach ($jsons as $key => $value) {
+											echo '<option value="'.$array["results"][$n]['CharityID'].'">'.$array["results"][$n]['CharityName'].'</option>';
+											//echo "<option>".$var."</option>";
+										$n++;
+									} 
+									}
+									echo "</select>";
+									echo "<label for='one'>1:</label>";
+									echo "<input type='number' name ='p1'value ='0' id='one'placeholder='Percent'>";
+									echo "<label for='two'>2:</label>";
+									echo "<input type='number' name ='p2'value ='0' id='two' placeholder='Percent'>";
+									echo "<label for='three'>3:</label>";
+									echo "<input type='number' name ='p3'value ='0' id='three' placeholder='Percent'>";
+									echo "<label for='four'>4:</label>";
+									echo "<input type='number' name ='p4'value ='0' id='four'placeholder='Percent'>";
+									echo "<label for='five'>5:</label>";
+									echo "<input type='number' name ='p5'value ='0' id='five'placeholder='Percent'>";
+								?>
+								<input type="submit" name="Change">
+							</form>
+						</div>
+					</div>
+					<div id="allQuests" align="center">
+						<div id="addQ">
+							<h1>Add Quests</h1>
+							<form action='https://abnet.ddns.net/mucoftware/remote/accept_quest.php?user=<?php echo $_GET['user'];?>&password=<?php echo $_GET['password'];?>&questid=<?php echo $_GET['allQ'];?>' method="GET">
+								<input type ="text" name="user"value="helpfulguy78" readonly>
+								<input type ="password" name="password"value="helpfulguy78" readonly>
+								<?php
+									$json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_all_quests.php");
+									$array = json_decode($json_string, true);
+							
+									echo '<select name="questid">';
+									$n = 0;
+
+									foreach ($array as $key => $jsons) {
+										foreach ($jsons as $key => $value) {
+											//echo '<option>'.$array["results"][$n]['QuestName'].", Payment: ".$array["results"][$n]['Payment'].'</option>';
+											 echo '<option value="'.$array["results"][$n]['QuestID'].'">'.$array["results"][$n]['QuestName'].", Payment: ".$array["results"][$n]['Payment'].'</option>';
+										$n++;
+									} 
+									}
+									echo '</select>';
+								?>
+								<input type="submit" name="AddQuest" value="Add" style="width: 50%;">
+							</form>
+						</div>
+						<!-- 
+<div id="updatePic">
+							<h1> Update Pic</h1>
+							<form action="https://abnet.ddns.net/mucoftware/remote/update_user_picture.php?user=<?php echo $_GET['user'];?>&password=<?php echo $_GET['password'];?>&picture=<?php echo $_GET['picture'];?>" method="GET">
+								<input type="hidden"value="helpfulguy78"name="user">
+								<input type="hidden"value="helpfulguy78"name="password">
+								<input type="hidden" value="" name="picture">
+								<input type="file"name="picture">
+								<input type="submit"name="Change"value="Change">
+								<?php
+									// $url=$_GET['picture'];
+// 									$img = file_get_contents($url);
+// 									$imgE = base64_encode($img);
+// 									echo $imgE;
+								?>
+
+							</form>
+						</div>
+ -->
+					</div>
+					<div id="comDel">
+						<div id="compQuests" align="center">
+						<h1>Completed Quest</h1>
+						<form action='https://abnet.ddns.net/mucoftware/remote/complete_quest.php?user=<?php echo $_GET['user'];?>&password=<?php echo $_GET['password'];?>&activequestid=<?php echo $_GET['activequestid'];?>' method="GET">
+							<input type ="text" name="user"value="helpfulguy78" readonly>
+							<input type ="password" name="password"value="helpfulguy78" readonly>
+							<?php
+								$user = "helpfulguy78";
+								$pass = "helpfulguy78";
+								$json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_user_active_quests.php?user=".$user."&password=".$pass."");
+								$array = json_decode($json_string, true);
+							
+								echo '<select name="activequestid">';
+								$n = 0;
+
+								foreach ($array as $key => $jsons) {
+									foreach ($jsons as $key => $value) {
+										//echo '<option>'.$array["results"][$n]['QuestID'].", Payment: ".$array["results"][$n]['Payment'].'</option>';
+										 echo '<option value="'.$array["results"][$n]['ActiveID'].'">'.$array["results"][$n]['ActiveID'].", Payment: ".$array["results"][$n]['RewardAmount'].'</option>';
+									$n++;
+								} 
+								}
+								echo '</select>';
+							?>
+							<input type="submit" name="compuQuest" value="Complete" style="width: 50%;">
+						</form>
+						</div>
+						
+						<div id="delQ" align="center">
+							<h1>Remove Quest</h1>
+							<form action='https://abnet.ddns.net/mucoftware/remote/leave_quest.php?user=<?php echo $_GET['user'];?>&password=<?php echo $_GET['password'];?>&activequestid=<?php echo $_GET['activequestid'];?>' method="GET">
+							<input type ="text" name="user"value="helpfulguy78" readonly>
+							<input type ="password" name="password"value="helpfulguy78" readonly>
+							<?php
+								$user = "helpfulguy78";
+								$pass = "helpfulguy78";
+								$json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_user_active_quests.php?user=".$user."&password=".$pass."");
+								$array = json_decode($json_string, true);
+							
+								echo '<select name="activequestid">';
+								$n = 0;
+
+								foreach ($array as $key => $jsons) {
+									foreach ($jsons as $key => $value) {
+										//echo '<option>'.$array["results"][$n]['QuestID'].", Payment: ".$array["results"][$n]['Payment'].'</option>';
+										 echo '<option value="'.$array["results"][$n]['ActiveID'].'">'.$array["results"][$n]['ActiveID'].", Payment: ".$array["results"][$n]['RewardAmount'].'</option>';
+									$n++;
+								} 
+								}
+								echo '</select>';
+							?>
+							<input type="submit" name="compuQuest" value="Remove" style="width: 50%;">
+						</form>
+						</div>
+					</div>
+					</div>
+				</div>
 			</main>
 		</body>
     </div>

@@ -1,3 +1,7 @@
+@font-face {
+   font-family: plymouth;
+   src: url(Plymouth-Serial-Regular.ttf);
+}
 *
 {
         margin: 0;
@@ -7,19 +11,47 @@
         font-size: 100%;
         vertical-align: baseline;
         background: transparent;
+        font-family: plymouth;
         
 }
 main
 {
 	  	background-color: #939598;
 }
+html {
+    display: table;
+    margin: auto;
+}
+
+body {
+    display: table-cell;
+    vertical-align: middle;
+}
 #charityList
 {
 	display: block;
 	position: relative;
-	height: 40%;
+	height: 30%;
 	background-color: none;
 	width: 100%;
+}
+#logout
+{
+	display: block;
+	background-color: none;
+	position: relative;
+	float: right;
+	margin-top: -70px;
+	height: 75px;
+	width: 100px;
+	margin-right: 30px;
+}
+#logout input[type=submit]
+{
+	background-color: #fff;
+	width: 70px;
+	color: #064F94;
+	
 }
 #banner
 {
@@ -89,11 +121,19 @@ main
 }
 #chart
 {
-	height: 60%;
+	height: 50%;
 	display: block;
 	position: relative;
 	width: 100%;
-	/* background-color: black; */
+	background-color: none;
+}
+#usedChar
+{
+	display:block;
+	position: relative;
+	height:15%;
+	width: 100%;
+	background-color: none;
 }
 #profileUser
 {
@@ -129,14 +169,15 @@ main
 }
 .coins
 {
-	height: 50%;
+	height: 33%;
 	display: block;
 	position: relative;
+	background-color: none;
 }
 .coins h1
 {
 	color: #064F94;
-	font-size: 3em;
+	font-size: 2em;
 	text-align: center;
 }
 .coins h2
@@ -147,14 +188,16 @@ main
 }
 .steps
 {
-	height: 50%;
+	height: 33%;
 	display: block;
 	position: relative;
+	background-color: none;
+
 }
 .steps h1
 {
 	color: #064F94;
-	font-size: 3em;
+	font-size: 2em;
 	text-align: center;
 }
 .steps h2
@@ -162,6 +205,25 @@ main
 	color: black;
 	font-size: 2.5em;
 	
+}
+.userRank
+{
+	height: 33%;
+	display: block;
+	position: relative;
+	background-color: none;
+
+}
+.userRank h1
+{
+	color: #064F94;
+	font-size: 2em;
+	text-align: center;
+}
+.userRank h2
+{
+	color: black;
+	font-size: 2.5em;
 }
 #coinTotalUser
 {
@@ -260,7 +322,9 @@ footer
 	position: relative;
 	width: 100%;
 	text-align: center;
+/* 
 	font-family: Arial, "Helvetica Neue", Helvetica, "Nimbus Sans L", sans-serif;
+ */
 	font-size: 100%;
 	min-width: 1250px;
   	max-width: 1250px;
@@ -287,7 +351,6 @@ table
 	border-color: #fff;
 	width: 100%;
 	overflow-y:scroll;
-	overflow-x:scroll;
 	height: 100%;
 	display: block;
 }
@@ -304,6 +367,199 @@ tr:nth-child(even) {
 	background-color: #fff;
 }
 tr:nth-child(odd) {
-	background-color: #126180;
+	background-color: #064F94;
 	color: white;
 }
+#selector
+{
+	height: 600px;
+	width: 100%;
+	display: block;
+	position: relative;
+	background-color: #939598;
+}
+#selectorSpace
+{
+	height: 98%;
+	width: 1230px;
+	display: block;
+	position: relative;
+	background-color: #fff;
+	margin-left: 10px;
+	border-radius: 7px;
+}
+#selectionArea
+{
+	display: block;
+	position: relative;
+	float: left;
+	background-color: none;
+	width: 33%;
+	height: 100%;
+}
+#selectionArea select
+{
+	background-color: #064F94;
+	color: #fff;
+	top: 5%;
+	margin-top: 15px;
+}
+select
+{
+	padding: 2px;
+	position: relative;
+	display: block;
+	height: 30px;
+	width: auto;
+	color: black;
+	text-align: center;
+}
+#allQuests
+{
+	display: block;
+	position: relative;
+	float: left;
+	background-color: none;
+	width: 33%;
+	height: 100%;
+}
+#allQuests select
+{
+	background-color: #064F94;
+	color: #fff;
+	top: 5%;
+	margin-top: 15px;
+}
+#allQuests h1
+{
+	text-align: center;
+	font-size: 2em;
+}
+#addQ
+{
+	height: 50%; 
+	width: 100%;
+	float: left;
+	display: block;
+	position: relative;
+}
+#updatePic
+{
+	height: 50%; 
+	width: 100%;
+	float: left;
+	display: block;
+	position: relative;
+}
+#compQuests
+{
+	display: block;
+	position: relative;
+	float: left;
+	background-color: none;
+	width: 100%;
+	height: 50%;
+}
+#compQuests select
+{
+	background-color: #064F94;
+	color: #fff;
+	top: 5%;
+	margin-top: 15px;
+}
+#compQuests h1
+{
+	text-align: center;
+	font-size: 2em;
+}
+input[type=text]{
+    width: 50%;
+    padding: 3px 6px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #064F94;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+input[type=password]{
+    width: 50%;
+    padding: 3px 6px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #064F94;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+
+input[type=submit] {
+    width: 50%;
+    background-color: #064F94;
+    color: #fff;
+    padding: 2px 4px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #064F94;
+}
+input[type=number]{
+    width: 50%;
+    padding: 3px 6px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #064F94;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+#delQ
+{
+	display: block;
+	position: relative;
+	background-color: none;
+	float: right;
+	width: 100%;
+	height: 50%;
+}
+#delQ select
+{
+	background-color: #064F94;
+	color: #fff;
+	top: 5%;
+	margin-top: 15px;
+}
+#delQ h1
+{
+	text-align: center;
+	font-size: 2em;
+}
+#comDel
+{
+	display: block;
+	float: right;
+	position: relative;
+	height: 100%;
+	width: 33%;
+	background-color: none;
+}
+#percent
+{
+	display: block;
+	border-bottom-style: 2px solid black;
+}
+#percent h1
+{
+	text-align: center;
+	font-size: 2em;
+}
+label 
+{
+  display: inline-block;
+  width: 140px;
+  text-align: right;
+  
+}​
