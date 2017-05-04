@@ -498,7 +498,7 @@ public class MainActivity extends AppCompatActivity
                 LeaderBoardFragment leaderBoardFragment = LeaderBoardFragment.newInstance(user.ID());
                 return leaderBoardFragment;
             case 4:
-                SettingsFragment settingsFragment = new SettingsFragment();
+                SettingsFragment settingsFragment = SettingsFragment.newInstance(username, password);
                 return settingsFragment;
             default:
                 return new ProfileFragment();

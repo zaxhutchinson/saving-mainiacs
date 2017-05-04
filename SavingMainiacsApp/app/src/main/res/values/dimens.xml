@@ -9,6 +9,7 @@
     <dimen name="nav_header_height">160dp</dimen>
 
     <dimen name="chart_length">225dp</dimen>
+    <dimen name="large_chart_length">275dp</dimen>
     <dimen name="image_length">165dp</dimen>
 
     <dimen name="text_size">25sp</dimen>
