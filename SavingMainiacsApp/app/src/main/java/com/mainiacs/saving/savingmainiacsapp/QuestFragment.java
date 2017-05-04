@@ -39,6 +39,7 @@ public class QuestFragment extends Fragment {
     public static final int QUEST_STATUS_PENDING = 1;
     public static final int QUEST_STATUS_REJECTED = 2;
     public static final int QUEST_STATUS_COMPLETED = 3;
+    private boolean[] query_done = new boolean[4];
 
     private static final int NUM_QUEST_TABS = 4;
 
@@ -129,14 +130,6 @@ public class QuestFragment extends Fragment {
         }
     }
 
-    private void populatePage() {
-        // Update the quest list for each fragment
-        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_ACTIVE)).updateList(activeQuests);
-        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_PENDING)).updateList(pendingQuests);
-        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_REJECTED)).updateList(rejectedQuests);
-        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_COMPLETED)).updateList(completedQuests);
-    }
-
     private class ViewPagerAdapter extends FragmentPagerAdapter {
         public final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
@@ -197,6 +190,9 @@ public class QuestFragment extends Fragment {
 
                             activeQuests.add(new UserQuestInfo(userQuestId, questName, questDescription, charityName, rewardAmount, date));
                         }
+
+                        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_ACTIVE)).updateList(activeQuests);
+
                     } else {
                         Toast.makeText(getContext(), "Failed to get active quests.", Toast.LENGTH_LONG).show();
                     }
@@ -241,6 +237,8 @@ public class QuestFragment extends Fragment {
 
                             pendingQuests.add(new UserQuestInfo(userQuestId, questName, questDescription, charityName, rewardAmount, date));
                         }
+
+                        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_PENDING)).updateList(pendingQuests);
 
                     } else {
                         Toast.makeText(getContext(), "Failed to get pending quests.", Toast.LENGTH_LONG).show();
@@ -287,6 +285,8 @@ public class QuestFragment extends Fragment {
                             rejectedQuests.add(new UserQuestInfo(userQuestId, questName, questDescription, charityName, rewardAmount, date));
                         }
 
+                        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_REJECTED)).updateList(rejectedQuests);
+
                     } else {
                         Toast.makeText(getContext(), "Failed to get rejected quests.", Toast.LENGTH_LONG).show();
                     }
@@ -332,8 +332,7 @@ public class QuestFragment extends Fragment {
                             completedQuests.add(new UserQuestInfo(userQuestId, questName, questDescription, charityName, rewardAmount, date));
                         }
 
-                        // Set up viewpager after collecting all the data
-                        populatePage();
+                        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_COMPLETED)).updateList(completedQuests);
 
                     } else {
                         Toast.makeText(getContext(), "Failed to get completed quests.", Toast.LENGTH_LONG).show();
