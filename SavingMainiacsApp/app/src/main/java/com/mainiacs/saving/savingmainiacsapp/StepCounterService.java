@@ -41,14 +41,14 @@ public class StepCounterService extends IntentService implements SensorEventList
     public StepCounterService(UserProfile user, Context mContext) {
         super("StepCounterService");
 
+        user = null;
+
         PackageManager pm = mContext.getPackageManager();
         if(!pm.hasSystemFeature(pm.FEATURE_SENSOR_STEP_COUNTER)) {
             Toast.makeText(mContext, "Count sensor not available!", Toast.LENGTH_LONG).show();
             stepCounterActive = false;
         }
         else {
-
-            this.user = user;
 
             sensorManager = (SensorManager) mContext.getSystemService(mContext.SENSOR_SERVICE);
             countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
@@ -68,9 +68,15 @@ public class StepCounterService extends IntentService implements SensorEventList
 
     }
 
+    public void SetUser(UserProfile user) {
+        this.user = user;
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
-        user.TempSteps((int)event.values[0]);
+        if(user != null) {
+            user.TempSteps((int) event.values[0]);
+        }
     }
 
     @Override

@@ -24,6 +24,7 @@ if ( isset_input_list($lInput) ) {
     $lSteps = get_input('steps');
 
     $lStepsPerCoin = 100;
+    $lMaxDaySteps = 10000;
     
     // connecting to db
     $db = new DBManager();
@@ -38,12 +39,18 @@ if ( isset_input_list($lInput) ) {
     
     if($lVerify){
 
-        $lOldRemainder = $db->get_remainder_coins($lUserID);
-        $lAddCoins = ($lSteps+$lOldRemainder)/$lStepsPerCoin;
-        $lRemainder = ($lSteps+$lOldRemainder)%$lStepsPerCoin;   
-    
-        $db->add_coins($lUserID, $lAddCoins);
-        $db->add_steps($lUserID, $lSteps);
+        //$lNumbSteps = $db->get_user_steps($lUserID);
+        
+        //if($lNumbSteps < $lMaxDaySteps){
+        if(true){    
+            $lOldRemainder = $db->get_remainder_coins($lUserID);
+            $lAddCoins = ($lSteps+$lOldRemainder)/$lStepsPerCoin;
+            $lRemainder = ($lSteps+$lOldRemainder)%$lStepsPerCoin;   
+
+            $db->add_coins($lUserID, $lAddCoins);
+            $db->add_steps($lUserID, $lSteps);
+        }
+        
         $db->update_table("Volunteers", ["LastLatitude", "LastLongitude", "Remainder" ], [$lLat, $lLong,$lRemainder], ["UserID"], [$lUserID]);
         $response["success"] = 1;
         $response["message"] = "Update Successful";

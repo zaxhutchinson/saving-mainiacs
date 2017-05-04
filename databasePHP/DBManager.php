@@ -74,8 +74,6 @@ class DBManager extends mysqli{
         
         $result = $this->query($lRet);
         
-        
-        
         if ($result->num_rows > 0){
             $row = $result->fetch_row();
             return $row[0];
@@ -675,6 +673,10 @@ class DBManager extends mysqli{
     
     public function get_user_coins($aUserID){
         return $this->get_db_val("Coins","Volunteers", "UserID", $aUserID);
+    }
+
+    public function get_user_steps($aUserID){
+        return $this->get_db_val("DaySteps","Volunteers", "UserID", $aUserID);
     }
     
     public function get_user_total_coins($aUserID){
