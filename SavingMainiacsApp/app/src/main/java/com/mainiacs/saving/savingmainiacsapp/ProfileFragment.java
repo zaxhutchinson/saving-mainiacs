@@ -11,7 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,16 +27,19 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
-    private static String PROFILE_STRING = "https://abnet.ddns.net/mucoftware/remote/get_user.php?";
-    private static String USER_PICTURE_URL = "https://abnet.ddns.net/mucoftware/remote/get_user_picture.php?userid=";
+    private static final String PROFILE_STRING = "https://abnet.ddns.net/mucoftware/remote/get_user.php?";
+    private static final String USER_PICTURE_URL = "https://abnet.ddns.net/mucoftware/remote/get_user_picture.php?userid=";
+    private static final String URL_GET_ACTIVE_QUESTS = "https://abnet.ddns.net/mucoftware/remote/get_user_active_quests.php?";
 
     private static final String ARG_DATAMANAGER = "dataMangaer";
     private static final int MAX_STEPS = 10000;
@@ -43,10 +49,11 @@ public class ProfileFragment extends Fragment {
     private TextView level;
     private PieChart stepChart;
     private ImageView pic;
+    private ListView simpleQuestList;
 
     private DataManager dm;
     private UserProfile user;
-
+    private List<HashMap<String, String>> simpleQuestInfo;
 
     private OnFragmentInteractionListener mListener;
 
@@ -69,6 +76,7 @@ public class ProfileFragment extends Fragment {
             dm = getArguments().getParcelable(ARG_DATAMANAGER);
         }
         user = dm.userProfile;
+        simpleQuestInfo = new ArrayList<>();
     }
 
     @Override
@@ -81,6 +89,7 @@ public class ProfileFragment extends Fragment {
         level = (TextView) view.findViewById(R.id.userLevel);
         stepChart = (PieChart) view.findViewById(R.id.steps_chart);
         pic = (ImageView) view.findViewById(R.id.userpic);
+        simpleQuestList = (ListView) view.findViewById(R.id.quest_preview_list);
 
         if (user != null) PopulateUserData();
 
@@ -121,6 +130,56 @@ public class ProfileFragment extends Fragment {
         queue.add(jsonObjectRequest);
     }
 
+    private void getActiveQuests() {
+        String url = URL_GET_ACTIVE_QUESTS + "user=" + user.UserName() + "&password=" + user.Password();
+        final RequestQueue queue = Volley.newRequestQueue(getContext());
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    if (jsonObject.getInt("success") == 1) {
+                        simpleQuestInfo.clear();
+
+                        JSONArray questList = jsonObject.getJSONArray("results");
+                        for (int i = 0; i < questList.length(); i++) {
+                            JSONObject quest = questList.getJSONObject(i);
+
+                            int rewardAmount = quest.getInt("RewardAmount");
+                            String questName = quest.getString("QuestName");
+
+                            // Populate list of maps for simple list view adapter
+                            HashMap<String, String> map = new HashMap<>();
+                            map.put("QuestName", questName);
+                            map.put("Reward", String.valueOf(rewardAmount));
+
+                            simpleQuestInfo.add(map);
+                        }
+
+                        String[] from = {"QuestName", "Reward"};
+                        int[] to = {R.id.simple_quest_name, R.id.simple_quest_reward};
+                        SimpleAdapter adapter = new SimpleAdapter(getContext(), simpleQuestInfo, R.layout.simple_active_quest_item, from, to);
+                        simpleQuestList.setAdapter(adapter);
+
+                    } else {
+                        Toast.makeText(getContext(), "Failed to get active quests.", Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+
+        queue.add(jsonObjectRequest);
+    }
+
     void PopulateUserData() {
 
         int steps = user.DaySteps();
@@ -131,6 +190,7 @@ public class ProfileFragment extends Fragment {
         level.setText("Level 1");
 
         GetUserPicture();
+        getActiveQuests();
 
         int zero = MAX_STEPS - steps;
         stepChart.setOnTouchListener(null);
