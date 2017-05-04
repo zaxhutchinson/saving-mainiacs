@@ -12,7 +12,7 @@
 				$url = 'https://abnet.ddns.net/mucoftware/remote/get_charity_list.php';
 				$jsondata = file_get_contents($url);
 				$obj = json_decode($jsondata,true);
-				echo "<h3>Welcome, ".$obj["results"][10]['CharityName']."!</h3>";
+				echo "<h3>Welcome, ".$obj["results"][9]['CharityName']."!</h3>";
 			?>
 			<form action="index.php" align ="center">
 				<input type="submit" name="logout" value="Logout">
@@ -40,7 +40,7 @@
 										$url = 'https://abnet.ddns.net/mucoftware/remote/get_charity_list.php';
 										$jsondata = file_get_contents($url);
 										$obj = json_decode($jsondata,true);
-										echo "<h1>".$obj["results"][10]['QuestBank']."</h1>";
+										echo "<h1>".$obj["results"][9]['QuestBank']."</h1>";
 									?>
 							</div>
 						</div>
@@ -49,8 +49,8 @@
 								$url = 'https://abnet.ddns.net/mucoftware/remote/get_charity_list.php';
 								$jsondata = file_get_contents($url);
 								$obj = json_decode($jsondata,true);
-								$lat = $obj["results"][10]['Latitude'];
-								$long = $obj["results"][10]['Longitude'];
+								$lat = $obj["results"][9]['Latitude'];
+								$long = $obj["results"][9]['Longitude'];
 							?>
 							<script>
 								function myMap() {
@@ -257,6 +257,9 @@
 			</li>
 			<li>
 				<a href="http://www.bangor.com/About-Us/Contact-Us.aspx" target="_self">Contact Us</a>
+			</li>
+			<li>
+				<a href="help.html" >Help</a>
 			</li>
 		</ul>
 		<br>

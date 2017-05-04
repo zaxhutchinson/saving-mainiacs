@@ -43,7 +43,7 @@
 		</div>
 			<div id="loginMain">
 				<div id="loginLeft">
-					<h1><strong><span style="color:#064F94;">Bangor </span></strong>Community</h1>
+					<h1><bold><span style="color:#064F94;">Bangor </span></bold><span style="color: #939598;">Community</span></h1>
 					<!-- <img src="ricky.gif" alt="This will display an animated GIF" /> -->
 					<div id="userLeader">
 						<?php
@@ -70,7 +70,6 @@
 						?>
 					</div>
 					<div id="charityLeader">
-
 						<?php
 							// $json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_all_quests.php");
 							$json_string = file_get_contents("https://abnet.ddns.net/mucoftware/remote/get_charity_rank.php");
@@ -159,6 +158,9 @@
 			</li>
 			<li>
 				<a href="http://www.bangor.com/About-Us/Contact-Us.aspx" target="_self">Contact Us</a>
+			</li>
+			<li>
+				<a href="help.html" >Help</a>
 			</li>
 		</ul>
 		<br>

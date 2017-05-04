@@ -1,3 +1,19 @@
+@font-face {
+   font-family: plymouth;
+   src: url(Plymouth-Serial-Regular.ttf);
+}
+*
+{
+        margin: 0;
+        padding: 0;
+        border: 0;
+        outline: 0;
+        font-size: 100%;
+        vertical-align: baseline;
+        background: transparent;
+        font-family: plymouth;
+        
+}
 form
 {
 	color: black;
