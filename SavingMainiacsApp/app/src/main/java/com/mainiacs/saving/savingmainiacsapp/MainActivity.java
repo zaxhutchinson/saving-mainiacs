@@ -491,7 +491,7 @@ public class MainActivity extends AppCompatActivity
                 questFragmentRef = questFragment;
                 return questFragment;
             case 3:
-                LeaderBoardFragment leaderBoardFragment = new LeaderBoardFragment();
+                LeaderBoardFragment leaderBoardFragment = LeaderBoardFragment.newInstance(user.ID());
                 return leaderBoardFragment;
             case 4:
                 SettingsFragment settingsFragment = new SettingsFragment();
