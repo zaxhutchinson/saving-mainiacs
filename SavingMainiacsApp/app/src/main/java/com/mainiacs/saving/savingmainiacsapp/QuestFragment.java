@@ -53,10 +53,8 @@ public class QuestFragment extends Fragment {
     private ArrayList<UserQuestInfo> completedQuests;
     private ArrayList<UserQuestInfo> rejectedQuests;
 
-    private ViewPager questPager;
-    private TabLayout tabs;
+    private ViewPagerAdapter adapter;
 
-    private OnFragmentInteractionListener mListener;
     private UserQuestInfoFragment activeFragmentRef;
     private UserQuestInfoFragment pendingFragmentRef;
 
@@ -90,33 +88,12 @@ public class QuestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_quest, container, false);
-        questPager = (ViewPager) view.findViewById(R.id.quests_pager);
+        ViewPager questPager = (ViewPager) view.findViewById(R.id.quests_pager);
 
-        tabs = (TabLayout) view.findViewById(R.id.quests_tabs);
+        TabLayout tabs = (TabLayout) view.findViewById(R.id.quests_tabs);
         tabs.setupWithViewPager(questPager);
 
-        getAllQuests();
-
-        return view;
-    }
-
-    public void refreshData(int position, int type) {
-        if (activeFragmentRef != null && pendingFragmentRef != null) {
-            Log.e("REFRESH", "refreshData");
-            activeFragmentRef.removeActiveQuest(position);
-
-            // Reload pending quest list if the quest was marked as completed
-            if (type == MainActivity.TYPE_COMPLETE_QUEST) {
-                final RequestQueue queue = Volley.newRequestQueue(getContext());
-                getPendingQuests(queue, false);
-                pendingFragmentRef.updateList(pendingQuests);
-            }
-        }
-    }
-
-    private void populatePage() {
-
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
+        adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(activeFragmentRef = UserQuestInfoFragment.newInstance(activeQuests, QUEST_STATUS_ACTIVE), "Active");
         adapter.addFragment(pendingFragmentRef = UserQuestInfoFragment.newInstance(pendingQuests, QUEST_STATUS_PENDING), "Pending");
         adapter.addFragment(UserQuestInfoFragment.newInstance(rejectedQuests, QUEST_STATUS_REJECTED), "Rejected");
@@ -133,10 +110,35 @@ public class QuestFragment extends Fragment {
         for (int i = 0; i < NUM_QUEST_TABS; i++) {
             tabs.getTabAt(i).setIcon(tabIcons[i]);
         }
+
+        getAllQuests();
+
+        return view;
+    }
+
+    public void refreshData(int position, int type) {
+        if (activeFragmentRef != null && pendingFragmentRef != null) {
+            activeFragmentRef.removeActiveQuest(position);
+
+            // Reload pending quest list if the quest was marked as completed
+            if (type == MainActivity.TYPE_COMPLETE_QUEST) {
+                final RequestQueue queue = Volley.newRequestQueue(getContext());
+                getPendingQuests(queue, false);
+                pendingFragmentRef.updateList(pendingQuests);
+            }
+        }
+    }
+
+    private void populatePage() {
+        // Update the quest list for each fragment
+        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_ACTIVE)).updateList(activeQuests);
+        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_PENDING)).updateList(pendingQuests);
+        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_REJECTED)).updateList(rejectedQuests);
+        ((UserQuestInfoFragment) adapter.mFragmentList.get(QUEST_STATUS_COMPLETED)).updateList(completedQuests);
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
+        public final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
         public ViewPagerAdapter(FragmentManager manager) {
@@ -349,44 +351,5 @@ public class QuestFragment extends Fragment {
         );
 
         queue.add(jsonObjectRequest);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

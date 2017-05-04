@@ -34,7 +34,6 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
         , ProfileFragment.OnFragmentInteractionListener
-        , QuestFragment.OnFragmentInteractionListener
         , SettingsFragment.OnFragmentInteractionListener
         , UserQuestInfoFragment.OnActiveQuestFragmentInteractionListener {
 
@@ -155,6 +154,15 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (dbSender != null) {
+            sendHandler.removeCallbacks(dbSender);
+        }
+    }
+
     public void initializeApp() {
 
         dm = new DataManager();
@@ -207,19 +215,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     void SetUpStepSensor() {
-        /* TODO: Uncomment this after the service no longer crashes app */
         stepCounterService = new StepCounterService(user, getApplicationContext());
 
         if (stepCounterService.stepCounterActive) {
 
             sendHandler = new Handler();
-//        sendHandler.postDelayed(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                SendUpdateToDB();
-//            }
-//        }, 1000);//300000);
 
             dbSender = new Runnable() {
 
@@ -252,13 +252,11 @@ public class MainActivity extends AppCompatActivity
                     try {
                         if (jsonObject.getInt("success") == 1) {
 
+//                            Toast.makeText(getApplicationContext(), Integer.toString(user.TempSteps()), Toast.LENGTH_LONG).show();
                             user.ResetTempSteps();
-                            //RequestUserProfile(queue);
-                            //Toast.makeText(getApplicationContext(), Integer.toString(user.TempSteps()), Toast.LENGTH_LONG).show();
 
                         } else {
-                            //mEmailView.setError("Error logging in.");
-                            //focusView.requestFocus();
+                            Toast.makeText(getApplicationContext(), "Failed to send step update.", Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

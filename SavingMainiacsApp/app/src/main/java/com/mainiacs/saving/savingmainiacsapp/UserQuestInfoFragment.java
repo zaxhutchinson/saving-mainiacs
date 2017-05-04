@@ -73,8 +73,10 @@ public class UserQuestInfoFragment extends Fragment {
     }
 
     public void updateList(ArrayList<UserQuestInfo> newQuestList) {
-        questList = newQuestList;
-        adapter.notifyDataSetChanged();
+        if (adapter != null) {
+            questList = newQuestList;
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
