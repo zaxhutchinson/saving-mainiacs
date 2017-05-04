@@ -386,29 +386,29 @@ public class MapsActivity extends AppCompatActivity
     }
 
     void PopulateCharityInfo(Charity charity) {
-        TextView charityName = (TextView) findViewById(R.id.charityName);
-        TextView charityAddr1 = (TextView) findViewById(R.id.charityAddress1);
-        TextView charityAddr2 = (TextView) findViewById(R.id.charityAddress2);
-        TextView charityPhone = (TextView) findViewById(R.id.charityPhone);
+        FontTextView charName = (FontTextView) findViewById(R.id.charName);
+        FontTextView charAdd1 = (FontTextView) findViewById(R.id.charAddress1);
+        FontTextView charAdd2 = (FontTextView) findViewById(R.id.charAddress2);
+        FontTextView charPhone = (FontTextView) findViewById(R.id.charPhone);
 
-        charityName.setText(charity.Name());
-        charityAddr1.setText(charity.Address1());
-        charityAddr2.setText(charity.Address2());
-        charityPhone.setText(charity.Phone());
+        charName.setText(charity.Name());
+        charAdd1.setText("     " + charity.Address1());
+        charAdd2.setText("     " + charity.Address2() + ", ME");
+        charPhone.setText("     " + charity.Phone());
     }
 
     void PopulateQuestInfo(Quest quest) {
-        TextView questName = (TextView) findViewById(R.id.questName);
-        TextView questDesc = (TextView) findViewById(R.id.questDesc);
-        TextView questLocation = (TextView) findViewById(R.id.questLocation);
-        TextView questQuantity = (TextView) findViewById(R.id.questQuantity);
-        TextView questPayment = (TextView) findViewById(R.id.questPayment);
+        FontTextView questName = (FontTextView) findViewById(R.id.questName);
+        FontTextView questDesc = (FontTextView) findViewById(R.id.questDesc);
+        FontTextView questLocation = (FontTextView) findViewById(R.id.questLocation);
+        FontTextView questQuantity = (FontTextView) findViewById(R.id.questQuantity);
+        FontTextView questPayment = (FontTextView) findViewById(R.id.questPayment);
 
         questName.setText(quest.Name());
         questDesc.setText(quest.Description());
         questLocation.setText(quest.DropOffLocation());
-        questQuantity.setText(Integer.toString(quest.Quantity()));
-        questPayment.setText(Integer.toString(quest.Payment()));
+        questQuantity.setText("This quest can be completed " + Integer.toString(quest.Quantity()) + " more time(s).");
+        questPayment.setText("Reward: " + Integer.toString(quest.Payment()) + " Coins");
     }
 
     void DisplayQuests(Charity charity) {

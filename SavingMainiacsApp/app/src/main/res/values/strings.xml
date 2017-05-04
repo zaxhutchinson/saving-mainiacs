@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">SavingMainiacsApp</string>
+    <string name="app_name">Bangor Community</string>
     <string name="title_activity_maps">Quest Finder</string>
-    <string name="title_activity_login">Saving Mainiacs Login</string>
-    <string name="title_activity_main">Saving Mainiacs</string>
+    <string name="title_activity_login">Bangor Community Login</string>
+    <string name="title_activity_main">Bangor Community</string>
     <string name="title_app">Bangor Community</string>
 
     <!-- Strings related to login -->

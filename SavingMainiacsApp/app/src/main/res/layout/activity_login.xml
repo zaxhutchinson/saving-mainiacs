@@ -34,8 +34,8 @@
         android:textAlignment="center" />
 
     <ScrollView
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="45dp"
+        android:paddingRight="45dp"
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -62,7 +62,7 @@
                     android:gravity="center|center_vertical"
                     android:text="Bangor "
                     android:textColor="@color/bsbBlue"
-                    android:textSize="40sp"
+                    android:textSize="35sp"
                     android:textStyle="bold" />
 
                 <com.mainiacs.saving.savingmainiacsapp.FontTextView
@@ -74,7 +74,7 @@
                     android:text="Community"
                     android:textAlignment="center"
                     android:textColor="@color/bsbGrey"
-                    android:textSize="30sp" />
+                    android:textSize="25sp" />
             </LinearLayout>
 
 

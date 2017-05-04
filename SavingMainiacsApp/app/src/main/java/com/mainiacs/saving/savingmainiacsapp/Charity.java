@@ -92,17 +92,49 @@ public class Charity implements Parcelable{
     public String Name() {
         return name;
     }
+
+
     public String Address1() {
-        return address1;
+        return address1.trim();
     }
-    public String Address2() { return address2; }
+
+    public String Address2() { return address2.trim(); }
+
+
+
+    public String Phone() {
+        String s = phone;
+        String numAsString = "";
+        for (int i = 0; i < s.length(); i++){
+            char c = s.charAt(i);
+            if(c == 48 | c == 49 | c == 50 | c == 51 | c == 52 | c == 53 | c == 54 | c == 55 | c == 56 | c == 57){
+                numAsString += c;
+            }
+        }
+
+        String finalNum = "";
+        s = numAsString;
+        for (int i = 0; i < s.length(); i++){
+            if(i == 0){
+                finalNum += "(";
+            } else if (i == 3){
+                finalNum += ")";
+            }else if(i == 6){
+                finalNum += "-";
+            }
+
+            char c = s.charAt(i);
+            finalNum += c;
+        }
+        return finalNum; }
+
+
     public double Latitude() {
         return latitude;
     }
     public double Longitude() {
         return longitude;
     }
-    public String Phone() { return phone; }
     public void Name(String name) {
         this.name = name;
     }
