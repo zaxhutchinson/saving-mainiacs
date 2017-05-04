@@ -445,6 +445,9 @@ and open the template in the editor.
 			<li>
 				<a href="http://www.bangor.com/About-Us/Contact-Us.aspx" target="_self">Contact Us</a>
 			</li>
+			<li>
+				<a href="help.html" >Help</a>
+			</li>
 		</ul>
 		<br>
 		<p><a href="http://www.bangor.com/Utility/Copyright.aspx">Copyright © 2017 Bangor Savings Bank</a> <span>Member FDIC</span> <span>Equal Housing Lender</span></p>

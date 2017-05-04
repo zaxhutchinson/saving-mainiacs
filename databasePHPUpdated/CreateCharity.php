@@ -20,7 +20,7 @@ and open the template in the editor.
 			<div id="create">
 			<center>
 			<div id="form">
-				<form action="https://abnet.ddns.net/mucoftware/remote/insert_charity.php?charityname=<?php echo $_GET['charityname'];?>&address=<?php echo $_GET['address'];?>&phone=<?php echo $_GET['phone'];?>&description=<?php echo $_GET['description'];?>&charitylogin=<?php echo $_GET['charitylogin'];?>&password=password&email=<?php echo $_GET['email'];?>"method="GET">
+				<form id="cQ"action="https://abnet.ddns.net/mucoftware/remote/insert_charity.php?charityname=<?php echo $_GET['charityname'];?>&address=<?php echo $_GET['address'];?>&phone=<?php echo $_GET['phone'];?>&description=<?php echo $_GET['description'];?>&charitylogin=<?php echo $_GET['charitylogin'];?>&password=password&email=<?php echo $_GET['email'];?>"method="GET">
 <!-- 
 				<form action="https://abnet.ddns.net/mucoftware/remote/insert_charity.php?user=<?php echo $_GET['user'];?>&password=<?php echo $_GET['userpassword'];?>&fullname=<?php echo $_GET['fullname'];?>&email=<?php echo $_GET['email'];?>" method="GET">
  -->
@@ -35,6 +35,29 @@ and open the template in the editor.
 					<input type="submit" name="login" value="Create"><br>
 
 				</form>
+				<div id="message" style="display: block;position: relative; color: red;"></div>
+				<div id="response"></div>
+				<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+				<script>
+					$(function() {
+						$("#cQ").on("submit", function(e) {
+							e.preventDefault();
+							$.ajax({
+								url: $(this).attr("action"),
+								type: 'POST',
+								data: $(this).serialize(),
+								beforeSend: function() {
+									//$("#message").html("Added!");
+									alert('Charity Created!')
+								},
+								success: function(data) {
+									$("#message").hide();
+									$("#response").html(data);
+								}
+							});
+						});
+					});
+				</script>
 				</div>
 			</center>
 			</div>
@@ -58,6 +81,9 @@ and open the template in the editor.
 			</li>
 			<li>
 				<a href="http://www.bangor.com/About-Us/Contact-Us.aspx" target="_self">Contact Us</a>
+			</li>
+			<li>
+				<a href="help.html" >Help</a>
 			</li>
 		</ul>
 		<br>

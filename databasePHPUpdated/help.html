@@ -1,3 +1,14 @@
+<!-- 
+HELP MENU
+What is Bangor Community?
+Bangor Community is an app that lets you participate in your local charities. Using coins earned through volunteering and walking, you can vote for the charities you want to recieve a monthly donation.
+How to use the app:
+When you register your account, you will be asked to select a charity or group of charities. When you select a charity, you choose what percentage of your earnings you want to go to each charity. At the end of the month, your coins will be given to your selected charity. Charities will get a portion of a monthly sum based on the number of votes they get.
+Quests:
+Quests are given out by charities. By completing a quest, you can earn coins.
+Getting Quests:
+Go to quest finder in the menu, then pick a charity on the map. When the blue icons appear, tap them for details, pick the quest you want, and select accept quest.
+ -->
 <!DOCTYPE html>
 <html>
     <head>
@@ -18,41 +29,18 @@
 		<body>
 			<main>
 				<div id ="bod">
-					<div id="createForm">
- 						<form id="cQ" action ="https://abnet.ddns.net/mucoftware/remote/insert_quest.php?charity=<?php echo $_GET['charity'];?>&password=<?php echo $_GET['password'];?>&questname=<?php echo $_GET['questname'];?>&desc=<?php echo $_GET['desc'];?>&address=<?php echo $_GET['address'];?>&payment=<?php echo $_GET['payment'];?>"method="GET">
-							<h1>Create a Quest</h1>
-							<input type="text" name="charity" placeholder="Chairty...." required><br>
-							<input type="password" name="password" placeholder="Password...."required><br>
-							<input type="text" name="questname" placeholder="Quest Name...."required><br>
-							<input type="textarea" name="desc" placeholder="Description...."required><br>
-							<input type="text" name="address" placeholder="Address...."required><br>
-							<input type="text" name="payment" placeholder="Payout...."required><br>
-							<input type="submit" name="loginChar" value="submit"><br>
-						</form>
+					<div id="createForm"align="center"style="font-size: 1.5em; h2{font-weight: bold;}">
+						<h1><underline>Help</underline></h1>
+						<br>
+ 						<h2><bold>What is Bangor Community?</bold></h2>
+ 						<p>&nbsp;&nbsp;Bangor Community is an app that lets you participate in your local charities. Using coins earned through volunteering and walking, you can vote for the charities you want to recieve a monthly donation.</p>
+ 						<h2>Quests</h2>
+ 						<p>&nbsp;&nbsp;Quests are given out by charities. By completing a quest, you can earn coins.</p>
+ 						<h2>Getting Quests</h2>
+ 						<p>&nbsp;&nbsp;On your user page there is an add quest button and a drop down menu to choose which quests you want.</p>
+ 						<h2>Changing your Charities</h2>
+ 						<p>&nbsp;&nbsp;By accessing your user page, you can change your charities and percentages at any time.</p>
 					</div>
-					<div id="message" style="display: block;position: relative; color: red;"></div>
-					<div id="response"></div>
-					<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-					<script>
-						$(function() {
-							$("#cQ").on("submit", function(e) {
-								e.preventDefault();
-								$.ajax({
-									url: $(this).attr("action"),
-									type: 'POST',
-									data: $(this).serialize(),
-									beforeSend: function() {
-										$("#message").html("Added!");
-										alert('Quest Added!')
-									},
-									success: function(data) {
-										$("#message").hide();
-										$("#response").html(data);
-									}
-								});
-							});
-						});
-					</script>
 				</div>
 			</main>
 		</body>
