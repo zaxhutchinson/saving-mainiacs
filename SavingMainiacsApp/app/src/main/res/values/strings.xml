@@ -130,4 +130,10 @@
     <string name="label_charity">Charity</string>
     <string name="label_date">Date</string>
 
+    <string name="action_leave">Leave</string>
+    <string name="action_complete">Complete</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="confirm_leave_message">Are you sure you want to leave this quest?</string>
+    <string name="confirm_complete_message">Are you sure you want to mark this quest as complete?</string>
+
 </resources>

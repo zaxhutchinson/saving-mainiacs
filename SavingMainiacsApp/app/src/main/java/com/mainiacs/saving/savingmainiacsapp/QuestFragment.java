@@ -33,8 +33,6 @@ public class QuestFragment extends Fragment {
     private static final String URL_GET_PENDING_QUESTS = "  https://abnet.ddns.net/mucoftware/remote/get_user_pending_quests.php?";
     private static final String URL_GET_REJECTED_QUESTS = "https://abnet.ddns.net/mucoftware/remote/get_user_rejected_quests.php?";
     private static final String URL_GET_COMPLETED_QUESTS = "https://abnet.ddns.net/mucoftware/remote/get_user_rewarded_quests.php?";
-    private static final String URL_LEAVE_QUEST = "https://abnet.ddns.net/mucoftware/remote/leave_quest.php?";
-    private static final String URL_COMPLETE_QUEST = "https://abnet.ddns.net/mucoftware/remote/complete_quest.php?";
 
     public static final int QUEST_STATUS_ACTIVE = 0;
     public static final int QUEST_STATUS_PENDING = 1;
@@ -335,65 +333,6 @@ public class QuestFragment extends Fragment {
 
         queue.add(jsonObjectRequest);
     }
-
-    private void leaveActiveQuest(int activeQuestId) {
-        final RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = URL_LEAVE_QUEST + "user=" + username + "&password=" + password + "&activequestid=" + activeQuestId;
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject jsonObject) {
-                try {
-                    if (jsonObject.getInt("success") == 1) {
-                        // TODO: Refresh list of active quests
-
-                    } else {
-                        Toast.makeText(getContext(), "Failed to leave quest.", Toast.LENGTH_LONG).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-
-            }
-        }
-        );
-        queue.add(jsonObjectRequest);
-    }
-
-    private void completeActiveQuest(int activeQuestId) {
-        final RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = URL_COMPLETE_QUEST + "user=" + username + "&password=" + password + "&activequestid=" + activeQuestId;
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject jsonObject) {
-                try {
-                    if (jsonObject.getInt("success") == 1) {
-                        // TODO: Refresh list of active quests
-
-                    } else {
-                        Toast.makeText(getContext(), "Failed to mark quest as complete.", Toast.LENGTH_LONG).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-
-            }
-        }
-        );
-        queue.add(jsonObjectRequest);
-    }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

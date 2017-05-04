@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 public class UserQuestInfo implements Parcelable {
 
-    private int userQuestId;
+    private int activeQuestId;
     private int questId;
     private int charityId;
     private int rewardAmount;
@@ -15,16 +15,16 @@ public class UserQuestInfo implements Parcelable {
     private String questDescription;
     private String charityName;
 
-    public UserQuestInfo(int userQuestId, int questId, int charityId, int rewardAmount, String date) {
-        this.userQuestId = userQuestId;
+    public UserQuestInfo(int activeQuestId, int questId, int charityId, int rewardAmount, String date) {
+        this.activeQuestId = activeQuestId;
         this.questId = questId;
         this.charityId = charityId;
         this.rewardAmount = rewardAmount;
         this.date = date;
     }
 
-    public UserQuestInfo(int userQuestId, String questName, String questDescription, String charityName, int rewardAmount, String date) {
-        this.userQuestId = userQuestId;
+    public UserQuestInfo(int activeQuestId, String questName, String questDescription, String charityName, int rewardAmount, String date) {
+        this.activeQuestId = activeQuestId;
         this.questName = questName;
         this.questDescription = questDescription;
         this.charityName = charityName;
@@ -33,7 +33,7 @@ public class UserQuestInfo implements Parcelable {
     }
 
     public String toString() {
-        return "UserQuestId: " + this.userQuestId
+        return "UserQuestId: " + this.activeQuestId
                 + ", QuestName: " + this.questName
                 + ", CharityName: " + this.charityName
                 + ", Amount: " + this.rewardAmount
@@ -53,7 +53,7 @@ public class UserQuestInfo implements Parcelable {
     };
 
     protected UserQuestInfo(Parcel in) {
-        userQuestId = in.readInt();
+        activeQuestId = in.readInt();
         questId = in.readInt();
         charityId = in.readInt();
         rewardAmount = in.readInt();
@@ -67,19 +67,19 @@ public class UserQuestInfo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(userQuestId);
+        dest.writeInt(activeQuestId);
         dest.writeInt(questId);
         dest.writeInt(charityId);
         dest.writeInt(rewardAmount);
         dest.writeString(date);
     }
 
-    public int getUserQuestId() {
-        return userQuestId;
+    public int getActiveQuestId() {
+        return activeQuestId;
     }
 
-    public void setUserQuestId(int userQuestId) {
-        this.userQuestId = userQuestId;
+    public void setActiveQuestId(int activeQuestId) {
+        this.activeQuestId = activeQuestId;
     }
 
     public int getQuestId() {

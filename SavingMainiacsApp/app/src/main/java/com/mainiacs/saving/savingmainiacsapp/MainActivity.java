@@ -1,5 +1,6 @@
 package com.mainiacs.saving.savingmainiacsapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -34,10 +36,12 @@ public class MainActivity extends AppCompatActivity
         , LeaderBoardFragment.OnFragmentInteractionListener
         , QuestFragment.OnFragmentInteractionListener
         , SettingsFragment.OnFragmentInteractionListener
-        , UserQuestInfoFragment.OnListFragmentInteractionListener {
+        , UserQuestInfoFragment.OnActiveQuestFragmentInteractionListener {
 
-    private static String PROFILE_STRING = "https://abnet.ddns.net/mucoftware/remote/get_user.php?";
-    private static String SEND_STEP_URL = "https://abnet.ddns.net/mucoftware/remote/update_user.php?";
+    private static final String PROFILE_STRING = "https://abnet.ddns.net/mucoftware/remote/get_user.php?";
+    private static final String SEND_STEP_URL = "https://abnet.ddns.net/mucoftware/remote/update_user.php?";
+    private static final String URL_LEAVE_QUEST = "https://abnet.ddns.net/mucoftware/remote/leave_quest.php?";
+    private static final String URL_COMPLETE_QUEST = "https://abnet.ddns.net/mucoftware/remote/complete_quest.php?";
 
     private static final String TAG_HOME = "home";
     private static final String TAG_QUESTS = "quests";
@@ -64,9 +68,55 @@ public class MainActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
         return;
     }
-    public void onListFragmentInteraction(UserQuestInfo info) {
-        return;
+
+    public void onCompleteQuest(final int activeQuestId) {
+        // TODO: show confirm dialog and refresh page
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.action_complete))
+                .setMessage(getString(R.string.confirm_complete_message))
+                .setPositiveButton(getString(R.string.action_complete), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        completeActiveQuest(activeQuestId);
+                        Toast.makeText(getApplicationContext(), "Complete ActiveQuestId: " + activeQuestId, Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog dialog = alertDialogBuilder.create();
+        dialog.show();
     }
+
+    public void onLeaveActiveQuest(final int activeQuestId) {
+        // TODO: show confirm dialog and refresh page
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.action_leave))
+                .setMessage(getString(R.string.confirm_leave_message))
+                .setPositiveButton(getString(R.string.action_leave), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        leaveActiveQuest(activeQuestId);
+                        Toast.makeText(getApplicationContext(), "Leave ActiveQuestId: " + activeQuestId, Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog dialog = alertDialogBuilder.create();
+        dialog.show();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,16 +147,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-
-
     }
 
     public void initializeApp() {
@@ -117,8 +162,6 @@ public class MainActivity extends AppCompatActivity
         username = getIntent().getStringExtra(LoginActivity.TAG_USERNAME);
         password = getIntent().getStringExtra(LoginActivity.TAG_PASSWORD);
     }
-
-
 
     public void RequestUserProfile() {
         final RequestQueue queue = Volley.newRequestQueue(this);
@@ -166,7 +209,7 @@ public class MainActivity extends AppCompatActivity
         /* TODO: Uncomment this after the service no longer crashes app */
         stepCounterService = new StepCounterService(user, getApplicationContext());
 
-        if(stepCounterService.stepCounterActive) {
+        if (stepCounterService.stepCounterActive) {
 
             sendHandler = new Handler();
 //        sendHandler.postDelayed(new Runnable() {
@@ -190,7 +233,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     void SendUpdateToDB() {
-        if(user != null) {
+        if (user != null) {
             //user=helpfulguy78&password=helpfulguy78&lat=1&long=1&steps=117
             String url = SEND_STEP_URL + "user=" + user.UserName() +
                     "&password=" + user.Password() +
@@ -209,7 +252,7 @@ public class MainActivity extends AppCompatActivity
                         if (jsonObject.getInt("success") == 1) {
 
                             //RequestUserProfile(queue);
-                            Toast.makeText(getApplicationContext(), Integer.toString(user.TempSteps()), Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getApplicationContext(), Integer.toString(user.TempSteps()), Toast.LENGTH_LONG).show();
 
                         } else {
                             //mEmailView.setError("Error logging in.");
@@ -229,6 +272,62 @@ public class MainActivity extends AppCompatActivity
 
             queue.add(jsonObjectRequest);
         }
+    }
+
+    private void leaveActiveQuest(int activeQuestId) {
+        final RequestQueue queue = Volley.newRequestQueue(this);
+        String url = URL_LEAVE_QUEST + "user=" + username + "&password=" + password + "&activequestid=" + activeQuestId;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    if (jsonObject.getInt("success") == 1) {
+                        loadHomeFragment();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Failed to leave quest.", Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+        queue.add(jsonObjectRequest);
+    }
+
+    private void completeActiveQuest(int activeQuestId) {
+        final RequestQueue queue = Volley.newRequestQueue(this);
+        String url = URL_COMPLETE_QUEST + "user=" + username + "&password=" + password + "&activequestid=" + activeQuestId;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    if (jsonObject.getInt("success") == 1) {
+                        loadHomeFragment();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Failed to mark quest as complete.", Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+        queue.add(jsonObjectRequest);
     }
 
     @Override

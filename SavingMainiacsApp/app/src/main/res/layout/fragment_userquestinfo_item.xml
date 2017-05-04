@@ -69,7 +69,10 @@
             <Button
                 android:id="@+id/user_quest_complete"
                 android:layout_width="@dimen/button_length"
-                android:layout_height="@dimen/button_length" />
+                android:layout_height="@dimen/button_length"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/button_margin"
+                android:background="@drawable/quest_complete" />
 
         </LinearLayout>
 
@@ -98,7 +101,10 @@
             <Button
                 android:id="@+id/user_quest_delete"
                 android:layout_width="@dimen/button_length"
-                android:layout_height="@dimen/button_length" />
+                android:layout_height="@dimen/button_length"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/button_margin"
+                android:background="@drawable/quest_leave" />
 
         </LinearLayout>
 

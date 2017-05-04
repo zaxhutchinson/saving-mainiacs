@@ -8,18 +8,16 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.mainiacs.saving.savingmainiacsapp.UserQuestInfoFragment.OnListFragmentInteractionListener;
-
 import java.util.List;
 
 public class UserQuestInfoViewAdapter extends RecyclerView.Adapter<UserQuestInfoViewAdapter.ViewHolder> {
 
     private final List<UserQuestInfo> questList;
-    private final OnListFragmentInteractionListener mListener;
+    private final UserQuestInfoFragment.OnActiveQuestFragmentInteractionListener mListener;
 
     private final boolean showButtons;
 
-    public UserQuestInfoViewAdapter(List<UserQuestInfo> items, boolean showButtonsFlag, OnListFragmentInteractionListener listener) {
+    public UserQuestInfoViewAdapter(List<UserQuestInfo> items, boolean showButtonsFlag, UserQuestInfoFragment.OnActiveQuestFragmentInteractionListener listener) {
         questList = items;
         mListener = listener;
         showButtons = showButtonsFlag;
@@ -51,12 +49,6 @@ public class UserQuestInfoViewAdapter extends RecyclerView.Adapter<UserQuestInfo
                 } else {
                     holder.questDetailsContainer.setVisibility(View.VISIBLE);
                 }
-
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.questInfo);
-                }
             }
         });
 
@@ -65,14 +57,14 @@ public class UserQuestInfoViewAdapter extends RecyclerView.Adapter<UserQuestInfo
             holder.leaveQuestButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: leave quest and refresh list
+                    mListener.onLeaveActiveQuest(holder.questInfo.getActiveQuestId());
                 }
             });
 
             holder.completeQuestButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: mark quest as complete and refresh list
+                    mListener.onCompleteQuest(holder.questInfo.getActiveQuestId());
                 }
             });
 
