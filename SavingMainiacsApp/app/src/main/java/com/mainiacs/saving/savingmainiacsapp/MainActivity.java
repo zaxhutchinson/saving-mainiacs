@@ -1,5 +1,6 @@
 package com.mainiacs.saving.savingmainiacsapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,8 +11,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -31,20 +34,27 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
         , ProfileFragment.OnFragmentInteractionListener
-        , LeaderBoardFragment.OnFragmentInteractionListener
-        , QuestFragment.OnFragmentInteractionListener
         , SettingsFragment.OnFragmentInteractionListener
-        , UserQuestInfoFragment.OnListFragmentInteractionListener {
+        , UserQuestInfoFragment.OnActiveQuestFragmentInteractionListener {
 
-    private static String PROFILE_STRING = "https://abnet.ddns.net/mucoftware/remote/get_user.php?";
-    private static String SEND_STEP_URL = "https://abnet.ddns.net/mucoftware/remote/update_user.php?";
+    private static final String PROFILE_STRING = "https://abnet.ddns.net/mucoftware/remote/get_user.php?";
+    private static final String SEND_STEP_URL = "https://abnet.ddns.net/mucoftware/remote/update_user.php?";
+    private static final String URL_LEAVE_QUEST = "https://abnet.ddns.net/mucoftware/remote/leave_quest.php?";
+    private static final String URL_COMPLETE_QUEST = "https://abnet.ddns.net/mucoftware/remote/complete_quest.php?";
 
     private static final String TAG_HOME = "home";
     private static final String TAG_QUESTS = "quests";
     private static final String TAG_LEADERBOARD = "leaderboard";
     private static final String TAG_SETTINGS = "settings";
-    private static final String[] activityTitles = {"Status", "", "My Quests", "Leaderboard", "Settings", ""};
+    private static final String[] ACTIVITY_TITLES = {"Status", "", "My Quests", "Leaderboard", "Settings", ""};
 
+    private static final int QUEST_FINDER_REQUEST = 1;
+
+    public static final int TYPE_COMPLETE_QUEST = 0;
+    public static final int TYPE_LEAVE_QUEST = 1;
+
+
+    private QuestFragment questFragmentRef;
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private String currentTag;
@@ -64,9 +74,51 @@ public class MainActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
         return;
     }
-    public void onListFragmentInteraction(UserQuestInfo info) {
-        return;
+
+    public void onCompleteQuest(final int activeQuestId, final int position) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.action_complete))
+                .setMessage(getString(R.string.confirm_complete_message))
+                .setPositiveButton(getString(R.string.action_complete), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        completeActiveQuest(activeQuestId, position);
+                        Toast.makeText(getApplicationContext(), "Complete ActiveQuestId: " + activeQuestId, Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog dialog = alertDialogBuilder.create();
+        dialog.show();
     }
+
+    public void onLeaveActiveQuest(final int activeQuestId, final int position) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.action_leave))
+                .setMessage(getString(R.string.confirm_leave_message))
+                .setPositiveButton(getString(R.string.action_leave), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        leaveActiveQuest(activeQuestId, position);
+                        Toast.makeText(getApplicationContext(), "Leave ActiveQuestId: " + activeQuestId, Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog dialog = alertDialogBuilder.create();
+        dialog.show();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,16 +149,20 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
-
+        if (dbSender != null) {
+            sendHandler.removeCallbacks(dbSender);
+        }
     }
 
     public void initializeApp() {
@@ -117,8 +173,6 @@ public class MainActivity extends AppCompatActivity
         username = getIntent().getStringExtra(LoginActivity.TAG_USERNAME);
         password = getIntent().getStringExtra(LoginActivity.TAG_PASSWORD);
     }
-
-
 
     public void RequestUserProfile() {
         final RequestQueue queue = Volley.newRequestQueue(this);
@@ -163,19 +217,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     void SetUpStepSensor() {
-        /* TODO: Uncomment this after the service no longer crashes app */
         stepCounterService = new StepCounterService(user, getApplicationContext());
 
-        if(stepCounterService.stepCounterActive) {
+        if (stepCounterService.stepCounterActive) {
 
             sendHandler = new Handler();
-//        sendHandler.postDelayed(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                SendUpdateToDB();
-//            }
-//        }, 1000);//300000);
 
             dbSender = new Runnable() {
 
@@ -190,7 +236,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     void SendUpdateToDB() {
-        if(user != null) {
+        if (user != null) {
             //user=helpfulguy78&password=helpfulguy78&lat=1&long=1&steps=117
             String url = SEND_STEP_URL + "user=" + user.UserName() +
                     "&password=" + user.Password() +
@@ -208,13 +254,11 @@ public class MainActivity extends AppCompatActivity
                     try {
                         if (jsonObject.getInt("success") == 1) {
 
+//                            Toast.makeText(getApplicationContext(), Integer.toString(user.TempSteps()), Toast.LENGTH_LONG).show();
                             user.ResetTempSteps();
-                            //RequestUserProfile(queue);
-                            Toast.makeText(getApplicationContext(), Integer.toString(user.TempSteps()), Toast.LENGTH_LONG).show();
 
                         } else {
-                            //mEmailView.setError("Error logging in.");
-                            //focusView.requestFocus();
+                            Toast.makeText(getApplicationContext(), "Failed to send step update.", Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -229,6 +273,75 @@ public class MainActivity extends AppCompatActivity
             );
 
             queue.add(jsonObjectRequest);
+        }
+    }
+
+    private void leaveActiveQuest(int activeQuestId, final int position) {
+        final RequestQueue queue = Volley.newRequestQueue(this);
+        String url = URL_LEAVE_QUEST + "user=" + username + "&password=" + password + "&activequestid=" + activeQuestId;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    if (jsonObject.getInt("success") == 1) {
+                        questFragmentRef.refreshData(position, TYPE_LEAVE_QUEST);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Failed to leave quest.", Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+        queue.add(jsonObjectRequest);
+    }
+
+    private void completeActiveQuest(int activeQuestId, final int position) {
+        final RequestQueue queue = Volley.newRequestQueue(this);
+        String url = URL_COMPLETE_QUEST + "user=" + username + "&password=" + password + "&activequestid=" + activeQuestId;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    if (jsonObject.getInt("success") == 1) {
+                        questFragmentRef.refreshData(position, TYPE_COMPLETE_QUEST);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Failed to mark quest as complete.", Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }
+        );
+        queue.add(jsonObjectRequest);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == QUEST_FINDER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                // Return back to profile page
+                navItemIndex = 0;
+                currentTag = TAG_HOME;
+                navigationView.setCheckedItem(R.id.nav_tracker);
+                loadHomeFragment();
+            }
         }
     }
 
@@ -285,7 +398,7 @@ public class MainActivity extends AppCompatActivity
                 navItemIndex = 1;
                 Intent mapActivityIntent = new Intent(this, MapsActivity.class);
                 mapActivityIntent.putExtra("DataManager", dm);
-                startActivity(mapActivityIntent);
+                startActivityForResult(mapActivityIntent, QUEST_FINDER_REQUEST);
                 drawer.closeDrawers();
                 return true;
             case R.id.nav_quests:
@@ -302,7 +415,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_sign_off:
                 navItemIndex = 5;
-                if(dbSender != null) {
+                if (dbSender != null) {
                     sendHandler.removeCallbacks(dbSender);
                 }
                 Intent loginActivityIntent = new Intent(this, LoginActivity.class);
@@ -365,7 +478,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setToolbarTitle() {
-        getSupportActionBar().setTitle(activityTitles[navItemIndex]);
+        getSupportActionBar().setTitle(ACTIVITY_TITLES[navItemIndex]);
     }
 
     private void selectNavMenu() {
@@ -379,9 +492,10 @@ public class MainActivity extends AppCompatActivity
                 return profileFragment;
             case 2:
                 QuestFragment questFragment = QuestFragment.newInstance(username, password);
+                questFragmentRef = questFragment;
                 return questFragment;
             case 3:
-                LeaderBoardFragment leaderBoardFragment = new LeaderBoardFragment();
+                LeaderBoardFragment leaderBoardFragment = LeaderBoardFragment.newInstance(user.ID());
                 return leaderBoardFragment;
             case 4:
                 SettingsFragment settingsFragment = SettingsFragment.newInstance(username, password);
