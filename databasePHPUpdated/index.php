@@ -162,6 +162,9 @@
 			<li>
 				<a href="help.html" >Help</a>
 			</li>
+			<li>
+				<a href="http://keywordsuggest.org/gallery/865277.html">Image Credits</a>
+			</li>
 		</ul>
 		<br>
 		<p><a href="http://www.bangor.com/Utility/Copyright.aspx">Copyright © 2017 Bangor Savings Bank</a> <span>Member FDIC</span> <span>Equal Housing Lender</span></p>
