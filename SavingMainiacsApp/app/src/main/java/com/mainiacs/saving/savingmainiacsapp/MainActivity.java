@@ -192,11 +192,13 @@ public class MainActivity extends AppCompatActivity
     void SendUpdateToDB() {
         if(user != null) {
             //user=helpfulguy78&password=helpfulguy78&lat=1&long=1&steps=117
-            String url = SEND_STEP_URL + "user=" + user.UserName() +
+            final String url = SEND_STEP_URL + "user=" + user.UserName() +
                     "&password=" + user.Password() +
                     "&lat=" + Double.toString(user.Latitude()) +
                     "&long=" + Double.toString(user.Longitude()) +
                     "&steps=" + Integer.toString(user.TempSteps());
+
+            System.out.println(url);
 
             final RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -208,9 +210,12 @@ public class MainActivity extends AppCompatActivity
                     try {
                         if (jsonObject.getInt("success") == 1) {
 
-                            user.ResetTempSteps();
                             //RequestUserProfile(queue);
-                            Toast.makeText(getApplicationContext(), Integer.toString(user.TempSteps()), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), url, Toast.LENGTH_LONG).show();
+
+                            //Integer.toString(user.TempSteps())
+
+                            user.ResetTempSteps();
 
                         } else {
                             //mEmailView.setError("Error logging in.");
