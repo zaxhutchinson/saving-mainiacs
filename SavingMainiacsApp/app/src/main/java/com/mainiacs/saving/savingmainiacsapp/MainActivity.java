@@ -34,7 +34,6 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener
         , ProfileFragment.OnFragmentInteractionListener
-        , LeaderBoardFragment.OnFragmentInteractionListener
         , QuestFragment.OnFragmentInteractionListener
         , SettingsFragment.OnFragmentInteractionListener
         , UserQuestInfoFragment.OnActiveQuestFragmentInteractionListener {
@@ -76,8 +75,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onCompleteQuest(final int activeQuestId, final int position) {
-        // TODO: show confirm dialog and refresh page
-
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.action_complete))
                 .setMessage(getString(R.string.confirm_complete_message))
@@ -100,8 +97,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onLeaveActiveQuest(final int activeQuestId, final int position) {
-        // TODO: show confirm dialog and refresh page
-
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this)
                 .setTitle(getString(R.string.action_leave))
                 .setMessage(getString(R.string.confirm_leave_message))
@@ -291,8 +286,6 @@ public class MainActivity extends AppCompatActivity
             public void onResponse(JSONObject jsonObject) {
                 try {
                     if (jsonObject.getInt("success") == 1) {
-
-                        Log.e("REFRESH", "leaveActiveQuest");
                         questFragmentRef.refreshData(position, TYPE_LEAVE_QUEST);
                     } else {
                         Toast.makeText(getApplicationContext(), "Failed to leave quest.", Toast.LENGTH_LONG).show();
@@ -321,8 +314,6 @@ public class MainActivity extends AppCompatActivity
             public void onResponse(JSONObject jsonObject) {
                 try {
                     if (jsonObject.getInt("success") == 1) {
-
-                        Log.e("REFRESH", "completeActiveQuest");
                         questFragmentRef.refreshData(position, TYPE_COMPLETE_QUEST);
                     } else {
                         Toast.makeText(getApplicationContext(), "Failed to mark quest as complete.", Toast.LENGTH_LONG).show();
@@ -411,7 +402,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_sign_off:
                 navItemIndex = 5;
-                if(dbSender != null) {
+                if (dbSender != null) {
                     sendHandler.removeCallbacks(dbSender);
                 }
                 Intent loginActivityIntent = new Intent(this, LoginActivity.class);

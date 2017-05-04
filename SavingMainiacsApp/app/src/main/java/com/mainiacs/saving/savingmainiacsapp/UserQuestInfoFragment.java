@@ -64,7 +64,6 @@ public class UserQuestInfoFragment extends Fragment {
     }
 
     public void removeActiveQuest(int position) {
-        Log.e("REFRESH", "removeActiveQuest");
         if (questList != null) questList.remove(position);
         recyclerView.removeViewAt(position);
         adapter.notifyItemRemoved(position);
@@ -74,7 +73,6 @@ public class UserQuestInfoFragment extends Fragment {
     }
 
     public void updateList(ArrayList<UserQuestInfo> newQuestList) {
-        Log.e("REFRESH", "updateList");
         questList = newQuestList;
         adapter.notifyDataSetChanged();
     }

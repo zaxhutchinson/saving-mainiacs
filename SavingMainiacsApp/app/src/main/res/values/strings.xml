@@ -127,7 +127,7 @@
     <string name="nav_sign_off">Sign Off</string>
     <string name="nav_user_submenu">User</string>
 
-    <string name="label_charity">Charity</string>
+    <string name="label_charity">Org.</string>
     <string name="label_date">Date</string>
 
     <string name="action_leave">Leave</string>
@@ -135,5 +135,9 @@
     <string name="action_cancel">Cancel</string>
     <string name="confirm_leave_message">Are you sure you want to leave this quest?</string>
     <string name="confirm_complete_message">Are you sure you want to mark this quest as complete?</string>
+
+    <string name="column_rank">Rank</string>
+    <string name="column_user">User</string>
+    <string name="column_coins">Coins</string>
 
 </resources>

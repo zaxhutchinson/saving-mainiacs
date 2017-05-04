@@ -2,6 +2,8 @@ package com.mainiacs.saving.savingmainiacsapp;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +52,7 @@ public class LeaderBoardListAdapter extends BaseAdapter {
             holder = new ViewHolder();
             convertView = LayoutInflater.from(context).inflate(R.layout.fragment_leader_board_item, parent, false);
 
-            holder.container = (LinearLayout) convertView;
+            holder.container = (LinearLayout) convertView.findViewById(R.id.leaderboard_container);
             holder.rank = (TextView) convertView.findViewById(R.id.leaderboard_rank);
             holder.userName = (TextView) convertView.findViewById(R.id.leaderboard_user);
             holder.totalCoins = (TextView) convertView.findViewById(R.id.leaderboard_coins);
@@ -61,7 +63,11 @@ public class LeaderBoardListAdapter extends BaseAdapter {
         }
 
         LeaderboardInfo info = getItem(position);
-        if (info.getUserId() == userId) holder.container.setBackgroundColor(Color.BLUE);
+
+        // TODO: Figure out why this doesn't work properly
+//        if (info.getUserId() == userId) {
+//            holder.container.setBackgroundResource(R.drawable.sm_text_view);
+//        }
         holder.rank.setText(String.valueOf(info.getRank()));
         holder.userName.setText(info.getUserName());
         holder.totalCoins.setText(String.valueOf(info.getTotalCoins()));
@@ -75,5 +81,4 @@ public class LeaderBoardListAdapter extends BaseAdapter {
         TextView userName;
         TextView totalCoins;
     }
-
 }
